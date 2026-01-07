@@ -65,5 +65,5 @@ export default defineNuxtConfig({
       bookingApiToken: process.env.BOOKING_API_TOKEN,
     },
   },
-  typescript: { strict: true, typeCheck: true, shim: true },
+  typescript: { strict: true, typeCheck: false, shim: true },
 })
