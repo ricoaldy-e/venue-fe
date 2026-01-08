@@ -1,8 +1,0 @@
-const index_vue_vue_type_style_index_0_scoped_e5978f3d_lang = ".scrollbar-hide[data-v-e5978f3d]{-ms-overflow-style:none;scrollbar-width:none}.scrollbar-hide[data-v-e5978f3d]::-webkit-scrollbar{display:none}.expand-enter-active[data-v-e5978f3d],.expand-leave-active[data-v-e5978f3d]{transition:all .2s ease}.expand-enter-from[data-v-e5978f3d],.expand-leave-to[data-v-e5978f3d]{opacity:0;transform:translateY(-4px)}.slide-up-enter-active[data-v-e5978f3d],.slide-up-leave-active[data-v-e5978f3d]{transition:all .3s cubic-bezier(.4,0,.2,1)}.slide-up-enter-from[data-v-e5978f3d],.slide-up-leave-to[data-v-e5978f3d]{opacity:0;transform:translateY(100%)}";
-
-const indexStyles_BMiazeO = [
-  index_vue_vue_type_style_index_0_scoped_e5978f3d_lang
-];
-
-export { indexStyles_BMiazeO as default };
-//# sourceMappingURL=index-styles.B-MiazeO.mjs.map
