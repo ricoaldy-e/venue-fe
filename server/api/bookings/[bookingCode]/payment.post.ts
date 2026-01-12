@@ -4,7 +4,8 @@ export default defineEventHandler(async (event) => {
     const { bookingCode } = getRouterParams(event)
     const token = getCookie(event, 'admin_token')
     const body = await readBody<{ paymentStatus?: string }>(event)
-    const endpoint = process.env.GQL_HTTP_ENDPOINT
+    const config = useRuntimeConfig()
+    const endpoint = config.public.gqlHttpEndpoint
 
     if (!endpoint) {
         throw createError({ statusCode: 500, message: 'missing GQL endpoint' })

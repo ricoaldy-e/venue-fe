@@ -11,7 +11,8 @@ const isValidHour = (value: number) => Number.isInteger(value) && value >= 0 && 
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<UpdateOperatingHourBody>(event)
-  const endpoint = process.env.GQL_HTTP_ENDPOINT
+  const config = useRuntimeConfig()
+  const endpoint = config.public.gqlHttpEndpoint
 
   if (!endpoint) {
     throw createError({ statusCode: 500, statusMessage: 'Missing GQL_HTTP_ENDPOINT' })

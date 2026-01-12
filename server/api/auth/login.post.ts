@@ -4,11 +4,12 @@ import { MUTATION_LOGIN } from '~/graphql/mutations/login'
 import { AUTH, API } from '~/utils/constants'
 
 export default defineEventHandler(async (event) => {
+  const config = useRuntimeConfig()
   const { email, password } = await readBody<{ email: string; password: string }>(event)
   if (!email || !password)
     throw createError({ statusCode: 400, statusMessage: 'Email & password required' })
 
-  const endpoint = process.env.GQL_HTTP_ENDPOINT
+  const endpoint = config.public.gqlHttpEndpoint
   if (!endpoint)
     throw createError({ statusCode: 500, statusMessage: 'Missing GQL_HTTP_ENDPOINT' })
 

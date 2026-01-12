@@ -1,7 +1,8 @@
 import { defineEventHandler, createError, getCookie } from 'h3'
 
 export default defineEventHandler(async (event) => {
-  const endpoint = process.env.GQL_HTTP_ENDPOINT
+  const config = useRuntimeConfig()
+  const endpoint = config.public.gqlHttpEndpoint
   if (!endpoint) throw createError({ statusCode: 500, statusMessage: 'Missing GQL_HTTP_ENDPOINT' })
 
   const contentType = (event.node.req.headers['content-type'] || '') as string
