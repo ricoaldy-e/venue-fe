@@ -4,7 +4,8 @@ import { MUTATION_CREATE_FIELD } from '~/graphql/mutations/create_field'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const endpoint = process.env.GQL_HTTP_ENDPOINT
+  const config = useRuntimeConfig()
+  const endpoint = config.public.gqlHttpEndpoint
   if (!endpoint) throw createError({ statusCode: 500, statusMessage: 'Missing GQL_HTTP_ENDPOINT' })
 
   const token = getCookie(event, 'admin_token')

@@ -17,12 +17,13 @@ interface CheckAvailabilityResponse {
 }
 
 export default defineEventHandler(async (event): Promise<CheckAvailabilityResponse> => {
+  const config = useRuntimeConfig()
   const token = getCookie(event, AUTH.TOKEN_COOKIE_NAME)
   if (!token) {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }
 
-  const secret = process.env.JWT_SECRET
+  const secret = config.jwtSecret
   if (!secret) {
     throw createError({ statusCode: 500, statusMessage: 'JWT_SECRET missing' })
   }
@@ -43,7 +44,7 @@ export default defineEventHandler(async (event): Promise<CheckAvailabilityRespon
   }
 
   try {
-    const graphqlUrl = process.env.GRAPHQL_ENDPOINT || 'http://localhost:3001/graphql'
+    const graphqlUrl = config.public.gqlHttpEndpoint || 'http://localhost:3001/graphql'
     
     const response = await $fetch<{
       data?: {
