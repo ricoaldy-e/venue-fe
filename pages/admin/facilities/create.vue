@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { availableIconsWithId as availableIcons, VALID_FACILITY_ICONS } from '~/utils/validIconList'
@@ -17,15 +17,21 @@ useHead({
   ]
 })
 
+const { preloadIcons } = useIconPreload()
+onMounted(() => {
+  preloadIcons()
+})
+
 const router = useRouter()
 
 const form = ref({
   name: '',
-  icon: VALID_FACILITY_ICONS[0] as typeof VALID_FACILITY_ICONS[number],
+  icon: '' as typeof VALID_FACILITY_ICONS[number] | '',
 })
 
 const loading = ref(false)
 const errorMsg = ref<string | null>(null)
+const iconErrorMsg = ref<string | null>(null)
 const searchQuery = ref('')
 
 const filteredIcons = computed(() => {
@@ -37,14 +43,31 @@ const filteredIcons = computed(() => {
   )
 })
 
+watch(() => form.value.icon, (newIcon) => {
+  if (newIcon && iconErrorMsg.value) {
+    iconErrorMsg.value = null
+  }
+})
+
 async function handleSubmit() {
   loading.value = true
   errorMsg.value = null
+  iconErrorMsg.value = null
 
   if (!form.value.name.trim()) {
     errorMsg.value = 'Nama fasilitas wajib diisi.'
     loading.value = false
     window.scrollTo({ top: 0, behavior: 'smooth' })
+    return
+  }
+
+  if (!form.value.icon) {
+    iconErrorMsg.value = 'Pilih ikon untuk fasilitas ini.'
+    loading.value = false
+    const iconSection = document.querySelector('[data-icon-section]')
+    if (iconSection) {
+      iconSection.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
     return
   }
 
@@ -131,11 +154,15 @@ async function handleSubmit() {
       </div>
 
       <!-- CARD 2: PILIH IKON -->
-      <div class="w-full">
+      <div class="w-full" data-icon-section>
         <div class="bg-white rounded-2xl border border-gray-300 shadow-sm overflow-hidden">
           <div class="p-5 border-b border-gray-200 bg-gray-50/50">
             <h3 class="text-base font-bold text-gray-900">Pilih Visual Ikon</h3>
             <p class="text-xs text-gray-500 mt-0.5">Pilih simbol yang paling merepresentasikan fasilitas ini.</p>
+            <p v-if="iconErrorMsg" class="mt-2 text-xs text-red-600 font-medium flex items-start gap-1.5">
+              <svg class="w-3.5 h-3.5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              <span>{{ iconErrorMsg }}</span>
+            </p>
           </div>
           <div class="p-6">
             <!-- Search Box -->

@@ -213,7 +213,7 @@ const goToDetail = (stadionId: number) => {
             <div class="space-y-2">
               <p class="text-xs uppercase tracking-[0.2em] text-blue-200/70 font-semibold">Ringkasan Lapangan</p>
               <h2 class="text-3xl lg:text-4xl font-bold leading-[1.4] pb-1 bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
-                Layanan Persewaan Lapangan Olahraga
+                Layanan Penyewaan Lapangan Olahraga
               </h2>
             </div>
             

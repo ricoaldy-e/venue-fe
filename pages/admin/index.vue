@@ -124,7 +124,7 @@ onMounted(() => {
     if (!document.hidden) {
       refreshBookings()
     }
-  }, 15000)
+  }, 60000)
   
   document.addEventListener('visibilitychange', handleVisibilityChange)
   

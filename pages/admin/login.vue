@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VALIDATION } from '~/utils/constants'
+import { VALIDATION, MESSAGES, detectSQLInjection } from '~/utils/constants'
 import { parseBackendError } from '~/utils/errorParser'
 
 defineOptions({ name: 'AdminLogin' })
@@ -47,6 +47,12 @@ function validateForm(): string | null {
     return null
   }
 
+  if (detectSQLInjection(trimmedEmail)) {
+    errorMsg.value = MESSAGES.ERROR.SQL_INJECTION
+    errorField.value = 'email'
+    return null
+  }
+
   if (!password.value.trim()) {
     errorMsg.value = 'Password harus diisi.'
     errorField.value = 'password'
@@ -55,6 +61,12 @@ function validateForm(): string | null {
 
   if (password.value.length < VALIDATION.MIN_PASSWORD_LENGTH) {
     errorMsg.value = `Password minimal harus ${VALIDATION.MIN_PASSWORD_LENGTH} karakter.`
+    errorField.value = 'password'
+    return null
+  }
+
+  if (detectSQLInjection(password.value)) {
+    errorMsg.value = MESSAGES.ERROR.SQL_INJECTION
     errorField.value = 'password'
     return null
   }

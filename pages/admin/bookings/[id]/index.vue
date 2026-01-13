@@ -541,18 +541,18 @@ watch(() => selectedSlots.value.length, (newLength) => {
             </span>
           </div>
 
-          <div class="hidden lg:grid gap-3 grid-rows-2">
+          <div class="hidden lg:grid gap-3 grid-rows-2 h-full">
             <template v-if="stadion?.images && stadion.images.length > 1">
               <div
                 v-for="(img, idx) in stadion?.images?.slice(1, 3)"
                 :key="`thumb-${idx}`"
-                class="h-full w-full rounded-[24px] overflow-hidden shadow-sm cursor-pointer transition-all duration-200 hover:opacity-80 hover:shadow-md"
+                class="relative w-full h-full overflow-hidden rounded-[24px] shadow-sm cursor-pointer transition-all duration-200 hover:opacity-80 hover:shadow-md hover:scale-[1.02]"
                 @click="stadionImageIndex = idx + 1"
               >
                 <img
                   :src="img.imageUrl"
                   :alt="`${stadion?.name} preview ${idx + 1}`"
-                  class="h-full w-full object-cover transition-transform duration-200 hover:scale-[1.02]"
+                  class="absolute inset-0 h-full w-full object-cover"
                 >
               </div>
             </template>
@@ -801,9 +801,9 @@ watch(() => selectedSlots.value.length, (newLength) => {
                     v-if="getFieldImageUrl(Number(field.id)) && !getFieldImageUrl(Number(field.id)).includes('placeholder')"
                     :src="getFieldImageUrl(Number(field.id))"
                     :alt="field.name"
-                    class="w-full h-full object-cover transition-transform duration-500"
+                    class="absolute inset-0 h-full w-full object-cover transition-transform duration-500"
                   >
-                  <div v-else class="w-full h-full flex items-center justify-center bg-gray-100">
+                  <div v-else class="absolute inset-0 h-full w-full flex items-center justify-center bg-gray-100">
                     <PlaceholderImage text="Foto Lapangan Belum Ditambahkan" />
                   </div>
 

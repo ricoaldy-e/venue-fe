@@ -585,18 +585,22 @@ watch(selectedDate, () => {
           </span>
         </div>
 
-        <div class="hidden lg:grid gap-3 grid-rows-2">
+        <div class="hidden lg:grid gap-3 grid-rows-2 h-full">
           <template v-if="venue?.gallery && venue.gallery.length > 1">
-            <img
+            <div
               v-for="(img, idx) in venue?.gallery?.slice(1, 3)"
               :key="`thumb-${idx}`"
-              :src="img"
-              :alt="`${venue?.name} preview ${idx + 1}`"
-              loading="lazy"
-              decoding="async"
-              class="h-full w-full rounded-[24px] object-cover shadow-sm cursor-pointer transition-all hover:opacity-80 hover:shadow-md hover:scale-[1.02]"
+              class="relative w-full h-full overflow-hidden rounded-[24px] shadow-sm cursor-pointer transition-all hover:opacity-80 hover:shadow-md hover:scale-[1.02]"
               @click="activeGalleryIndex = idx + 1"
             >
+              <img
+                :src="img"
+                :alt="`${venue?.name} preview ${idx + 1}`"
+                loading="lazy"
+                decoding="async"
+                class="absolute inset-0 h-full w-full object-cover"
+              >
+            </div>
           </template>
         </div>
       </div>

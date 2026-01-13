@@ -18,6 +18,11 @@ useHead({
   ]
 })
 
+const { preloadIcons } = useIconPreload()
+onMounted(() => {
+  preloadIcons()
+})
+
 const router = useRouter()
 const route = useRoute()
 const facilityId = Number(route.params.id)

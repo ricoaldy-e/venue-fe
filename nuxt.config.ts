@@ -14,6 +14,17 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
   ],
 
+  // Iconify configuration untuk offline icon loading
+  vite: {
+    optimizeDeps: {
+      include: [
+        '@iconify/vue',
+        '@iconify-json/lucide',
+        '@iconify-json/heroicons'
+      ]
+    }
+  },
+
   app: {
     head: {
       title: 'VENUE UNDIP - Sewa Venue & Lapangan Olahraga',

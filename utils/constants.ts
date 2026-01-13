@@ -37,7 +37,30 @@ export const VALIDATION = {
   EMAIL_REGEX: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
   URL_REGEX: /^https?:\/\/.+/,
   NAME_REGEX: /^[a-zA-Z\s.]+$/,
+  SQL_INJECTION_PATTERNS: [
+    /('\s*(OR|AND)\s*'?\d*'?\s*=\s*'?\d*)/gi, // ' OR '1'='1, ' OR 1=1
+    /('\s*(OR|AND)\s+\d+\s*=\s*\d+)/gi, // ' OR 1=1, ' AND 1=1
+    /(;\s*(DROP|DELETE|INSERT|UPDATE|CREATE|ALTER|EXEC|EXECUTE))/gi, // ; DROP, ; DELETE, etc
+    /('\s*;\s*(--|#))/gi, // '; --, '; #
+    /(UNION\s+(ALL\s+)?SELECT)/gi, // UNION SELECT, UNION ALL SELECT
+    /('\s*--)/g, // ' --
+    /('\s*#)/g, // ' #
+    /(\bEXEC\s*\(|\bEXECUTE\s*\()/gi, // EXEC(, EXECUTE(
+    /('\s*OR\s+'[^']*'\s*=\s*')/gi, // ' OR 'x'='
+    /(;\s*SHUTDOWN)/gi, // ; SHUTDOWN
+    /(\bxp_cmdshell\b)/gi, // xp_cmdshell
+  ],
 } as const
+
+export function detectSQLInjection(input: string): boolean {
+  if (!input || typeof input !== 'string') return false
+  
+  const trimmedInput = input.trim()
+  
+  return VALIDATION.SQL_INJECTION_PATTERNS.some(pattern => {
+    return pattern.test(trimmedInput)
+  })
+}
 
 export const STATUS = {
   BOOKING: {
@@ -101,6 +124,7 @@ export const MESSAGES = {
     SERVER: 'Server sedang bermasalah. Coba beberapa saat lagi.',
     SLOT_CONFLICT: 'Slot waktu sudah dibooking. Silakan pilih slot lain.',
     INVALID_LOGIN: 'Email atau password yang Anda masukkan salah.',
+    SQL_INJECTION: 'Alamak, tidak boleh seperti itu yaa. 😊 Mohon gunakan karakter yang benar untuk login.',
   },
   SUCCESS: {
     GENERIC: 'Operasi berhasil!',
