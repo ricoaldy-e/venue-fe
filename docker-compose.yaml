@@ -1,0 +1,15 @@
+name: venue-fe
+
+services:
+  nuxt:
+    build: .
+    container_name: venue-fe
+    ports:
+      - "8000:3000"
+    environment: 
+      - NUXT_HOST=${NUXT_HOST}
+      - NUXT_PORT=${NUXT_PORT}
+      - GQL_HTTP_ENDPOINT=${GQL_HTTP_ENDPOINT}
+      - NODE_ENV=production
+      - JWT_SECRET=${JWT_SECRET}
+    restart: unless-stopped

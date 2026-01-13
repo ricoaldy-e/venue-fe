@@ -8,7 +8,8 @@ interface QueryParams {
 
 export default defineEventHandler(async (event) => {
   const { stadionId, date } = getQuery<QueryParams>(event)
-  const endpoint = process.env.GQL_HTTP_ENDPOINT
+  const config = useRuntimeConfig()
+  const endpoint = config.public.gqlHttpEndpoint
   if (!endpoint) throw createError({ statusCode: 500, statusMessage: 'Missing GQL_HTTP_ENDPOINT' })
   const serviceToken = process.env.GQL_SERVICE_TOKEN || process.env.GQL_PUBLIC_TOKEN || ''
 

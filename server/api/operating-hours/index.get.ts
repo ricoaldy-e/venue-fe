@@ -3,7 +3,8 @@ import { $fetch } from 'ofetch'
 import { QUERY_GET_OPERATING_HOURS } from '~/graphql/queries/get_operating_hours'
 
 export default defineEventHandler(async (event) => {
-  const endpoint = process.env.GQL_HTTP_ENDPOINT
+  const config = useRuntimeConfig()
+  const endpoint = config.public.gqlHttpEndpoint
   if (!endpoint) {
     throw createError({ statusCode: 500, statusMessage: 'Missing GQL_HTTP_ENDPOINT' })
   }

@@ -10,10 +10,11 @@ interface JWTPayload {
 }
 
 export default defineEventHandler(async (event) => {
+  const config = useRuntimeConfig()
   const token = getCookie(event, AUTH.TOKEN_COOKIE_NAME)
   if (!token) return { authenticated: false }
 
-  const secret = process.env.JWT_SECRET
+  const secret = config.jwtSecret
   if (!secret) throw createError({ statusCode: 500, statusMessage: 'JWT_SECRET missing' })
 
   try {

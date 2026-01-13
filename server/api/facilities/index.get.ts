@@ -3,7 +3,8 @@ import { $fetch } from 'ofetch'
 import { QUERY_GET_FACILITIES } from '~/graphql/queries/get_facilities'
 
 export default defineEventHandler(async (event) => {
-  const endpoint = process.env.GQL_HTTP_ENDPOINT
+  const config = useRuntimeConfig()
+  const endpoint = config.public.gqlHttpEndpoint
   if (!endpoint) throw createError({ statusCode: 500, statusMessage: 'Missing GQL_HTTP_ENDPOINT' })
   try {
     const response = await $fetch<{ data?: any; errors?: any[] }>(endpoint, {

@@ -3,7 +3,8 @@ import { $fetch } from 'ofetch'
 import { QUERY_GET_FIELD_BY_ID } from '~/graphql/queries/get_field_by_id'
 
 export default defineEventHandler(async (event) => {
-  const endpoint = process.env.GQL_HTTP_ENDPOINT
+  const config = useRuntimeConfig()
+  const endpoint = config.public.gqlHttpEndpoint
   if (!endpoint) throw createError({ statusCode: 500, statusMessage: 'Missing GQL_HTTP_ENDPOINT' })
   const fieldId = event.context.params?.id
   if (!fieldId) throw createError({ statusCode: 400, statusMessage: 'Missing Field ID' })

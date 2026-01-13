@@ -5,6 +5,7 @@ import { QUERY_BOOKINGS_WITH_DETAILS } from "~/graphql/queries/get_bookings_with
 const config = useRuntimeConfig()
 
 export default defineEventHandler(async (event) => {
+  const config = useRuntimeConfig()
   const endpoint = config.public.gqlHttpEndpoint
   if (!endpoint) throw createError({ statusCode: 500, statusMessage: 'Missing GQL_HTTP_ENDPOINT' })
 
