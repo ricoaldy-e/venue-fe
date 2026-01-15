@@ -1,3 +1,4 @@
+import { print } from "graphql"
 import type { FetchError } from "ofetch"
 import { QUERY_GET_OPTION } from "~/graphql/queries/get_option"
 
@@ -18,7 +19,7 @@ export default defineEventHandler(async () => {
 
   try {
     const response = await $fetch<{
-      data?: { option?: Option }
+      data?: { options?: Option }
       errors?: Array<{
         message?: string
         extensions?: {
@@ -28,7 +29,7 @@ export default defineEventHandler(async () => {
     }>(endpoint, {
       method: 'POST',
       body: {
-        query: QUERY_GET_OPTION,
+        query: print(QUERY_GET_OPTION),
       },
     })
 
@@ -57,7 +58,7 @@ export default defineEventHandler(async () => {
       })
     }
 
-    return response?.data?.option ?? null
+    return response?.data?.options ?? null
   } catch (e) {
     const err = e as FetchError
     if (err.statusCode) throw err

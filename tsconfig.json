@@ -1,3 +1,4 @@
 {
   "extends": "./.nuxt/tsconfig.json",
+  "exclude": ["components/client/Footer-with-options-example.vue"]
 }
