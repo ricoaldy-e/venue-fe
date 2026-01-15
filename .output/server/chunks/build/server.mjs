@@ -1,5 +1,5 @@
 import process from 'node:process';globalThis._importMeta_=globalThis._importMeta_||{url:"file:///_entry.js",env:process.env};import { defineComponent, shallowRef, h, resolveComponent, hasInjectionContext, inject, computed, getCurrentInstance, defineAsyncComponent, unref, provide, shallowReactive, ref, Suspense, Fragment, useSSRContext, createApp, withCtx, createVNode, mergeProps, createTextVNode, toRef, onErrorCaptured, onServerPrefetch, resolveDynamicComponent, reactive, effectScope, isReadonly, isRef, isShallow, isReactive, toRaw, nextTick, getCurrentScope } from 'vue';
-import { o as parseQuery, e as createError$1, q as hasProtocol, v as isScriptProtocol, w as joinURL, x as withQuery, y as sanitizeStatusCode, z as withTrailingSlash, A as withoutTrailingSlash, B as getContext, $ as $fetch, C as baseURL, D as createHooks, E as executeAsync, F as toRouteMatcher, G as createRouter$1, H as defu } from '../_/nitro.mjs';
+import { m as parseQuery, c as createError$1, n as hasProtocol, o as isScriptProtocol, q as joinURL, w as withQuery, t as sanitizeStatusCode, v as withTrailingSlash, x as withoutTrailingSlash, y as getContext, $ as $fetch, z as baseURL, A as createHooks, B as executeAsync, C as toRouteMatcher, D as createRouter$1, E as defu } from '../nitro/nitro.mjs';
 import { useRoute as useRoute$1, RouterView, useRouter as useRouter$1, createMemoryHistory, createRouter, START_LOCATION } from 'vue-router';
 import { ssrRenderAttrs, ssrRenderComponent, ssrInterpolate, ssrRenderSuspense, ssrRenderVNode } from 'vue/server-renderer';
 import 'node:http';
@@ -7,11 +7,11 @@ import 'node:https';
 import 'node:events';
 import 'node:buffer';
 import 'node:fs';
-import 'node:url';
 import 'node:path';
+import 'node:crypto';
+import 'node:url';
 import 'better-sqlite3';
 import 'ipx';
-import 'node:crypto';
 
 if (!globalThis.$fetch) {
   globalThis.$fetch = $fetch.create({
@@ -380,9 +380,13 @@ async function getRouteRules(arg) {
     return defu({}, ..._routeRulesMatcher2.matchAll(path).reverse());
   }
 }
-const __nuxt_page_meta$h = { layout: "admin" };
-const __nuxt_page_meta$g = {
+const __nuxt_page_meta$i = { layout: "admin" };
+const __nuxt_page_meta$h = {
   layout: "auth"
+};
+const __nuxt_page_meta$g = {
+  layout: "admin",
+  ssr: false
 };
 const __nuxt_page_meta$f = {
   layout: "admin",
@@ -437,140 +441,146 @@ const _routes = [
   {
     name: "index",
     path: "/",
-    component: () => import('./index-CDV3-t0s.mjs')
+    component: () => import('./index-B8dEMF68.mjs')
   },
   {
     name: "admin",
     path: "/admin",
-    meta: { ...__nuxt_page_meta$h || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./index-CCVx0MbB.mjs')
+    meta: { ...__nuxt_page_meta$i || {}, ...{ "middleware": "auth-admin" } },
+    component: () => import('./index-CH6o_h_C.mjs')
   },
   {
     name: "admin-login",
     path: "/admin/login",
-    meta: __nuxt_page_meta$g || {},
-    component: () => import('./login-DEBK4D21.mjs')
+    meta: __nuxt_page_meta$h || {},
+    component: () => import('./login-CLaVFq2d.mjs')
   },
   {
     name: "venues-id",
     path: "/venues/:id()",
-    component: () => import('./_id_-B-rX8X9g.mjs')
+    component: () => import('./_id_-B_yeEFAk.mjs')
+  },
+  {
+    name: "admin-options",
+    path: "/admin/options",
+    meta: { ...__nuxt_page_meta$g || {}, ...{ "middleware": "auth-admin" } },
+    component: () => import('./options-p7iFHWRW.mjs')
   },
   {
     name: "booking-order",
     path: "/booking/order",
-    component: () => import('./order-DFh53zOs.mjs')
+    component: () => import('./order-gpe5A7oD.mjs')
   },
   {
     name: "admin-schedules",
     path: "/admin/schedules",
     meta: { ...__nuxt_page_meta$f || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./schedules-CHUEgehq.mjs')
+    component: () => import('./schedules-B_pkuqPx.mjs')
   },
   {
     name: "admin-fields-id",
     path: "/admin/fields/:id()",
     meta: { ...__nuxt_page_meta$e || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./_id_-Dkp9grj1.mjs')
+    component: () => import('./_id_-E-75JS0G.mjs')
   },
   {
     name: "admin-fields",
     path: "/admin/fields",
     meta: { ...__nuxt_page_meta$d || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./index-6v5clusx.mjs')
+    component: () => import('./index-Ba5OtIqk.mjs')
   },
   {
     name: "admin-fields-create",
     path: "/admin/fields/create",
     meta: { ...__nuxt_page_meta$c || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./create-CI8M9hWD.mjs')
+    component: () => import('./create-DN29LEQX.mjs')
   },
   {
     name: "admin-stadiums-id",
     path: "/admin/stadiums/:id()",
     meta: { ...__nuxt_page_meta$b || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./_id_-yDnNSdA_.mjs')
+    component: () => import('./_id_-BGqtzp50.mjs')
   },
   {
     name: "admin-bookings",
     path: "/admin/bookings",
     meta: { ...__nuxt_page_meta$a || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./index-BUms7kfO.mjs')
+    component: () => import('./index-Bn_Y-IIT.mjs')
   },
   {
     name: "admin-stadiums",
     path: "/admin/stadiums",
     meta: { ...__nuxt_page_meta$9 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./index-C59BaMaY.mjs')
+    component: () => import('./index-Be4M8HFG.mjs')
   },
   {
     name: "admin-facilities-id",
     path: "/admin/facilities/:id()",
     meta: { ...__nuxt_page_meta$8 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./_id_-DMpoZE03.mjs')
+    component: () => import('./_id_-jvy75jjN.mjs')
   },
   {
     name: "admin-stadiums-create",
     path: "/admin/stadiums/create",
     meta: { ...__nuxt_page_meta$7 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./create-Cqo0Zwdk.mjs')
+    component: () => import('./create-B7NrCG3H.mjs')
   },
   {
     name: "admin-bookings-history",
     path: "/admin/bookings/history",
     meta: { ...__nuxt_page_meta$6 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./history-Bcyy7VFg.mjs')
+    component: () => import('./history-C-9n1Ed4.mjs')
   },
   {
     name: "admin-facilities",
     path: "/admin/facilities",
     meta: { ...__nuxt_page_meta$5 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./index-C7nzMJAY.mjs')
+    component: () => import('./index-DUUya6yP.mjs')
   },
   {
     name: "admin-facilities-create",
     path: "/admin/facilities/create",
     meta: { ...__nuxt_page_meta$4 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./create-DfsvBlS3.mjs')
+    component: () => import('./create-C2ghepY5.mjs')
   },
   {
     name: "bantuan-panduan-booking",
     path: "/bantuan/panduan-booking",
-    component: () => import('./panduan-booking-qknC6NKJ.mjs')
+    component: () => import('./panduan-booking-Cizpfz95.mjs')
   },
   {
     name: "bantuan-syarat-ketentuan",
     path: "/bantuan/syarat-ketentuan",
-    component: () => import('./syarat-ketentuan-Bk-c0S4q.mjs')
+    component: () => import('./syarat-ketentuan-CRO_kTln.mjs')
   },
   {
     name: "admin-bookings-id",
     path: "/admin/bookings/:id()",
     meta: { ...__nuxt_page_meta$3 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./index-BZKZnJip.mjs')
+    component: () => import('./index-Cxt4rmkb.mjs')
   },
   {
     name: "bantuan-kebijakan-privasi",
     path: "/bantuan/kebijakan-privasi",
-    component: () => import('./kebijakan-privasi-BpWa5mgl.mjs')
+    component: () => import('./kebijakan-privasi-ZD-Nx3L6.mjs')
   },
   {
     name: "admin-bookings-id-create",
     path: "/admin/bookings/:id()/create",
     meta: { ...__nuxt_page_meta$2 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./create-CUPRQC04.mjs')
+    component: () => import('./create-CDqmIgJc.mjs')
   },
   {
     name: "admin-bookings-id-bookingCode",
     path: "/admin/bookings/:id()/:bookingCode()",
     meta: { ...__nuxt_page_meta$1 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./_bookingCode_-VJxrP87Z.mjs')
+    component: () => import('./_bookingCode_-DnGdgqfd.mjs')
   },
   {
     name: "admin-bookings-detail-bookingCode",
     path: "/admin/bookings/detail/:bookingCode()",
     meta: { ...__nuxt_page_meta || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./_bookingCode_-BtMiNnDt.mjs')
+    component: () => import('./_bookingCode_-mtTPAp2d.mjs')
   }
 ];
 const _wrapInTransition = (props, children) => {
@@ -691,7 +701,7 @@ const globalMiddleware = [
   manifest_45route_45rule
 ];
 const namedMiddleware = {
-  "auth-admin": () => import('./auth-admin-DNuKcezA.mjs')
+  "auth-admin": () => import('./auth-admin-CTbXmSTG.mjs')
 };
 const plugin = /* @__PURE__ */ defineNuxtPlugin({
   name: "nuxt:router",
@@ -910,18 +920,18 @@ const revive_payload_server_MVtmlZaQpj6ApFmshWfUWl5PehCebzaBf2NuRMiIbms = /* @__
     }
   }
 });
-const LazyProseA = defineAsyncComponent(() => import('./ProseA-C-J2sU9_.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseA = defineAsyncComponent(() => import('./ProseA-B9W8dvag.mjs').then((r) => r["default"] || r.default || r));
 const LazyProseBlockquote = defineAsyncComponent(() => import('./ProseBlockquote-BkpxK8z-.mjs').then((r) => r["default"] || r.default || r));
 const LazyProseCode = defineAsyncComponent(() => import('./ProseCode-C7VoUayb.mjs').then((r) => r["default"] || r.default || r));
 const LazyProseEm = defineAsyncComponent(() => import('./ProseEm-VK330rxv.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseH1 = defineAsyncComponent(() => import('./ProseH1-CWsxHL71.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseH2 = defineAsyncComponent(() => import('./ProseH2-B_yvXdaj.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseH3 = defineAsyncComponent(() => import('./ProseH3-1UgFmpxU.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseH4 = defineAsyncComponent(() => import('./ProseH4-BjzxVZa0.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseH5 = defineAsyncComponent(() => import('./ProseH5-D8V697i9.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseH6 = defineAsyncComponent(() => import('./ProseH6-D1D2Qub0.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseH1 = defineAsyncComponent(() => import('./ProseH1-C3M50AHR.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseH2 = defineAsyncComponent(() => import('./ProseH2-bJ64sRHS.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseH3 = defineAsyncComponent(() => import('./ProseH3-BO9EH6u7.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseH4 = defineAsyncComponent(() => import('./ProseH4-BwP9XL4u.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseH5 = defineAsyncComponent(() => import('./ProseH5-Bt-SzdVF.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseH6 = defineAsyncComponent(() => import('./ProseH6-CxhwTlPB.mjs').then((r) => r["default"] || r.default || r));
 const LazyProseHr = defineAsyncComponent(() => import('./ProseHr-3bktmzoE.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseImg = defineAsyncComponent(() => import('./ProseImg-COhS4EHm.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseImg = defineAsyncComponent(() => import('./ProseImg-Hn3YjwT_.mjs').then((r) => r["default"] || r.default || r));
 const LazyProseLi = defineAsyncComponent(() => import('./ProseLi-Da9gev7V.mjs').then((r) => r["default"] || r.default || r));
 const LazyProseOl = defineAsyncComponent(() => import('./ProseOl-DF2wfbBq.mjs').then((r) => r["default"] || r.default || r));
 const LazyProseP = defineAsyncComponent(() => import('./ProseP-Bsh96eLw.mjs').then((r) => r["default"] || r.default || r));
@@ -991,9 +1001,9 @@ const plugins = [
   prerender_server_sqIxOBipVr4FbVMA9kqWL0wT8FPop6sKAXLVfifsJzk
 ];
 const layouts = {
-  admin: defineAsyncComponent(() => import('./admin-d6td_IfE.mjs').then((m) => m.default || m)),
+  admin: defineAsyncComponent(() => import('./admin-IFDc-MqT.mjs').then((m) => m.default || m)),
   auth: defineAsyncComponent(() => import('./auth-B5JUiCVz.mjs').then((m) => m.default || m)),
-  default: defineAsyncComponent(() => import('./default-BuobjglX.mjs').then((m) => m.default || m))
+  default: defineAsyncComponent(() => import('./default-B7u7e8bn.mjs').then((m) => m.default || m))
 };
 const LayoutLoader = defineComponent({
   name: "LayoutLoader",
@@ -1692,5 +1702,5 @@ let entry;
 }
 const entry_default = (ssrContext) => entry(ssrContext);
 
-export { __nuxt_component_0 as _, useRoute as a, useNuxtApp as b, createError as c, asyncDataDefaults as d, entry_default as default, useRequestFetch as e, fetchDefaults as f, defineNuxtRouteMiddleware as g, useRuntimeConfig as h, useRequestEvent as i, navigateTo as n, useRouter as u };
+export { __nuxt_component_0 as _, useRuntimeConfig as a, useRouter as b, useRoute as c, createError as d, entry_default as default, asyncDataDefaults as e, fetchDefaults as f, useRequestFetch as g, defineNuxtRouteMiddleware as h, useRequestEvent as i, navigateTo as n, useNuxtApp as u };
 //# sourceMappingURL=server.mjs.map
