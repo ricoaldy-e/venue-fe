@@ -8,6 +8,7 @@ export default defineNuxtConfig({
   ],
 
   modules: [
+    '@nuxtjs/turnstile',
     '@nuxt/content',
     '@nuxt/image',
     '@nuxt/eslint',
@@ -73,6 +74,11 @@ export default defineNuxtConfig({
         }
       }
     }
+  },
+
+  turnstile: {
+    siteKey: '0x4AAAAAACMZd-IE1Ec6SjaL', // Production Key
+    // siteKey: '1x00000000000000000000AA', // Test Key (Always Pass)
   },
 
   runtimeConfig: {

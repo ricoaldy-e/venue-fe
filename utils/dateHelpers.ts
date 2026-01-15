@@ -15,9 +15,9 @@ export function toUtcMidnightIso(value?: string | Date | null): string | null {
   return `${dateKey}T00:00:00.000Z`
 }
 
-export function getNextNDays(n = 7, startFromTomorrow = true) {
+export function getNextNDays(start:string | Date | number | null | undefined , n = 7, startFromTomorrow = true) {
   const days: { label: string; value: string }[] = []
-  const now = new Date()
+  const now = start ? new Date(start) : new Date()
   const startOffset = startFromTomorrow ? 1 : 0
 
   for (let i = startOffset; i < n + startOffset; i++) {

@@ -17,9 +17,10 @@ useHead({
 
 const email = ref('')
 const password = ref('')
+const token = ref<string | undefined>(undefined)
 const loading = ref(false)
 const errorMsg = ref<string | null>(null)
-const errorField = ref<'email' | 'password' | null>(null)
+const errorField = ref<'email' | 'password' | 'token' | null>(null)
 const passwordFieldType = ref<'password' | 'text'>('password')
 const router = useRouter()
 const route = useRoute()
@@ -44,6 +45,12 @@ function validateForm(): string | null {
   if (!VALIDATION.EMAIL_REGEX.test(trimmedEmail)) {
     errorMsg.value = 'Format email tidak valid. Contoh: nama@domain.com'
     errorField.value = 'email'
+    return null
+  }
+
+  if (!token.value) {
+    errorMsg.value = 'Verifikasi captcha diperlukan.'
+    errorField.value = 'token'
     return null
   }
 
@@ -83,7 +90,7 @@ const onSubmit = async () => {
   try {
     const response = await $fetch<{ ok: boolean; admin: any }>('/api/auth/login', {
       method: 'POST',
-      body: { email: trimmedEmail, password: password.value },
+      body: { email: trimmedEmail, password: password.value, turnstile: token.value },
       credentials: 'include'
     })
 
@@ -96,6 +103,7 @@ const onSubmit = async () => {
     errorField.value = null
   } finally {
     loading.value = false
+    token.value = undefined
   }
 }
 </script>
@@ -224,6 +232,7 @@ const onSubmit = async () => {
             </button>
           </div>
         </label>
+        <NuxtTurnstile v-model="token" />
 
         <!-- Error Message -->
         <div

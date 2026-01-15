@@ -74,8 +74,10 @@ interface BookingsResult {
   details: BookingDetails[]
 }
 
-const days = getNextNDays(7, true)
-const selectedDate = ref<string>(days[0]!.value)
+
+const initialDays = getNextNDays(null, 7, true)
+const selectedDate = ref<string>(initialDays[0]?.value ?? '')
+const days = computed(() => getNextNDays(null, 7, true))
 
 const selectedDateKey = computed(() => toDateKey(selectedDate.value))
 

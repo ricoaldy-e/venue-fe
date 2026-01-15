@@ -5,6 +5,27 @@ useHead({
     { name: 'description', content: 'Panduan lengkap cara melihat ketersediaan dan booking lapangan olahraga di VENUE UNDIP.' }
   ]
 })
+
+type OptionRecord = {
+  id: number;
+  name: string;
+  description: string;
+  email: string;
+  nohp: string;
+  address: string;
+};
+
+const FALLBACK_CONTACT = {
+  email: "helpdesk@live.undip.ac.id",
+  nohp: "+62 851 6566 0339",
+};
+
+const { data: options } = await useAsyncData<OptionRecord | null>("options", () =>
+  $fetch<OptionRecord | null>("/api/options")
+);
+
+const contactEmail = computed(() => options.value?.email || FALLBACK_CONTACT.email);
+const contactWhatsApp = computed(() => options.value?.nohp || FALLBACK_CONTACT.nohp);
 </script>
 
 <template>
@@ -221,7 +242,7 @@ useHead({
             </div>
             <div class="flex-1">
               <h3 class="text-xl font-bold text-gray-900 mb-3">Terima Email Konfirmasi & Kode Booking</h3>
-              <p class="text-gray-600 mb-4 leading-relaxed">Setelah operator selesai memproses booking, sistem akan <span class="font-semibold text-green-700">otomatis mengirim email konfirmasi</span> ke alamat email yang Anda berikan. Email dikirim dari <span class="font-semibold">noreply@undip.ac.id</span>.</p>
+              <p class="text-gray-600 mb-4 leading-relaxed">Setelah operator selesai memproses booking, sistem akan <span class="font-semibold text-green-700">otomatis mengirim email konfirmasi</span> ke alamat email yang Anda berikan. Email dikirim dari <span class="font-semibold">noreply@undip.ac.id</span>. Jika ada pertanyaan, hubungi <span class="font-semibold">{{ contactEmail }}</span>.</p>
               <div class="grid gap-3 mb-4">
                 <div class="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 p-4 rounded-xl">
                   <h4 class="font-semibold text-green-900 mb-2 flex items-center gap-2">
@@ -302,7 +323,7 @@ useHead({
                   <span class="font-semibold">❌ Pembatalan Booking:</span>
                 </p>
                 <p class="text-sm text-red-900">
-                  Jika ingin membatalkan, segera hubungi admin melalui <span class="font-semibold">WhatsApp</span> atau <span class="font-semibold">email</span> dengan menyertakan kode booking. Anda akan menerima email notifikasi pembatalan.
+                  Jika ingin membatalkan, segera hubungi admin melalui <span class="font-semibold">WhatsApp ({{ contactWhatsApp }})</span> atau <span class="font-semibold">email ({{ contactEmail }})</span> dengan menyertakan kode booking. Anda akan menerima email notifikasi pembatalan.
                 </p>
               </div>
             </div>

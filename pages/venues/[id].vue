@@ -132,7 +132,7 @@ const createFallbackVenue = (): VenueDetail => ({
   location: 'Lokasi belum tersedia',
   price: 0,
   facilities: [],
-  scheduleDays: getNextNDays(7, true),
+  scheduleDays: getNextNDays(null, 7, true),
   courts: [],
   mapUrl: undefined,
 })
@@ -215,7 +215,7 @@ const buildVenueFromGraphQL = (stadion?: StadionData): VenueDetail => {
     location: stadion.location || fallback.location,
     price: prices.length ? Math.min(...prices) : fallback.price,
     facilities: facilities.length ? facilities : fallback.facilities,
-    scheduleDays: getNextNDays(7, true),
+    scheduleDays: getNextNDays(null, 7, true),
     courts: fields.length ? fields.map((field: any) => mapFieldToCourt(field, hours)) : fallback.courts,
     mapUrl: stadion.mapUrl ?? undefined,
   }
@@ -315,7 +315,7 @@ const onCourtTouchEnd = (courtId: number, length: number, e: TouchEvent) => {
   else prevCourtImage(courtId, length)
 }
 
-const selectedDate = ref<string>(getNextNDays(7, true)[0]?.value ?? '')
+const selectedDate = ref<string>(getNextNDays(null, 7, true)[0]?.value ?? '')
 const expandedCourts = ref<Record<number, boolean>>({})
 const courtImageIndices = ref<Record<number, number>>({})
 
