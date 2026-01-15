@@ -16,6 +16,8 @@
     "@nuxt/content": "^3.7.1",
     "@nuxt/eslint": "^1.10.0",
     "@nuxt/image": "^1.11.0",
+    "@nuxt/scripts": "^0.13.2",
+    "@nuxtjs/turnstile": "^1.1.1",
     "@vueuse/core": "^14.0.0",
     "better-sqlite3": "^12.4.1",
     "chart.js": "^4.5.1",

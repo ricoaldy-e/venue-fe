@@ -94,7 +94,7 @@ export const UI = {
 } as const
 
 export const API = {
-  TIMEOUT: 8000,
+  TIMEOUT: 5*60*1000,
   RETRY_COUNT: 0,
   CACHE_TTL: {
     STADIONS: 60,
