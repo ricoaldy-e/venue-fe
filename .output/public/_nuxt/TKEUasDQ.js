@@ -1,0 +1,1 @@
+import{_ as o}from"./DlAUqK2U.js";import{b as r,o as s,af as t}from"./BFy02jU_.js";const n={},c={class:"min-h-screen overflow-x-hidden"};function a(e,f){return s(),r("div",c,[t(e.$slots,"default")])}const l=o(n,[["render",a]]);export{l as default};

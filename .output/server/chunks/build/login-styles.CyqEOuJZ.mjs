@@ -1,0 +1,8 @@
+const login_vue_vue_type_style_index_0_scoped_a0d48817_lang = "@keyframes fade-in-a0d48817{0%{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}@keyframes slide-up-a0d48817{0%{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}@keyframes shake-a0d48817{0%,to{transform:translate(0)}10%,30%,50%,70%,90%{transform:translate(-4px)}20%,40%,60%,80%{transform:translate(4px)}}.animate-fade-in[data-v-a0d48817]{animation:fade-in-a0d48817 .8s ease-out}.animate-slide-up[data-v-a0d48817]{animation:slide-up-a0d48817 .6s ease-out}.animate-shake[data-v-a0d48817]{animation:shake-a0d48817 .5s ease-in-out}";
+
+const loginStyles_CyqEOuJZ = [
+  login_vue_vue_type_style_index_0_scoped_a0d48817_lang
+];
+
+export { loginStyles_CyqEOuJZ as default };
+//# sourceMappingURL=login-styles.CyqEOuJZ.mjs.map
