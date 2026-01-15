@@ -1,19 +1,19 @@
-import { c as defineEventHandler, u as useRuntimeConfig, r as readBody, e as createError, $ as $fetch, f as setCookie } from '../../../_/nitro.mjs';
+import { d as defineEventHandler, r as readBody, c as createError, u as useRuntimeConfig, $ as $fetch, s as setCookie } from '../../../nitro/nitro.mjs';
 import { A as API, a as AUTH } from '../../../_/constants.mjs';
 import 'node:http';
 import 'node:https';
 import 'node:events';
 import 'node:buffer';
 import 'node:fs';
-import 'node:url';
 import 'node:path';
+import 'node:crypto';
+import 'node:url';
 import 'better-sqlite3';
 import 'ipx';
-import 'node:crypto';
 
 const MUTATION_LOGIN = `
-  mutation Login($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
+  mutation Login($email: String!, $password: String!, $turnstile: String!) {
+    login(email: $email, password: $password, turnstile: $turnstile) {
       token
       admin { id name email }
     }
@@ -23,7 +23,8 @@ const MUTATION_LOGIN = `
 const login_post = defineEventHandler(async (event) => {
   var _a, _b, _c, _d;
   const config = useRuntimeConfig();
-  const { email, password } = await readBody(event);
+  const { email, password, turnstile } = await readBody(event);
+  console.log(turnstile);
   if (!email || !password)
     throw createError({ statusCode: 400, statusMessage: "Email & password required" });
   const endpoint = config.public.gqlHttpEndpoint;
@@ -33,7 +34,7 @@ const login_post = defineEventHandler(async (event) => {
     const resp = await $fetch(endpoint, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: { query: MUTATION_LOGIN, variables: { email, password } },
+      body: { query: MUTATION_LOGIN, variables: { email, password, turnstile } },
       timeout: API.TIMEOUT,
       retry: API.RETRY_COUNT
     });
@@ -55,6 +56,7 @@ const login_post = defineEventHandler(async (event) => {
     });
     return { ok: true, admin: data.admin };
   } catch (err) {
+    console.log(err);
     if ((err == null ? void 0 : err.name) === "FetchError" || ((_d = err == null ? void 0 : err.message) == null ? void 0 : _d.includes("timeout"))) {
       throw createError({ statusCode: 502, statusMessage: "Auth service unreachable" });
     }
