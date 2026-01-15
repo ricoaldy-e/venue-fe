@@ -5,7 +5,8 @@ import { AUTH, API } from '~/utils/constants'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
-  const { email, password } = await readBody<{ email: string; password: string }>(event)
+  const { email, password, turnstile } = await readBody<{ email: string; password: string, turnstile:string }>(event)
+  console.log(turnstile)
   if (!email || !password)
     throw createError({ statusCode: 400, statusMessage: 'Email & password required' })
 
@@ -17,7 +18,7 @@ export default defineEventHandler(async (event) => {
     const resp = await $fetch<{ data?: any; errors?: Array<{ message: string; extensions?: any }> }>(endpoint, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: { query: MUTATION_LOGIN, variables: { email, password } },
+      body: { query: MUTATION_LOGIN, variables: { email, password, turnstile } },
       timeout: API.TIMEOUT,
       retry: API.RETRY_COUNT
     })
@@ -43,6 +44,7 @@ export default defineEventHandler(async (event) => {
 
     return { ok: true, admin: data.admin }
   } catch (err: any) {
+    console.log(err)
     if (err?.name === 'FetchError' || err?.message?.includes('timeout')) {
       throw createError({ statusCode: 502, statusMessage: 'Auth service unreachable' })
     }

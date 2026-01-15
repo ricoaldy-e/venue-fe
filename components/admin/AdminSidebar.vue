@@ -7,7 +7,7 @@ import { useConfirmation } from '~/composables/useConfirmation'
 
 type NavItem = {
   label: string
-  icon: 'dashboard' | 'stadium' | 'field' | 'facility' | 'schedule' | 'booking' | 'profile' | 'logout'
+  icon: 'dashboard' | 'stadium' | 'field' | 'facility' | 'schedule' | 'booking' | 'profile' | 'logout' | 'option'
   to?: string
   action?: 'logout'
   exact?: boolean
@@ -25,6 +25,7 @@ const primaryNav: NavItem[] = [
   { label: 'Manajemen Lapangan', icon: 'field', to: '/admin/fields' },
   { label: 'Manajemen Fasilitas', icon: 'facility', to: '/admin/facilities' },
   { label: 'Manajemen Jadwal', icon: 'schedule', to: '/admin/schedules' },
+  { label: 'Manajemen Option', icon: 'option', to: '/admin/options' },
   { label: 'Manajemen Booking', icon: 'booking', to: '/admin/bookings' },
 ]
 
@@ -126,6 +127,7 @@ const handleAction = async (item: NavItem) => {
 
               <svg v-else-if="item.icon === 'schedule'" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M7 3V5H5C3.9 5 3 5.9 3 7V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V7C21 5.9 20.1 5 19 5H17V3H15V5H9V3H7ZM5 9H19V19H5V9ZM7 11V13H12V11H7ZM13 11V13H17V11H13ZM7 15V17H12V15H7ZM13 15V17H17V15H13Z"/></svg>
 
+              <svg v-else-if="item.icon === 'option'" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 3C4.9 3 4 3.9 4 5V21L12 17L20 21V5C20 3.9 19.1 3 18 3H6ZM6 5H18V17.97L12 15.2L6 17.97V5Z"/></svg>
               <svg v-else-if="item.icon === 'booking'" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 3C4.9 3 4 3.9 4 5V21L12 17L20 21V5C20 3.9 19.1 3 18 3H6ZM6 5H18V17.97L12 15.2L6 17.97V5Z"/></svg>
             </span>
 
