@@ -226,6 +226,7 @@
 import { useAppOptions } from '~/composables/useAppOptions'
   
   const {options} = useAppOptions()
+  console.log(options.value.data)
   const name = computed(() => options.value.data?.name || 'Venue UNDIP')
   const description = computed(() => options.value.data?.description || 'Platform booking lapangan olahraga terpercaya untuk Sivitas Akademika Universitas Diponegoro.')
   const email = computed(() => options.value.data?.email || 'default@example.com')

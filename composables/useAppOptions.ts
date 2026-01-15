@@ -30,7 +30,7 @@ export const useAppOptions = () => {
     options.value.error = null
 
     try {
-      const data = await $fetch<AppOption>('/api/options')
+      const data = await $fetch('/api/options') as AppOption
       options.value.data = data
       return data
     } catch (err) {
