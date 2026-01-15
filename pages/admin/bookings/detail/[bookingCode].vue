@@ -258,6 +258,7 @@ const groupedDetails = computed(() => {
             <div>
               <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Kode Booking</p>
               <p class="text-2xl font-bold text-blue-600">{{ booking.bookingCode }}</p>
+              <p class="text-xs text-gray-500 mt-1">{{ formatDate(booking.createdAt) }}</p>
             </div>
             <div class="flex flex-wrap gap-2">
               <span 
@@ -382,8 +383,7 @@ const groupedDetails = computed(() => {
                       <p class="text-xs text-gray-500">{{ getTimeSlot(detail.startHour) }}</p>
                     </div>
                   </div>
-                  <!-- HARGA DISEMBUNYIKAN -->
-                  <!-- <p class="text-sm font-bold text-gray-900">{{ formatCurrency(detail.subtotal) }}</p> -->
+                  <p class="text-sm font-bold text-gray-900">{{ formatCurrency(detail.subtotal) }}</p>
                 </div>
               </div>
             </div>
@@ -403,13 +403,21 @@ const groupedDetails = computed(() => {
               <span class="text-sm text-gray-600">Total Booking</span>
               <span class="text-sm font-semibold text-gray-900">{{ booking.details.length }} sesi</span>
             </div>
-            <!-- TOTAL HARGA DISEMBUNYIKAN -->
-            <!-- <div class="pt-3 border-t border-gray-200">
+            <div class="pt-3 border-t border-gray-200">
               <div class="flex justify-between items-center">
                 <span class="text-sm font-bold text-gray-900">Total Harga</span>
                 <span class="text-lg font-bold text-blue-600">{{ formatCurrency(booking.totalPrice) }}</span>
               </div>
-            </div> -->
+            </div>
+
+            <div v-if="booking.isAcademic" class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <p class="text-xs font-semibold text-green-700">Total harga gratis untuk penggunaan akademik.</p>
+              </div>
+            </div>
           </div>
 
           <!-- Payment Status Button -->
@@ -460,7 +468,7 @@ const groupedDetails = computed(() => {
             <button
               @click="handleStatusChange('CANCELLED')"
               :disabled="updating"
-              class="w-full px-4 py-2.5 bg-white hover:bg-red-50 border border-red-300 disabled:bg-gray-100 text-red-700 text-sm font-semibold rounded-xl transition-all shadow-sm flex items-center justify-center gap-2"
+              class="w-full px-4 py-2.5 bg-white hover:bg-red-50 border border-red-200 disabled:opacity-50 text-red-700 text-sm font-bold rounded-xl transition-all shadow-sm flex items-center justify-center gap-2"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />

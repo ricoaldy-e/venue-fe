@@ -42,6 +42,7 @@ const nameMapping: Record<string, string> = {
   'edit': 'Edit',
   'detail': 'Riwayat',
   'history': 'Riwayat',
+  'payment': 'Laporan Pembayaran',
 }
 
 const dynamicNames = ref<Record<string, string>>({})

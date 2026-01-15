@@ -145,8 +145,7 @@ const getStatusClasses = (status?: 'ACTIVE' | 'INACTIVE') => {
             <thead>
               <tr class="bg-gray-50/50 border-b border-gray-300">
                 <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider text-left">Info Lapangan</th>
-                <!-- HARGA DISEMBUNYIKAN: Kolom harga dikomentari -->
-                <!-- <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider text-center">Harga / Jam</th> -->
+                <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider text-center">Harga / Jam</th>
                 <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider text-center">Status</th>
                 <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider text-center">Aksi</th>
               </tr>
@@ -167,12 +166,11 @@ const getStatusClasses = (status?: 'ACTIVE' | 'INACTIVE') => {
                   </div>
                 </td>
                 
-                <!-- HARGA DISEMBUNYIKAN: Kolom harga dikomentari -->
-                <!-- <td class="px-6 py-4 text-center align-middle">
+                <td class="px-6 py-4 text-center align-middle">
                   <span class="text-sm font-semibold text-gray-900">
                     Rp {{ field.pricePerHour.toLocaleString('id-ID') }}
                   </span>
-                </td> -->
+                </td>
                 
                 <td class="px-6 py-4 text-center align-middle">
                   <span

@@ -32,8 +32,7 @@ const form = ref({
   stadionId: '',
   name: '',
   description: '',
-  // HARGA DISEMBUNYIKAN: Default 0 agar tidak perlu input
-  pricePerHour: 0 as number | null,
+  pricePerHour: null as number | null,
   status: 'ACTIVE' as 'ACTIVE' | 'INACTIVE',
 })
 
@@ -109,8 +108,7 @@ async function handleSubmit() {
 
   if (!form.value.stadionId) { errorMsg.value = 'Stadion induk wajib dipilih.'; loading.value = false; window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
   if (!form.value.name.trim()) { errorMsg.value = 'Nama lapangan wajib diisi.'; loading.value = false; window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
-  // HARGA DISEMBUNYIKAN: Validasi harga dikomentari
-  // if (!form.value.pricePerHour) { errorMsg.value = 'Harga per jam wajib diisi.'; loading.value = false; window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  if (!form.value.pricePerHour) { errorMsg.value = 'Harga per jam wajib diisi.'; loading.value = false; window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
 
   try {
     const created: any = await $fetch('/api/fields/create', {
@@ -118,8 +116,7 @@ async function handleSubmit() {
       body: {
         ...form.value,
         stadionId: Number(form.value.stadionId),
-        // HARGA DISEMBUNYIKAN: Kirim form value (default 0), bukan hardcode
-        // Nanti kalau UI di-uncomment, akan otomatis kirim value dari form
+
         pricePerHour: Number(form.value.pricePerHour || 0),
         description: form.value.description || undefined,
       },
@@ -274,8 +271,7 @@ async function handleSubmit() {
               </div>
             </div>
 
-            <!-- HARGA DISEMBUNYIKAN: Form input harga dikomentari -->
-            <!-- <div class="space-y-1.5">
+            <div class="space-y-1.5">
               <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Harga Sewa per Jam <span class="text-red-500">*</span></label>
               <div class="relative rounded-xl shadow-sm">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -298,7 +294,7 @@ async function handleSubmit() {
                 <svg class="w-3.5 h-3.5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 <span>{{ errorMsg }}</span>
               </p>
-            </div> -->
+            </div>
 
           </div>
         </div>
@@ -415,6 +411,7 @@ async function handleSubmit() {
         </div>
 
       </div>
+
 
       <div class="lg:col-span-3 sm:hidden flex flex-col gap-3 mt-4">
         <button

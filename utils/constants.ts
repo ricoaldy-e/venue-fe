@@ -54,9 +54,9 @@ export const VALIDATION = {
 
 export function detectSQLInjection(input: string): boolean {
   if (!input || typeof input !== 'string') return false
-  
+
   const trimmedInput = input.trim()
-  
+
   return VALIDATION.SQL_INJECTION_PATTERNS.some(pattern => {
     return pattern.test(trimmedInput)
   })
@@ -85,12 +85,12 @@ export const STATUS = {
 } as const
 
 export const UI = {
-  TOAST_DURATION: 5000, 
-  MODAL_ANIMATION_DURATION: 300, 
+  TOAST_DURATION: 5000,
+  MODAL_ANIMATION_DURATION: 300,
   SKELETON_LINES: 5,
   SWIPE_THRESHOLD: 40,
   POLLING_INTERVAL: 15000,
-  GALLERY_AUTO_PLAY_DELAY: 5000, 
+  GALLERY_AUTO_PLAY_DELAY: 5000,
 } as const
 
 export const API = {
@@ -124,7 +124,7 @@ export const MESSAGES = {
     SERVER: 'Server sedang bermasalah. Coba beberapa saat lagi.',
     SLOT_CONFLICT: 'Slot waktu sudah dibooking. Silakan pilih slot lain.',
     INVALID_LOGIN: 'Email atau password yang Anda masukkan salah.',
-    SQL_INJECTION: 'Alamak, tidak boleh seperti itu yaa. 😊 Mohon gunakan karakter yang benar untuk login.',
+    SQL_INJECTION: 'Segala bentuk aktivitas mencurigakan telah dibatasi oleh sistem. Mohon masukkan kredensial dengan format yang benar!',
   },
   SUCCESS: {
     GENERIC: 'Operasi berhasil!',

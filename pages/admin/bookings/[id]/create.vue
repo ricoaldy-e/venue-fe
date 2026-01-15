@@ -40,6 +40,14 @@ const submitting = ref(false)
 const checkingAvailability = ref(false)
 const confirmationModal = ref<any>(null)
 
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0
+  }).format(amount)
+}
+
 const fieldErrors = ref({
   name: '',
   contact: '',
@@ -395,20 +403,12 @@ watch(() => bookingForm.isAcademic, (val) => {
                     </div>
                   </div>
                   <!-- HARGA DISEMBUNYIKAN SEMENTARA -->
-                  <!-- <div class="text-right">
+                  <div class="text-right">
                     <p class="text-xs text-gray-500 uppercase tracking-wide font-bold">Harga</p>
                     <p class="text-lg font-bold text-blue-600 mt-1">Rp {{ slot.pricePerHour.toLocaleString('id-ID') }}</p>
-                  </div> -->
+                  </div>
                 </div>
               </div>
-
-              <!-- TOTAL PEMBAYARAN DISEMBUNYIKAN SEMENTARA -->
-              <!-- <div class="mt-6 pt-6 border-t border-gray-200">
-                <div class="flex justify-between items-center bg-blue-600 p-4 rounded-xl shadow-sm">
-                  <span class="text-base font-bold text-white uppercase tracking-wide">Total Pembayaran</span>
-                  <span class="text-2xl font-bold text-white">Rp {{ totalPrice.toLocaleString('id-ID') }}</span>
-                </div>
-              </div> -->
             </div>
           </div>
         </div>
@@ -569,6 +569,30 @@ watch(() => bookingForm.isAcademic, (val) => {
                     <span class="text-blue-600 font-bold">{{ uploadProgress }}%</span>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== TOTAL HARGA CARD ===================== -->
+      <div class="w-full">
+        <div class="bg-white rounded-2xl border border-gray-300 shadow-sm overflow-hidden">
+          <div class="p-5 border-b border-gray-200 bg-gray-50/50">
+            <h3 class="text-base font-bold text-gray-900">Total Harga</h3>
+            <p class="text-xs text-gray-500 mt-0.5">Ringkasan biaya booking lapangan.</p>
+          </div>
+          <div class="p-6">
+            <div class="flex justify-between items-center">
+              <span class="text-sm font-medium text-gray-700">Total Biaya Booking</span>
+              <span class="text-lg font-bold text-gray-900">{{ formatCurrency(totalPrice) }}</span>
+            </div>
+            <div v-if="bookingForm.isAcademic" class="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <p class="text-xs font-semibold text-green-700">Total harga gratis untuk penggunaan akademik.</p>
               </div>
             </div>
           </div>

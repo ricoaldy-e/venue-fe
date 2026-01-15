@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   css: [
-    '@/assets/css/tailwind.css' 
+    '@/assets/css/tailwind.css'
   ],
 
   modules: [
@@ -35,22 +35,28 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Platform sewa dan booking venue serta lapangan olahraga Universitas Diponegoro - VENUE UNDIP' },
+        { name: 'description', content: 'Platform sewa venue dan lapangan olahraga Universitas Diponegoro - VENUE UNDIP' },
         { name: 'author', content: 'VENUE UNDIP - Universitas Diponegoro' },
         { property: 'og:title', content: 'VENUE UNDIP - Sewa Venue & Lapangan Olahraga' },
-        { property: 'og:description', content: 'Platform sewa dan booking venue serta lapangan olahraga Universitas Diponegoro' },
+        { property: 'og:description', content: 'Platform sewa venue dan lapangan olahraga Universitas Diponegoro' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:site_name', content: 'VENUE UNDIP' }
+        { property: 'og:site_name', content: 'VENUE UNDIP' },
+        { property: 'og:image', content: '/favicon.png' }
       ],
-      link: []
+      link: [
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon.png' },
+        { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon.png' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/favicon.png' },
+        { rel: 'shortcut icon', href: '/favicon.png' }
+      ]
     },
-    pageTransition: { 
-      name: 'page', 
-      mode: 'out-in' 
+    pageTransition: {
+      name: 'page',
+      mode: 'out-in'
     },
-    layoutTransition: { 
-      name: 'layout', 
-      mode: 'out-in' 
+    layoutTransition: {
+      name: 'layout',
+      mode: 'out-in'
     }
   },
 

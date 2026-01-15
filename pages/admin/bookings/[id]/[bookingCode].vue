@@ -5,7 +5,7 @@ definePageMeta({
 })
 
 useHead({
-  title: 'Riwayat Booking - VENUE UNDIP',
+  title: 'Detail Booking - VENUE UNDIP',
   meta: [
     { name: 'description', content: 'Detail dan status booking lapangan di VENUE UNDIP' }
   ]
@@ -219,7 +219,7 @@ const groupedDetails = computed(() => {
           </svg>
         </div>
         <div>
-          <h1 class="text-2xl uppercase font-bold text-gray-900 tracking-tight">Riwayat Booking</h1>
+          <h1 class="text-2xl uppercase font-bold text-gray-900 tracking-tight">Detail Booking</h1>
           <p class="text-sm text-gray-500 mt-1">
             Informasi lengkap dan status reservasi booking.
           </p>
@@ -383,8 +383,7 @@ const groupedDetails = computed(() => {
                       <p class="text-xs text-gray-500">{{ getTimeSlot(detail.startHour) }}</p>
                     </div>
                   </div>
-                  <!-- HARGA DISEMBUNYIKAN -->
-                  <!-- <p class="text-sm font-bold text-gray-900">{{ formatCurrency(detail.subtotal) }}</p> -->
+                  <p class="text-sm font-bold text-gray-900">{{ formatCurrency(detail.subtotal) }}</p>
                 </div>
               </div>
             </div>
@@ -404,13 +403,21 @@ const groupedDetails = computed(() => {
               <span class="text-sm text-gray-600">Total Booking</span>
               <span class="text-sm font-semibold text-gray-900">{{ booking.details.length }} sesi</span>
             </div>
-            <!-- TOTAL HARGA DISEMBUNYIKAN -->
-            <!-- <div class="pt-3 border-t border-gray-200">
+            <div class="pt-3 border-t border-gray-200">
               <div class="flex justify-between items-center">
                 <span class="text-sm font-bold text-gray-900">Total Harga</span>
                 <span class="text-lg font-bold text-blue-600">{{ formatCurrency(booking.totalPrice) }}</span>
               </div>
-            </div> -->
+            </div>
+
+            <div v-if="booking.isAcademic" class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <p class="text-xs font-semibold text-green-700">Total harga gratis untuk penggunaan akademik.</p>
+              </div>
+            </div>
           </div>
 
           <!-- Payment Status Button -->

@@ -16,6 +16,15 @@ export const QUERY_GET_BOOKINGS = `
         bookingDate
         startHour
         subtotal
+        Field {
+          id
+          name
+          stadionId
+          Stadion {
+            id
+            name
+          }
+        }
       }
     }
   }

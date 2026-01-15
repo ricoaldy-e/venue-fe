@@ -161,18 +161,18 @@ const switchMode = (mode: 'daily' | 'range') => {
 </script>
 
 <template>
-  <div class="w-full pb-16 print:p-0 print:pb-0">
+  <div class="w-full pb-16 print:p-0 print:pb-16">
     
     <!-- HEADER PRINT -->
     <div class="hidden print:block mb-6 pb-4 border-b-2 border-gray-900">
       <div class="flex items-start gap-4">
         <div class="w-16 h-16 flex items-center justify-center shrink-0">
-          <img src="~/assets/images/VENUE-UNDIP-LOGO.png" alt="Venue UNDIP Logo" class="w-full h-full object-contain" />
+          <img src="~/assets/images/VENUE-UNDIP-LOGO.png" alt="VENUE UNDIP Logo" class="w-full h-full object-contain logo-print-color" />
         </div>
         
         <div class="flex-1">
           <h1 class="text-xl font-bold text-gray-900 uppercase tracking-tight leading-tight">Laporan Operasional Lapangan</h1>
-          <h2 class="text-base font-semibold text-gray-700 mt-0.5">VENUE UNDIP</h2>
+          <h2 class="text-base font-semibold text-gray-700 mt-0.5">UPT Layanan Seni, Budaya dan Olahraga</h2>
           <p class="text-[10px] text-gray-600 mt-1 leading-tight">Jl. Prof. Soedarto, Tembalang, Kec. Tembalang, Kota Semarang, Jawa Tengah</p>
         </div>
 
@@ -274,14 +274,11 @@ const switchMode = (mode: 'daily' | 'range') => {
       </div>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10 print:grid-cols-2 print:gap-3 print:mb-5 print:break-inside-avoid">
-      <!-- Card Sisa Kapasitas -->
-      <div class="relative overflow-hidden bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-700 rounded-2xl p-8 text-white shadow-2xl shadow-emerald-200/50 print:bg-white print:text-black print:border-2 print:border-gray-800 print:shadow-none print:rounded-lg print:p-3">
-        <!-- Decorative Elements -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10 print:grid-cols-1 print:gap-3 print:mb-5 print:break-inside-avoid">
+      <div class="relative overflow-hidden bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-700 rounded-2xl p-8 text-white shadow-2xl shadow-emerald-200/50 print:bg-white print:text-black print:border-2 print:border-gray-800 print:shadow-none print:rounded-lg print:p-4 print:w-80 print:mx-0">
         <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl print:hidden"></div>
         <div class="absolute -left-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-xl print:hidden"></div>
         
-        <!-- Icon Background -->
         <div class="absolute right-4 top-4 opacity-10 print:hidden">
           <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 24 24">
             <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
@@ -290,42 +287,49 @@ const switchMode = (mode: 'daily' | 'range') => {
 
         <div class="relative z-10">
           <!-- Label -->
-          <div class="flex items-center gap-2 mb-3 print:mb-1">
+          <div class="flex items-center gap-2 mb-3 print:mb-2">
             <div class="w-1.5 h-1.5 bg-emerald-300 rounded-full animate-pulse print:hidden"></div>
-            <p class="text-emerald-50 text-xs font-bold uppercase tracking-wider print:text-gray-700 print:text-[9px]">
-              {{ filterMode === 'daily' ? 'Sisa Kapasitas Besok' : 'Total Kuota Periode Ini' }}
+            <p class="text-emerald-50 text-xs font-bold uppercase tracking-wider print:text-gray-800 print:text-[10px]">
+              {{ filterMode === 'daily' ? `Sisa Kapasitas (${formattedSingleDate})` : `Sisa Kapasitas (${formattedRangeDate})`}}
             </p>
           </div>
 
-          <!-- Main Number -->
-          <div class="flex items-end gap-3 mb-2 print:mb-0.5">
-            <h2 class="text-7xl font-black tracking-tighter leading-none print:text-black print:text-3xl">
+          <!-- Main Number - Print shows different format -->
+          <div class="flex items-end gap-3 mb-2 print:mb-1 print:flex-row print:items-baseline print:gap-2">
+            <!-- Screen mode: Show available slots -->
+            <h2 class="text-7xl font-black tracking-tighter leading-none print:hidden">
               {{ totalAvailable }}
             </h2>
-            <div class="pb-2 print:pb-0">
-              <span class="text-lg font-bold text-emerald-100 uppercase tracking-wide print:text-gray-700 print:text-xs">Jam</span>
-              <span class="block text-sm font-semibold text-emerald-200 -mt-1 print:text-gray-600 print:text-[8px] print:mt-0">Tersedia</span>
+            <!-- Print mode: Show booked/total -->
+            <h2 class="hidden print:block print:text-2xl print:font-extrabold print:text-black">
+              {{ totalBooked }}
+            </h2>
+            <span class="hidden print:inline print:text-xl print:font-bold print:text-gray-700">/</span>
+            <h2 class="hidden print:block print:text-2xl print:font-extrabold print:text-black">
+              {{ totalCapacity }}
+            </h2>
+            <div class="pb-2 print:pb-0 print:hidden">
+              <span class="text-lg font-bold text-emerald-100 uppercase tracking-wide">Slot</span>
+              <span class="block text-sm font-semibold text-emerald-200 -mt-1">Tersedia</span>
             </div>
           </div>
 
           <!-- Description -->
-          <div class="flex items-center gap-2 mt-3 print:mt-0.5">
+          <div class="flex items-center gap-2 mt-3 print:mt-1">
             <svg class="w-4 h-4 text-emerald-300 print:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
-            <p class="text-sm text-emerald-100 font-semibold print:text-gray-600 print:text-[9px]">
-              Siap untuk booking
+            <p class="text-sm text-emerald-100 font-semibold print:text-gray-700 print:text-[10px] print:font-bold">
+              <span class="print:hidden">Siap untuk booking</span>
+              <span class="hidden print:inline">Slot Terbooking / Slot Tersedia</span>
             </p>
           </div>
         </div>
       </div>
 
-      <!-- Card Terbooking -->
-      <div class="relative overflow-hidden bg-white border-2 border-gray-200 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300 print:border-2 print:border-gray-800 print:shadow-none print:rounded-lg print:p-3">
-        <!-- Decorative Corner -->
+      <div class="print:hidden relative overflow-hidden bg-white border-2 border-gray-200 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
         <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-orange-100 to-red-100 opacity-50 rounded-bl-full print:hidden"></div>
         
-        <!-- Icon Background -->
         <div class="absolute right-4 top-4 opacity-5 print:hidden">
           <svg class="w-24 h-24 text-red-600" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
@@ -337,7 +341,7 @@ const switchMode = (mode: 'daily' | 'range') => {
           <div class="flex items-center gap-2 mb-3 print:mb-1">
             <div class="w-1.5 h-1.5 bg-red-500 rounded-full print:hidden"></div>
             <p class="text-gray-600 text-xs font-bold uppercase tracking-wider print:text-gray-700 print:text-[9px]">
-              {{ filterMode === 'daily' ? 'Terbooking Besok' : 'Total Terbooking (Volume)' }}
+              {{ filterMode === 'daily' ? `Terbooking (${formattedSingleDate})` : `Total Terbooking (${formattedRangeDate})`}}
             </p>
           </div>
 
@@ -347,7 +351,7 @@ const switchMode = (mode: 'daily' | 'range') => {
               {{ totalBooked }}
             </h2>
             <div class="pb-2 print:pb-0">
-              <span class="text-lg font-bold text-gray-600 uppercase tracking-wide print:text-gray-700 print:text-xs">Jam</span>
+              <span class="text-lg font-bold text-gray-600 uppercase tracking-wide print:text-gray-700 print:text-xs">Slot</span>
               <span class="block text-sm font-semibold text-gray-500 -mt-1 print:text-gray-600 print:text-[8px] print:mt-0">Terisi</span>
             </div>
           </div>
@@ -452,53 +456,46 @@ const switchMode = (mode: 'daily' | 'range') => {
       <table class="w-full border-collapse border border-gray-900 mb-6 text-[9px]">
         <thead>
           <tr class="bg-gray-200">
-            <th class="border border-gray-900 px-1.5 py-1.5 text-left font-bold text-gray-900 uppercase tracking-wide" style="width: 4%;">No.</th>
-            <th class="border border-gray-900 px-2 py-1.5 text-left font-bold text-gray-900 uppercase tracking-wide" style="width: 22%;">Nama Lapangan</th>
-            <th class="border border-gray-900 px-2 py-1.5 text-left font-bold text-gray-900 uppercase tracking-wide" style="width: 18%;">Stadion</th>
-            <th class="border border-gray-900 px-1.5 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide" style="width: 10%;">Total Kuota</th>
-            <th class="border border-gray-900 px-1.5 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide" style="width: 11%;">Terbooking</th>
-            <th class="border border-gray-900 px-1.5 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide" style="width: 8%;">Sisa</th>
-            <th class="border border-gray-900 px-1.5 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide" style="width: 12%;">% Okupansi</th>
-            <th class="border border-gray-900 px-1.5 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide" style="width: 15%;">Status</th>
+            <th class="border border-gray-900 px-1.5 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide" style="width: 8%;">No.</th>
+            <th class="border border-gray-900 px-2 py-1.5 text-left font-bold text-gray-900 uppercase tracking-wide" style="width: 40%;">Nama Lapangan</th>
+            <th class="border border-gray-900 px-1.5 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide" style="width: 13%;">Total Kuota</th>
+            <th class="border border-gray-900 px-1.5 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide" style="width: 13%;">Terbooking</th>
+            <th class="border border-gray-900 px-1.5 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide" style="width: 13%;">Sisa</th>
+            <th class="border border-gray-900 px-1.5 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide" style="width: 13%;">% Okupansi</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(item, index) in dashboardData" :key="item.id" :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
             <td class="border border-gray-900 px-1.5 py-1.5 font-semibold text-gray-900 text-center">{{ index + 1 }}</td>
             <td class="border border-gray-900 px-2 py-1.5 font-semibold text-gray-900">{{ item.name }}</td>
-            <td class="border border-gray-900 px-2 py-1.5 text-gray-900">{{ item.stadionName }}</td>
             <td class="border border-gray-900 px-1.5 py-1.5 font-semibold text-gray-900 text-center">{{ item.totalCapacity }}</td>
             <td class="border border-gray-900 px-1.5 py-1.5 font-semibold text-gray-900 text-center">{{ item.totalBooked }}</td>
             <td class="border border-gray-900 px-1.5 py-1.5 font-semibold text-gray-900 text-center">{{ item.remaining }}</td>
-            <td class="border border-gray-900 px-1.5 py-1.5 font-semibold text-center" :class="item.occupancyRate >= 100 ? 'bg-red-100 text-red-900' : (item.occupancyRate > 75 ? 'bg-amber-100 text-amber-900' : 'bg-green-100 text-green-900')">
+            <td class="border border-gray-900 px-1.5 py-1.5 font-semibold text-center print:bg-transparent print:text-gray-900" :class="item.occupancyRate >= 100 ? 'bg-red-100 text-red-900' : (item.occupancyRate > 75 ? 'bg-amber-100 text-amber-900' : 'bg-green-100 text-green-900')">
               {{ Math.round(item.occupancyRate) }}%
-            </td>
-            <td class="border border-gray-900 px-1.5 py-1.5 font-bold text-center text-gray-900 uppercase">
-              {{ item.statusLabel }}
             </td>
           </tr>
         </tbody>
         <tfoot>
           <tr class="bg-gray-200 font-bold">
-            <td colspan="3" class="border border-gray-900 px-2 py-2 font-bold text-gray-900 uppercase">Total</td>
+            <td colspan="2" class="border border-gray-900 px-2 py-2 font-bold text-gray-900 uppercase">Total</td>
             <td class="border border-gray-900 px-1.5 py-2 font-bold text-gray-900 text-center">{{ totalCapacity }}</td>
             <td class="border border-gray-900 px-1.5 py-2 font-bold text-gray-900 text-center">{{ totalBooked }}</td>
             <td class="border border-gray-900 px-1.5 py-2 font-bold text-gray-900 text-center">{{ totalAvailable }}</td>
             <td class="border border-gray-900 px-1.5 py-2 font-bold text-gray-900 text-center">
-              {{ totalCapacity > 0 ? Math.round((totalBooked / totalCapacity) * 100) : 0 }}%
+              {{ totalCapacity > 0 ? ((totalBooked / totalCapacity) * 100).toFixed(2) : '0.00' }}%
             </td>
-            <td class="border border-gray-900 px-1.5 py-2 font-bold text-gray-900 text-center">-</td>
           </tr>
         </tfoot>
       </table>
 
-      <div class="mt-4 space-y-3 text-[9px] text-gray-800 leading-tight">
+      <div class="mt-4 mb-2 space-y-3 text-[9px] text-gray-800 leading-tight">
         <div class="border-t border-gray-400 pt-2">
           <p class="font-bold mb-1.5 text-[10px]">Keterangan Informasi:</p>
           <ul class="list-disc list-inside space-y-0.5 text-gray-700 ml-2">
-            <li><span class="font-semibold">Total Kuota:</span> Kapasitas jam operasional lapangan selama periode yang dipilih</li>
-            <li><span class="font-semibold">Terbooking:</span> Jumlah jam yang sudah dipesan oleh pengguna</li>
-            <li><span class="font-semibold">Sisa:</span> Jumlah jam yang masih tersedia untuk dipesan</li>
+            <li><span class="font-semibold">Total Kuota:</span> Kapasitas slot operasional lapangan selama periode yang dipilih</li>
+            <li><span class="font-semibold">Terbooking:</span> Jumlah slot yang sudah dipesan oleh pengguna</li>
+            <li><span class="font-semibold">Sisa:</span> Jumlah slot yang masih tersedia untuk dipesan</li>
             <li><span class="font-semibold">Persentase Okupansi:</span> Tingkat penggunaan lapangan (Terbooking / Total Kuota × 100%)</li>
           </ul>
         </div>
@@ -518,7 +515,7 @@ const switchMode = (mode: 'daily' | 'range') => {
       </div>
     </div>
 
-    <div class="hidden print:block fixed bottom-0 left-0 w-full border-t border-gray-300 bg-white py-1.5">
+    <div class="hidden print:block w-full border-t border-gray-300 bg-white py-1 mt-4">
       <div class="flex justify-between items-center text-[8px] text-gray-500 px-4">
         <p>Sistem Informasi Manajemen Lapangan - VENUE UNDIP</p>
         <p>Dicetak: {{ printTimestamp }}</p>
@@ -530,9 +527,14 @@ const switchMode = (mode: 'daily' | 'range') => {
 
 <style scoped>
 @media print {
-  * {
+  /* Logo container - preserve all colors */
+  .logo-print-color,
+  img[alt*="VENUE UNDIP Logo"],
+  img[alt*="VENUE UNDIP"] {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    filter: none !important;
+    -webkit-filter: none !important;
   }
 
   table {
@@ -568,8 +570,8 @@ const switchMode = (mode: 'daily' | 'range') => {
 <style>
 @media print {
   @page {
-    size: A4 landscape;
-    margin: 1.5cm 1cm;
+    size: A4 portrait;
+    margin: 1.5cm 1.5cm 1cm 1.5cm;
   }
 
   nav, header, aside, footer, .sidebar, .top-bar, .layout-header, .navbar {

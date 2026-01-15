@@ -131,7 +131,7 @@ const onSubmit = async () => {
     >
       <!-- Header -->
       <div class="mb-6">
-        <h2 class="text-xl font-bold text-ds-blue-900 mb-1.5 tracking-tight">Admin Login</h2>
+        <h2 class="text-xl font-bold text-ds-blue-900 mb-1.5 tracking-tight">Operator Login</h2>
         <p class="text-xs text-ds-muted">
           Masukkan kredensial Anda untuk melanjutkan
         </p>

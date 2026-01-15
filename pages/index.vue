@@ -135,15 +135,7 @@ const activeFieldCount = (stadion?: StadiumCard) => stadion?.fields?.length ?? 0
 const totalFreeFields = computed(() =>
   stadionsData.value?.reduce((sum, s) => sum + activeFieldCount(s), 0) ?? 0
 )
-const stadionWithMostFields = computed(() => {
-  const list = stadionsData.value || []
-  if (!list.length) return null
-  return list.reduce((max, current) => {
-    const maxLen = activeFieldCount(max)
-    const currLen = activeFieldCount(current)
-    return currLen > maxLen ? current : max
-  })
-})
+
 const topFreeStadions = computed(() => {
   const list = stadionsData.value || []
   
@@ -212,8 +204,8 @@ const goToDetail = (stadionId: number) => {
             
             <div class="space-y-2">
               <p class="text-xs uppercase tracking-[0.2em] text-blue-200/70 font-semibold">Ringkasan Lapangan</p>
-              <h2 class="text-3xl lg:text-4xl font-bold leading-[1.4] pb-1 bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
-                Layanan Penyewaan Lapangan Olahraga
+              <h2 class="uppercase text-3xl lg:text-4xl font-bold leading-[1.4] pb-1 bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
+                UPT Layanan Seni, Budaya dan Olahraga
               </h2>
             </div>
             
@@ -222,7 +214,7 @@ const goToDetail = (stadionId: number) => {
             </p>
           </div>
           
-          <div class="grid w-full max-w-2xl grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div class="grid w-full max-w-md grid-cols-1 gap-4 md:grid-cols-2">
             <div 
               @click="scrollToStadiumList"
               class="group rounded-2xl border border-white/15 bg-white/10 backdrop-blur-md p-5 shadow-xl transition-all duration-300 hover:border-white/30 hover:bg-white/15 hover:-translate-y-1 hover:shadow-2xl cursor-pointer"
@@ -253,41 +245,6 @@ const goToDetail = (stadionId: number) => {
               <p class="text-[10px] uppercase tracking-wider text-blue-200/80 font-bold mb-1">Lapangan Aktif</p>
               <p class="text-4xl font-black mb-1">{{ totalFreeFields }}</p>
               <p class="text-xs text-blue-100/70 font-medium">Siap dijadwalkan</p>
-            </div>
-            
-            <NuxtLink
-              v-if="stadionWithMostFields"
-              :to="`/venues/${stadionWithMostFields.id}`"
-              class="group rounded-2xl border border-white/20 bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-md p-5 shadow-xl transition-all duration-300 hover:border-white/40 hover:from-white/25 hover:to-white/10 hover:-translate-y-1 hover:shadow-2xl"
-            >
-              <div class="flex items-start justify-between mb-3">
-                <div class="flex items-center justify-center h-10 w-10 rounded-xl bg-amber-500/20 border border-amber-400/30 flex-shrink-0">
-                  <svg class="h-5 w-5 text-amber-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/>
-                  </svg>
-                </div>
-              </div>
-              <p class="text-[10px] uppercase tracking-wider text-blue-200/80 font-bold mb-1">Lapangan Terbanyak</p>
-              <p class="text-xl font-bold leading-tight mb-1 line-clamp-1">{{ activeFieldCount(stadionWithMostFields) }}</p>
-              <p class="text-xs text-blue-100/70 font-medium mb-2 truncate">{{ stadionWithMostFields.name }}</p>
-              <div class="inline-flex items-center gap-1 text-xs font-bold text-white group-hover:gap-1.5 transition-all">
-                Lihat Detail
-                <svg class="h-3 w-3 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                </svg>
-              </div>
-            </NuxtLink>
-            
-            <div v-else class="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-md p-5 shadow-xl">
-              <div class="flex items-start justify-between mb-3">
-                <div class="flex items-center justify-center h-10 w-10 rounded-xl bg-gray-500/20 border border-gray-400/30">
-                  <svg class="h-5 w-5 text-gray-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/>
-                  </svg>
-                </div>
-              </div>
-              <p class="text-[10px] uppercase tracking-wider text-blue-200/80 font-bold mb-1">Lapangan Terbanyak</p>
-              <p class="text-sm text-blue-100/70">Data belum tersedia</p>
             </div>
           </div>
         </div>

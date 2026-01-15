@@ -11,10 +11,10 @@
             />
             <div>
               <p class="text-lg font-bold leading-tight">VENUE UNDIP</p>
-              <p class="text-xs text-blue-200/70">Booking Lapangan</p>
+              <p class="text-xs text-blue-200/70">Booking Lapangan Olahraga</p>
             </div>
           </div>
-          <p class="text-sm text-blue-100/80 leading-relaxed">Platform booking lapangan olahraga terpercaya untuk Sivitas Akademika Universitas Diponegoro.</p>
+          <p class="text-sm text-blue-100/80 leading-relaxed">UPT Layanan Seni, Budaya dan Olahraga Universitas Diponegoro yang digunakan untuk memudahkan peminjaman lapangan olahraga.</p>
         </div>
 
         <div class="space-y-4">
@@ -39,7 +39,7 @@
             <li>
               <NuxtLink to="/admin/login" class="group inline-flex items-center gap-2 text-sm text-blue-100/80 hover:text-white transition-all duration-200">
                 <span class="relative">
-                  Admin Panel
+                  Operator
                   <span class="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-300"></span>
                 </span>
               </NuxtLink>
@@ -50,14 +50,6 @@
         <div class="space-y-4">
           <h3 class="text-sm font-bold uppercase tracking-wider text-white mb-4">Bantuan</h3>
           <ul class="space-y-2.5">
-            <li>
-              <a href="https://helpdesk.undip.ac.id" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 text-sm text-blue-100/80 hover:text-white transition-all duration-200">
-                <span class="relative">
-                  Pusat Bantuan
-                  <span class="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-300"></span>
-                </span>
-              </a>
-            </li>
             <li>
               <NuxtLink to="/bantuan/panduan-booking" class="group inline-flex items-center gap-2 text-sm text-blue-100/80 hover:text-white transition-all duration-200">
                 <span class="relative">
