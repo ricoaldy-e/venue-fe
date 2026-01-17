@@ -24,6 +24,7 @@ export const QUERY_STADIONS_DATA = `
         id
         name
         pricePerHour
+        priceTendik
         images {
           id
           imageUrl

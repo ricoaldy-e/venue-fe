@@ -1,4 +1,4 @@
-import { defineEventHandler, readBody, createError, getCookie } from 'h3'
+import { defineEventHandler, readBody, createError, getCookie, readFormData } from 'h3'
 import { $fetch } from 'ofetch'
 import { MUTATION_CREATE_BOOKING } from '~/graphql/mutations/create_booking'
 import { UPDATE_BOOK_STATUS } from '~/graphql/mutations/update_book_status'
@@ -17,7 +17,7 @@ interface BookingPayload {
   email: string
   institution?: string
   suratUrl?: string
-  isAcademic?: boolean
+  renterType?: 'UMUM' | 'TENDIK' | 'AKADEMIK'
   details: BookingDetailPayload[]
 }
 
@@ -30,25 +30,77 @@ export default defineEventHandler(async (event) => {
 
   if (contentType.includes('multipart/form-data')) {
     const token = getCookie(event, 'admin_token')
-    const headers: Record<string, string> = {
-      'apollo-require-preflight': 'true',
-      'content-type': contentType,
-    }
-    if (token) headers['Authorization'] = `Bearer ${token}`
 
     try {
-      const res = await (fetch as any)(endpoint, { method: 'POST', headers, body: event.node.req, duplex: 'half' })
+      // Parse incoming FormData
+      const incomingFormData = await readFormData(event)
+
+      // Get operations and map from the incoming FormData
+      const operationsStr = incomingFormData.get('operations') as string
+      const mapStr = incomingFormData.get('map') as string
+
+      if (!operationsStr || !mapStr) {
+        throw createError({ statusCode: 400, statusMessage: 'Missing operations or map in multipart request' })
+      }
+
+      // Parse the map to find file keys
+      const map = JSON.parse(mapStr) as Record<string, string[]>
+
+      // Collect files from the incoming FormData
+      const files: Record<string, File> = {}
+      for (const key of Object.keys(map)) {
+        const file = incomingFormData.get(key)
+        if (file instanceof File) {
+          files[key] = file
+        }
+      }
+
+      // Create new FormData with correct order: operations -> map -> files
+      const newFormData = new FormData()
+
+      // 1. Append operations FIRST
+      newFormData.append('operations', operationsStr)
+
+      // 2. Append map SECOND  
+      newFormData.append('map', mapStr)
+
+      // 3. Append files LAST (in order of their keys)
+      const sortedKeys = Object.keys(files).sort()
+      for (const key of sortedKeys) {
+        const file = files[key]
+        if (file) {
+          newFormData.append(key, file)
+        }
+      }
+
+      // Build headers (let fetch set correct Content-Type with boundary)
+      const headers: Record<string, string> = {
+        'apollo-require-preflight': 'true',
+      }
+      if (token) headers['Authorization'] = `Bearer ${token}`
+
+      // Send to GraphQL endpoint
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers,
+        body: newFormData
+      })
       const json = await res.json()
       if (json.errors?.length) {
         throw createError({ statusCode: 400, statusMessage: json.errors[0]?.message || 'Failed to create booking' })
       }
-      
+
       const bookingData = json.data?.createBooking
       if (!bookingData?.bookingCode) {
         return bookingData
       }
 
       try {
+        // Extract renterType from operations to determine payment status
+        const operations = JSON.parse(operationsStr)
+        const renterType = operations?.variables?.renterType || 'UMUM'
+        const paymentStatusToSet = renterType === 'AKADEMIK' ? 'PAID' : 'UNPAID'
+
         await $fetch<{ data?: any; errors?: any[] }>(endpoint, {
           method: 'POST',
           body: {
@@ -62,12 +114,12 @@ export default defineEventHandler(async (event) => {
           method: 'POST',
           body: {
             query: UPDATE_PAYMENT,
-            variables: { bookingCode: bookingData.bookingCode, paymentStatus: "UNPAID" },
+            variables: { bookingCode: bookingData.bookingCode, paymentStatus: paymentStatusToSet },
           },
           headers: { 'Content-Type': 'application/json', ...(token && { 'Authorization': `Bearer ${token}` }) },
         })
       } catch (err: any) {
-        console.warn('Failed to auto-approve academic booking:', err?.message)
+        console.warn('Failed to auto-approve booking:', err?.message)
       }
 
       return bookingData
@@ -97,7 +149,7 @@ export default defineEventHandler(async (event) => {
           email: body.email,
           institution: body.institution,
           suratUrl: body.suratUrl,
-          isAcademic: body.isAcademic,
+          renterType: body.renterType,
           details: body.details,
         },
       },
@@ -130,13 +182,17 @@ export default defineEventHandler(async (event) => {
     }
 
     try {
+      // AKADEMIK bookings are free, so automatically mark as PAID
+      // UMUM and TENDIK remain UNPAID by default
+      const paymentStatusToSet = body.renterType === 'AKADEMIK' ? 'PAID' : 'UNPAID'
+
       const paymentResponse = await $fetch<{ data?: any; errors?: any[] }>(endpoint, {
         method: 'POST',
         body: {
           query: UPDATE_PAYMENT,
           variables: {
             bookingCode: bookingData.bookingCode,
-            paymentStatus: "UNPAID",
+            paymentStatus: paymentStatusToSet,
           },
         },
         headers,

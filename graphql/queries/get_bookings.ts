@@ -29,7 +29,7 @@ export const QUERY_GET_BOOKINGS_PAGINATED = `
         name
         contact
         email
-        isAcademic
+        renterType
         status
         paymentStatus
         totalPrice
@@ -87,7 +87,7 @@ export const QUERY_GET_BOOKINGS = `
         name
         contact
         email
-        isAcademic
+        renterType
         status
         paymentStatus
         totalPrice

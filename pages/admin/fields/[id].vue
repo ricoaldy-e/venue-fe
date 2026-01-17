@@ -28,6 +28,7 @@ interface FieldData {
   name: string
   description: string | null
   pricePerHour: number
+  priceTendik: number
   stadionId: number
   status: 'ACTIVE' | 'INACTIVE'
   images?: { id: number; fieldId?: number; imageUrl: string }[]
@@ -47,6 +48,7 @@ const form = ref({
   name: '',
   description: '',
   pricePerHour: 0,
+  priceTendik: 0,
   status: 'ACTIVE' as 'ACTIVE' | 'INACTIVE', 
 })
 
@@ -82,6 +84,7 @@ if (field.value) {
   form.value.name = field.value.name
   form.value.description = field.value.description || ''
   form.value.pricePerHour = field.value.pricePerHour
+  form.value.priceTendik = field.value.priceTendik || 0
   form.value.status = field.value.status 
   existingImages.value = field.value.images ? [...field.value.images] : []
 } else if (fetchError.value) {
@@ -173,6 +176,7 @@ async function handleSubmit() {
         stadionId: Number(form.value.stadionId),
 
         pricePerHour: Number(form.value.pricePerHour || 0),
+        priceTendik: Number(form.value.priceTendik || 0),
         description: form.value.description || undefined,
       },
     } as any) as any
@@ -377,7 +381,7 @@ async function handleDelete() {
             </div>
 
             <div class="space-y-1.5">
-              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Harga Sewa per Jam <span class="text-red-500">*</span></label>
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Harga Sewa Umum per Jam <span class="text-red-500">*</span></label>
               <div class="relative rounded-xl shadow-sm">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <span class="text-gray-500 font-bold sm:text-sm">Rp</span>
@@ -395,10 +399,33 @@ async function handleDelete() {
                   <span class="text-gray-400 text-xs font-medium">/ jam</span>
                 </div>
               </div>
+              <p class="text-xs text-gray-500 mt-1">Harga untuk penyewa kategori Umum</p>
               <p v-if="errorMsg && errorMsg.includes('Harga')" class="mt-2 text-xs text-red-600 font-medium flex items-start gap-1.5">
                 <svg class="w-3.5 h-3.5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 <span>{{ errorMsg }}</span>
               </p>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Harga Sewa Tendik per Jam <span class="text-red-500">*</span></label>
+              <div class="relative rounded-xl shadow-sm">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span class="text-gray-500 font-bold sm:text-sm">Rp</span>
+                </div>
+                <input 
+                  v-model.number="form.priceTendik" 
+                  type="number" 
+                  min="0"
+                  step="1000"
+                  required 
+                  placeholder="0" 
+                  class="block w-full rounded-xl border border-gray-300 pl-10 pr-16 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all" 
+                />
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <span class="text-gray-400 text-xs font-medium">/ jam</span>
+                </div>
+              </div>
+              <p class="text-xs text-gray-500 mt-1">Harga untuk penyewa kategori Tenaga Kependidikan</p>
             </div>
 
           </div>

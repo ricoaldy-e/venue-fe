@@ -246,11 +246,11 @@ const handleAction = async (item: NavItem) => {
             <button
               v-if="!item.to"
               type="button"
-              class="group w-full relative flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 text-red-300 hover:bg-red-900/30 hover:text-red-200 disabled:opacity-50 disabled:cursor-wait"
+              class="group w-full relative flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 text-red-300 hover:bg-red-500/10 hover:text-red-200 disabled:opacity-50 disabled:cursor-wait"
               :disabled="logoutLoading"
               @click="handleAction(item)"
             >
-              <span class="w-5 h-5 flex-shrink-0 transition-all duration-200 group-hover:scale-110">
+              <span class="w-5 h-5 flex-shrink-0 transition-all duration-200 group-hover:scale-110 opacity-80 group-hover:opacity-100">
                 <svg v-if="!logoutLoading" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 13V11H8V8L3 12L8 16V13H16ZM20 3H12V5H20V19H12V21H20C21.1 21 22 20.1 22 19V5C22 3.9 21.1 3 20 3Z"/></svg>
                 <svg v-else class="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
               </span>

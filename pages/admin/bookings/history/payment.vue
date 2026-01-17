@@ -40,7 +40,7 @@ interface BookingHistory {
   name: string
   contact: string
   email: string
-  isAcademic: boolean
+  renterType: 'UMUM' | 'TENDIK' | 'AKADEMIK'
   totalPrice: number
   status: 'PENDING' | 'APPROVED' | 'CANCELLED'
   paymentStatus: 'UNPAID' | 'PAID'
@@ -719,7 +719,8 @@ const printAllData = async () => {
             </td>
             <td class="border border-gray-900 px-2 py-1.5 text-gray-900 align-middle">
                <span class="font-medium">{{ booking.name }}</span>
-               <span v-if="booking.isAcademic" class="block text-[8px] italic">(Akademik)</span>
+               <span v-if="booking.renterType === 'AKADEMIK'" class="block text-[8px] italic">(Akademik)</span>
+               <span v-else-if="booking.renterType === 'TENDIK'" class="block text-[8px] italic">(Tendik)</span>
             </td>
             <td class="border border-gray-900 px-2 py-1.5 text-gray-900 align-middle">{{ getStadiumName(booking) }}</td>
             <td class="border border-gray-900 px-2 py-1.5 text-right font-medium text-gray-900 align-middle">
@@ -816,11 +817,17 @@ const printAllData = async () => {
               <td class="px-6 py-4">
                 <div class="flex flex-col">
                   <span class="text-sm font-semibold text-gray-900">{{ booking.name }}</span>
-                  <span v-if="booking.isAcademic" class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-blue-50 border border-blue-200 rounded text-[10px] font-bold text-blue-700 w-fit print:bg-gray-100 print:text-gray-800 print:border-gray-400">
+                  <span v-if="booking.renterType === 'AKADEMIK'" class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-blue-50 border border-blue-200 rounded text-[10px] font-bold text-blue-700 w-fit print:bg-gray-100 print:text-gray-800 print:border-gray-400">
                     <svg class="w-3 h-3 print:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
                     Akademik
+                  </span>
+                  <span v-else-if="booking.renterType === 'TENDIK'" class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-purple-50 border border-purple-200 rounded text-[10px] font-bold text-purple-700 w-fit print:bg-gray-100 print:text-gray-800 print:border-gray-400">
+                    <svg class="w-3 h-3 print:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    Tendik
                   </span>
                 </div>
               </td>

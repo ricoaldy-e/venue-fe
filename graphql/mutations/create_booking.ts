@@ -5,7 +5,8 @@ export const MUTATION_CREATE_BOOKING = `
     $email: String!, 
     $institution: String, 
     $suratFile: Upload, 
-    $isAcademic: Boolean,
+    $sptjmFile: Upload,
+    $renterType: RenterType!,
     $details: [BookingDetailInput!]!
     $status: BookingStatus
     $paymentStatus: PaymentStatus
@@ -16,7 +17,8 @@ export const MUTATION_CREATE_BOOKING = `
       email: $email, 
       institution: $institution,
       suratFile: $suratFile, 
-      isAcademic: $isAcademic,
+      sptjmFile: $sptjmFile,
+      renterType: $renterType,
       details: $details,
       status: $status,
       paymentStatus: $paymentStatus

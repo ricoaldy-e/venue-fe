@@ -87,6 +87,7 @@ interface FieldData {
   type?: string
   status: StadionStatus
   pricePerHour: number
+  priceTendik?: number
   images: ImageData[]
   bookingDetails: BookingDetailData[]
 }
@@ -137,7 +138,7 @@ const createFallbackVenue = (): VenueDetail => ({
   mapUrl: undefined,
 })
 
-const buildSlotsForField = (field: FieldData, hours: { open: number; close: number }): Slot[] => {
+const buildSlotsForField = (field: FieldData, hours: { open: number; close: number }, renterType: 'UMUM' | 'TENDIK' | 'AKADEMIK' = 'UMUM'): Slot[] => {
   const booked = new Set(
     (field?.bookingDetails ?? [])
       .map((detail) => Number(detail?.startHour))
@@ -154,11 +155,20 @@ const buildSlotsForField = (field: FieldData, hours: { open: number; close: numb
     const range = `${startTime} - ${padHour(next)}:00`
     const isBooked = booked.has(hour)
 
+    let price = 0
+    if (renterType === 'AKADEMIK') {
+      price = 0
+    } else if (renterType === 'TENDIK' && field?.priceTendik) {
+      price = field.priceTendik
+    } else {
+      price = Number(field?.pricePerHour || 0)
+    }
+
     slots.push({
       start: startTime,
       range,
       status: isBooked ? 'Booked' : 'Available',
-      price: !isBooked && field?.pricePerHour ? Number(field.pricePerHour) : undefined,
+      price: !isBooked ? price : undefined,
       highlight: !isBooked && hour === openHour,
     })
   }
@@ -166,7 +176,7 @@ const buildSlotsForField = (field: FieldData, hours: { open: number; close: numb
   return slots
 }
 
-const mapFieldToCourt = (field: FieldData, hours: { open: number; close: number }): Court => {
+const mapFieldToCourt = (field: FieldData, hours: { open: number; close: number }, renterType: 'UMUM' | 'TENDIK' | 'AKADEMIK'): Court => {
   const rawImages = field?.images?.map((img) => img?.imageUrl).filter((url): url is string => Boolean(url)) || []
 
   return {
@@ -177,11 +187,11 @@ const mapFieldToCourt = (field: FieldData, hours: { open: number; close: number 
     status: field?.status === 'ACTIVE' ? 'Ready' : 'Maintenance',
     image: rawImages[0] || '',
     gallery: rawImages,
-    slots: buildSlotsForField(field, hours),
+    slots: buildSlotsForField(field, hours, renterType),
   }
 }
 
-const buildVenueFromGraphQL = (stadion?: StadionData): VenueDetail => {
+const buildVenueFromGraphQL = (stadion?: StadionData, renterType: 'UMUM' | 'TENDIK' | 'AKADEMIK' = 'UMUM'): VenueDetail => {
   const fallback = createFallbackVenue()
   if (!stadion) return fallback
 
@@ -216,7 +226,7 @@ const buildVenueFromGraphQL = (stadion?: StadionData): VenueDetail => {
     price: prices.length ? Math.min(...prices) : fallback.price,
     facilities: facilities.length ? facilities : fallback.facilities,
     scheduleDays: getNextNDays(null, 7, true),
-    courts: fields.length ? fields.map((field: any) => mapFieldToCourt(field, hours)) : fallback.courts,
+    courts: fields.length ? fields.map((field: any) => mapFieldToCourt(field, hours, renterType)) : fallback.courts,
     mapUrl: stadion.mapUrl ?? undefined,
   }
 }
@@ -237,7 +247,16 @@ if (stadionData.value?.status === 'INACTIVE') {
   })
 }
 
-const venue = computed(() => buildVenueFromGraphQL(stadionData.value))
+const renterType = ref<'UMUM' | 'TENDIK' | 'AKADEMIK'>('UMUM')
+const venue = computed(() => buildVenueFromGraphQL(stadionData.value, renterType.value))
+
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0
+  }).format(amount)
+}
 
 useHead({
   title: computed(() => `${venue.value.name} - VENUE UNDIP`),
@@ -1013,6 +1032,15 @@ watch(selectedDate, () => {
                     >
                       Available
                     </p>
+                    <!-- Harga disembunyikan sesuai permintaan
+                    <p 
+                      v-if="slot.status !== 'Booked' && court.status !== 'Maintenance' && !isSlotBookedFromServer(court.id, Number(slot.start.split(':')[0]))"
+                      class="text-[10px] sm:text-xs font-bold ml-auto mr-1"
+                       :class="isSlotSelected(court.id, slot.range) ? 'text-white' : 'text-gray-700'"
+                    >
+                      {{ slot.price !== undefined ? (slot.price === 0 ? 'Gratis' : formatCurrency(slot.price)) : '' }}
+                    </p>
+                    -->
                     
                     <svg
                       v-if="isSlotSelected(court.id, slot.range)"

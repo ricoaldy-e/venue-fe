@@ -41,9 +41,10 @@ interface BookingResult {
   name: string
   contact: string
   email: string
+  renterType?: 'UMUM' | 'TENDIK' | 'AKADEMIK'
   institution?: string
   suratUrl?: string
-  isAcademic: boolean
+  sptjmUrl?: string
   totalPrice: number
   status: string
   paymentStatus: string
@@ -298,45 +299,82 @@ const groupedDetails = computed(() => {
                 <p class="text-sm font-semibold text-gray-900">{{ booking.email }}</p>
               </div>
               <div>
-                <p class="text-xs font-semibold text-gray-500 mb-1">Tipe Booking</p>
-                <p class="text-sm font-semibold text-gray-900">
-                  {{ booking.isAcademic ? 'Akademik' : 'Non-Akademik' }}
-                </p>
+                 <p class="text-xs font-semibold text-gray-500 mb-1">Tipe Booking</p>
+                <div>
+                   <span 
+                    v-if="booking.renterType === 'AKADEMIK'"
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-blue-100 text-blue-700 border border-blue-200"
+                  >
+                    AKADEMIK
+                  </span>
+                  <span 
+                    v-else-if="booking.renterType === 'TENDIK'"
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-purple-100 text-purple-700 border border-purple-200"
+                  >
+                    TENDIK
+                  </span>
+                  <span 
+                    v-else
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-gray-100 text-gray-700 border border-gray-200"
+                  >
+                    UMUM
+                  </span>
+                </div>
               </div>
-              <div v-if="booking.isAcademic && booking.institution" class="sm:col-span-2">
+              <div v-if="booking.renterType !== 'UMUM' && booking.institution" class="sm:col-span-2">
                 <p class="text-xs font-semibold text-gray-500 mb-1">Institusi</p>
                 <p class="text-sm font-semibold text-gray-900">{{ booking.institution }}</p>
               </div>
             </div>
 
             <!-- Surat Keterangan -->
-            <div v-if="booking.isAcademic && booking.suratUrl" class="pt-4 border-t border-gray-100">
-              <p class="text-xs font-semibold text-gray-500 mb-2">Surat Keterangan</p>
-              <a 
-                v-if="isPdf(booking.suratUrl)"
-                :href="booking.suratUrl" 
-                target="_blank"
-                class="inline-flex items-center gap-2 px-4 py-2 bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 rounded-lg text-sm font-semibold transition-colors"
-              >
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" />
-                </svg>
-                Lihat Surat (PDF)
-              </a>
-              <a 
-                v-else
-                :href="booking.suratUrl" 
-                target="_blank"
-                class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 rounded-lg text-sm font-semibold transition-colors"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                Lihat Gambar
-              </a>
+              <div v-if="booking.sptjmUrl || (booking.renterType !== 'UMUM' && booking.suratUrl)" class="sm:col-span-2 pt-4 border-t border-gray-100">
+                <div class="flex flex-wrap gap-4">
+                  <!-- SPTJM ALWAYS DISPLAYED IF AVAILABLE -->
+                  <div v-if="booking.sptjmUrl">
+                    <p class="text-xs font-semibold text-gray-500 mb-2">Surat SPTJM</p>
+                    <a 
+                      :href="booking.sptjmUrl" 
+                      target="_blank"
+                      class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 rounded-lg text-sm font-semibold transition-colors"
+                    >
+                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" />
+                      </svg>
+                      Lihat SPTJM (PDF)
+                    </a>
+                  </div>
+
+                  <!-- SURAT PENGANTAR (For TENDIK / AKADEMIK) -->
+                  <div v-if="booking.renterType !== 'UMUM' && booking.suratUrl">
+                    <p class="text-xs font-semibold text-gray-500 mb-2">Surat Pengantar</p>
+                    <a 
+                      v-if="isPdf(booking.suratUrl)"
+                      :href="booking.suratUrl" 
+                      target="_blank"
+                      class="inline-flex items-center gap-2 px-4 py-2 bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 rounded-lg text-sm font-semibold transition-colors"
+                    >
+                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" />
+                      </svg>
+                      Lihat Surat (PDF)
+                    </a>
+                    <a 
+                      v-else
+                      :href="booking.suratUrl" 
+                      target="_blank"
+                      class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 rounded-lg text-sm font-semibold transition-colors"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      Lihat Gambar
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
         <!-- Booking Details -->
         <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
@@ -383,7 +421,22 @@ const groupedDetails = computed(() => {
                       <p class="text-xs text-gray-500">{{ getTimeSlot(detail.startHour) }}</p>
                     </div>
                   </div>
-                  <p class="text-sm font-bold text-gray-900">{{ formatCurrency(detail.subtotal) }}</p>
+                  <div class="text-right">
+                    <!-- TENDIK pricing -->
+                    <template v-if="booking.renterType === 'TENDIK'">
+                      <p class="text-sm font-bold text-purple-600">{{ formatCurrency(detail.subtotal) }}</p>
+                      <p class="text-xs text-purple-500">Harga Tendik</p>
+                    </template>
+                    <!-- AKADEMIK pricing (free) -->
+                    <template v-else-if="booking.renterType === 'AKADEMIK'">
+                      <p class="text-sm font-bold text-green-600">GRATIS</p>
+                      <p class="text-xs text-green-500">Akademik</p>
+                    </template>
+                    <!-- Normal price for UMUM -->
+                    <template v-else>
+                      <p class="text-sm font-bold text-gray-900">{{ formatCurrency(detail.subtotal) }}</p>
+                    </template>
+                  </div>
                 </div>
               </div>
             </div>
@@ -410,12 +463,20 @@ const groupedDetails = computed(() => {
               </div>
             </div>
 
-            <div v-if="booking.isAcademic" class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+            <div v-if="booking.renterType === 'AKADEMIK'" class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
               <div class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
-                <p class="text-xs font-semibold text-green-700">Total harga gratis untuk penggunaan akademik.</p>
+                <p class="text-xs font-semibold text-green-700">Gratis untuk kegiatan Akademik.</p>
+              </div>
+            </div>
+            <div v-else-if="booking.renterType === 'TENDIK'" class="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <p class="text-xs font-semibold text-purple-700">Harga khusus Tendik diterapkan.</p>
               </div>
             </div>
           </div>
