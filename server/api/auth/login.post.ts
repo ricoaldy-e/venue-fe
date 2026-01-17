@@ -5,8 +5,8 @@ import { AUTH, API } from '~/utils/constants'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
-  const { email, password, turnstile } = await readBody<{ email: string; password: string, turnstile:string }>(event)
-  console.log(turnstile)
+  const { email, password, turnstile } = await readBody<{ email: string; password: string, turnstile: string }>(event)
+
   if (!email || !password)
     throw createError({ statusCode: 400, statusMessage: 'Email & password required' })
 
@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
 
     return { ok: true, admin: data.admin }
   } catch (err: any) {
-    console.log(err)
+
     if (err?.name === 'FetchError' || err?.message?.includes('timeout')) {
       throw createError({ statusCode: 502, statusMessage: 'Auth service unreachable' })
     }

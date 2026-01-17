@@ -66,17 +66,19 @@ const customerName = ref('')
 const customerContact = ref('')
 const customerEmail = ref('')
 const customerInstitution = ref('')
-const customerAcademic = ref(false)
+const renterType = ref<'UMUM' | 'TENDIK' | 'AKADEMIK'>('UMUM')
 const bookingLoading = ref(false)
 const bookingError = ref<string | null>(null)
 const bookingSuccess = ref<string | null>(null)
 const customerSuratUrl = ref('')
+const sptjmFile = ref<File | null>(null)
 
 const errors = ref({
   name: '',
   contact: '',
   email: '',
-  suratUrl: ''
+  suratUrl: '',
+  sptjm: ''
 })
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
@@ -130,7 +132,7 @@ const validateEmail = () => {
 }
 
 const validateSuratUrl = () => {
-  if (!customerAcademic.value) {
+  if (renterType.value === 'UMUM') {
     errors.value.suratUrl = ''
     return true
   }
@@ -142,6 +144,46 @@ const validateSuratUrl = () => {
   errors.value.suratUrl = ''
   return true
 }
+
+const validateSptjm = () => {
+  if (!sptjmFile.value) {
+    errors.value.sptjm = 'Surat SPTJM wajib diupload'
+    return false
+  }
+  if (!sptjmFile.value.type.includes('pdf')) {
+    errors.value.sptjm = 'Surat SPTJM harus dalam format PDF'
+    return false
+  }
+  errors.value.sptjm = ''
+  return true
+}
+
+const handleSptjmUpload = (e: Event) => {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (file) {
+    if (!file.type.includes('pdf')) {
+      errors.value.sptjm = 'Surat SPTJM harus dalam format PDF'
+      sptjmFile.value = null
+      return
+    }
+    sptjmFile.value = file
+    errors.value.sptjm = ''
+  }
+}
+
+const removeSptjm = () => {
+  sptjmFile.value = null
+}
+
+// Computed price based on renter type
+const displayPrice = computed(() => {
+  if (renterType.value === 'AKADEMIK') return 0
+  return totalPrice.value
+})
+
+const needsInstitution = computed(() => renterType.value !== 'UMUM')
+const needsSuratPengantar = computed(() => renterType.value !== 'UMUM')
 
 const formatDateLong = (slotDate: string, label: string) => {
   try {
@@ -181,8 +223,9 @@ const createBooking = async () => {
   const isContactValid = validateContact()
   const isEmailValid = validateEmail()
   const isSuratUrlValid = validateSuratUrl()
+  const isSptjmValid = validateSptjm()
   
-  if (!isNameValid || !isContactValid || !isEmailValid || !isSuratUrlValid) {
+  if (!isNameValid || !isContactValid || !isEmailValid || !isSuratUrlValid || !isSptjmValid) {
     bookingError.value = 'Mohon perbaiki data yang tidak valid'
     window.scrollTo({ top: 0, behavior: 'smooth' })
     return
@@ -209,20 +252,107 @@ const createBooking = async () => {
     }
   })
   try {
-    const result = await $fetch<{ bookingCode: string }>('/api/bookings/create', {
-      method: 'POST',
-      body: {
+    // Verify file again to be sure
+    if (sptjmFile.value && !sptjmFile.value.type.includes('pdf')) {
+      throw new Error('File SPTJM harus PDF')
+    }
+
+    // Use FormData to support file upload
+    const formData = new FormData()
+    
+    // 1. Prepare Operations JSON
+    const operations = {
+      query: `mutation CreateBooking(
+        $name: String!
+        $contact: String!
+        $email: String!
+        $institution: String
+        $renterType: RenterType!
+        $sptjmFile: Upload
+        $suratFile: Upload
+        $details: [BookingDetailInput!]!
+      ) {
+        createBooking(
+          name: $name
+          contact: $contact
+          email: $email
+          institution: $institution
+          renterType: $renterType
+          sptjmFile: $sptjmFile
+          suratFile: $suratFile
+          details: $details
+        ) {
+          bookingCode
+          name
+          status
+          paymentStatus
+          totalPrice
+        }
+      }`,
+      variables: {
         name: customerName.value,
         contact: customerContact.value,
         email: customerEmail.value,
-        institution: customerInstitution.value || undefined,
-        isAcademic: customerAcademic.value,
-        suratUrl: customerAcademic.value ? (customerSuratUrl.value || 'https://placeholder.local/surat.pdf') : undefined,
-        details,
+        institution: needsInstitution.value ? customerInstitution.value : null,
+        renterType: renterType.value,
+        sptjmFile: null, // Placeholder, will be mapped
+        suratFile: null,
+        details: details.map(d => ({
+          fieldId: d.fieldId,
+          bookingDate: d.bookingDate,
+          startHour: d.startHour,
+          pricePerHour: d.pricePerHour,
+        })),
       },
+    }
+
+    // 2. Prepare Map JSON
+    // Strict order: operations -> map -> files
+    const map: Record<string, string[]> = {}
+    
+    if (sptjmFile.value) {
+      map['0'] = ['variables.sptjmFile']
+    }
+
+    // Append operations FIRST
+    formData.append('operations', JSON.stringify(operations))
+    
+    // Append map SECOND
+    formData.append('map', JSON.stringify(map))
+    
+    // Append files LAST
+    if (sptjmFile.value) {
+      formData.append('0', sptjmFile.value)
+    }
+    
+
+    
+    const response = await fetch('/api/bookings/create', {
+      method: 'POST',
+      body: formData,
+      // Do NOT set Content-Type header manually for FormData, let browser set it with boundary
     })
+
+    if (!response.ok) {
+        let errMsg = 'Terjadi kesalahan saat upload'
+        try {
+            const errJson = await response.json()
+            errMsg = errJson.statusMessage || errJson.message || errMsg
+        } catch (e) {
+             // ignore
+        }
+        throw new Error(errMsg)
+    }
+
+    const result = await response.json()
+    
+    // Handle both response formats (direct or nested in data.createBooking)
+    const bookingCode = (result as any)?.bookingCode || result?.data?.createBooking?.bookingCode || ''
+    if (result?.errors?.length) {
+      throw new Error(result.errors[0]?.message || 'Gagal membuat booking')
+    }
     bookingCart.value = { stadionId: null, stadionName: '', slots: [] }
-    bookingSuccess.value = `Booking berhasil! Kode: ${result?.bookingCode || ''}`
+    bookingSuccess.value = `Booking berhasil! Kode: ${bookingCode}`
     setTimeout(() => {
       bookingSuccess.value = null
       navigateTo('/')
@@ -349,19 +479,73 @@ const createBooking = async () => {
                 {{ errors.email }}
               </p>
             </label>
-            <label class="block">
-              <span class="text-gray-600">Instansi (opsional)</span>
+            <!-- Kategori Penyewa Dropdown -->
+            <div class="block">
+              <span class="text-gray-600">Kategori Penyewa <span class="text-red-500">*</span></span>
+              <select
+                v-model="renterType"
+                class="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2 focus:border-[#1f2a56] focus:outline-none focus:ring-2 focus:ring-[#1f2a56]/20 bg-white"
+              >
+                <option value="UMUM">Umum (Mahasiswa Umum)</option>
+                <option value="TENDIK">Tenaga Kependidikan</option>
+                <option value="AKADEMIK">Akademik (Mahasiswa dengan Kegiatan Kampus)</option>
+              </select>
+              <p class="mt-1 text-xs text-gray-500">
+                <template v-if="renterType === 'UMUM'">Harga standar berlaku</template>
+                <template v-else-if="renterType === 'TENDIK'">Harga khusus tenaga kependidikan UNDIP</template>
+                <template v-else>Gratis untuk kegiatan akademik resmi</template>
+              </p>
+            </div>
+
+            <!-- Institution (untuk Tendik & Akademik) -->
+            <label v-if="needsInstitution" class="block">
+              <span class="text-gray-600">Instansi/Unit <span class="text-red-500">*</span></span>
               <input
                 v-model="customerInstitution"
                 type="text"
+                placeholder="Contoh: Fakultas Teknik UNDIP"
                 class="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2 focus:border-[#1f2a56] focus:outline-none focus:ring-2 focus:ring-[#1f2a56]/20"
               />
             </label>
-            <label class="inline-flex items-center gap-2 text-gray-600">
-              <input v-model="customerAcademic" type="checkbox" class="rounded border-gray-300 text-[#1f2a56] focus:ring-[#1f2a56]" />
-              Pemesan berasal dari unit akademik
-            </label>
-            <label v-if="customerAcademic" class="block">
+
+            <!-- Upload SPTJM (wajib untuk semua) -->
+            <div class="block">
+              <span class="text-gray-600">Upload SPTJM <span class="text-red-500">*</span></span>
+              <p class="text-xs text-gray-500 mb-2">Surat Pernyataan Tanggung Jawab Mutlak (format PDF)</p>
+              <div v-if="!sptjmFile" class="mt-1">
+                <label class="flex items-center justify-center w-full rounded-xl border-2 border-dashed border-gray-300 px-3 py-4 cursor-pointer hover:border-[#1f2a56] hover:bg-gray-50 transition-colors">
+                  <div class="flex flex-col items-center">
+                    <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    <span class="text-sm text-gray-600">Klik untuk upload PDF</span>
+                  </div>
+                  <input type="file" accept=".pdf" class="hidden" @change="handleSptjmUpload" />
+                </label>
+              </div>
+              <div v-else class="mt-1 flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-3 py-2">
+                <div class="flex items-center gap-2">
+                  <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span class="text-sm text-green-700 font-medium truncate max-w-[150px]">{{ sptjmFile.name }}</span>
+                </div>
+                <button type="button" @click="removeSptjm" class="text-red-500 hover:text-red-700 p-1">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <p v-if="errors.sptjm" class="mt-1 text-xs text-red-600 flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                {{ errors.sptjm }}
+              </p>
+            </div>
+
+            <!-- Surat Pengantar (untuk Tendik & Akademik) -->
+            <label v-if="needsSuratPengantar" class="block">
               <span class="text-gray-600">URL Surat Pengantar <span class="text-gray-400">(opsional)</span></span>
               <input
                 v-model="customerSuratUrl"
@@ -404,23 +588,26 @@ const createBooking = async () => {
           <div class="space-y-2 text-sm text-gray-600">
             <div class="flex items-center justify-between">
               <span>Biaya Sewa</span>
-              <span>Rp{{ totalPrice.toLocaleString('id-ID') }}</span>
+              <span>Rp{{ displayPrice.toLocaleString('id-ID') }}</span>
             </div>
             <div class="flex items-center justify-between">
               <span>Biaya Tambahan</span>
               <span>Rp0</span>
             </div>
           </div>
+          <div v-if="renterType === 'AKADEMIK'" class="mt-2 p-2 bg-green-50 border border-green-200 rounded-lg">
+            <p class="text-xs text-green-700 font-medium">✓ Gratis untuk kegiatan akademik</p>
+          </div>
           <div class="mt-3 flex items-center justify-between border-t border-gray-100 pt-3 text-sm font-semibold text-[#1f2a56]">
             <span>Total Bayar</span>
-            <span>Rp{{ totalPrice.toLocaleString('id-ID') }}</span>
+            <span>Rp{{ displayPrice.toLocaleString('id-ID') }}</span>
           </div>
         </div>
 
         <div class="rounded-3xl bg-white p-4 shadow-sm">
           <p class="mb-2 font-semibold text-[#1f2a56]">Atur Pembayaran</p>
           <p class="text-sm text-gray-600">Bayar Lunas</p>
-          <p class="text-base font-bold text-[#1f2a56]">Rp{{ totalPrice.toLocaleString('id-ID') }}</p>
+          <p class="text-base font-bold text-[#1f2a56]">Rp{{ displayPrice.toLocaleString('id-ID') }}</p>
         </div>
 
         <div class="rounded-3xl bg-white p-4 shadow-sm">
@@ -429,11 +616,15 @@ const createBooking = async () => {
         </div>
 
         <button
-          class="w-full rounded-xl bg-[#1f2a56] py-3 text-sm font-semibold text-white shadow hover:bg-[#162347] disabled:cursor-not-allowed disabled:bg-gray-400"
+          class="w-full rounded-xl bg-[#1f2a56] py-3 text-sm font-semibold text-white shadow hover:bg-[#162347] disabled:bg-[#1f2a56]/70 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
           @click="createBooking"
           :disabled="pending || !orderSlots.length || bookingLoading"
         >
-          {{ bookingLoading ? 'Memproses...' : 'Buat Booking' }}
+          <svg v-if="bookingLoading" class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span>{{ bookingLoading ? 'Memproses...' : 'Buat Booking' }}</span>
         </button>
       </aside>
     </div>

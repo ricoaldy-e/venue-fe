@@ -17,9 +17,8 @@ export default defineEventHandler(async (event) => {
       stadionId: Number(body.stadionId),
       name: body.name,
       description: body.description,
-      // HARGA DISEMBUNYIKAN: Terima dari body (default 0 dari FE)
-      // Tidak hardcode agar nanti bisa reactive kalau fitur diaktifkan
       pricePerHour: Number(body.pricePerHour || 0),
+      priceTendik: Number(body.priceTendik || 0),
       status: body.status,
       images: body.images,
     }

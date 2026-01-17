@@ -26,6 +26,7 @@ export const QUERY_GET_STADION_BY_ID = `
         name
         description
         pricePerHour
+        priceTendik
         status
         images {
           id
