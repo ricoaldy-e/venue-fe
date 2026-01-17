@@ -52,7 +52,7 @@ const {
           </svg>
         </div>
         <div>
-          <h1 class="text-2xl uppercase font-bold text-gray-900 tracking-tight">Manajemen Fasilitas</h1>
+          <h1 class="text-2xl uppercase font-bold text-gray-900 tracking-tight">Kelola Fasilitas</h1>
           <p class="text-sm text-gray-500 mt-1">
             Kelola master data fasilitas umum seperti toilet, kantin, area parkir, dan lainnya.
           </p>

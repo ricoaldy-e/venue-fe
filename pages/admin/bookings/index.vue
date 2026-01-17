@@ -67,7 +67,7 @@ const fallbackImage = 'https://images.unsplash.com/photo-1522778526097-ce0a22ceb
           </svg>
         </div>
         <div>
-          <h1 class="text-2xl uppercase font-bold text-gray-900 tracking-tight">Manajemen Booking</h1>
+          <h1 class="text-2xl uppercase font-bold text-gray-900 tracking-tight">Kelola Booking</h1>
           <p class="text-sm text-gray-500 mt-1">
             Pilih stadion untuk melihat jadwal ketersediaan dan mengelola reservasi.
           </p>

@@ -1,5 +1,36 @@
-import { print } from 'graphql'
-import { QUERY_GET_BOOKINGS } from "~/graphql/queries/get_bookings"
+import { QUERY_GET_BOOKINGS_PAGINATED } from "~/graphql/queries/get_bookings"
+
+// Interface untuk Summary dari Server
+interface BookingSummary {
+  totalRevenue: number
+  totalCount: number
+  paidCount: number
+  unpaidCount: number
+  academicCount: number
+  nonAcademicCount: number
+  academicRevenue: number
+  nonAcademicRevenue: number
+  paidPercentage: number
+  averagePerBooking: number
+  approvedCount: number
+  cancelledCount: number
+  pendingCount: number
+}
+
+interface PaginationInfo {
+  page: number
+  limit: number
+  total: number
+  totalPages: number
+  hasNextPage: boolean
+  hasPrevPage: boolean
+}
+
+interface BookingResponse {
+  data?: any[]
+  pagination?: PaginationInfo
+  summary?: BookingSummary
+}
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
@@ -13,9 +44,39 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 401, statusMessage: 'Not authenticated' })
   }
 
+  const query = getQuery(event)
+
+  // Helper to convert date string to ISO format for GraphQL DateTime
+  const toIsoDate = (dateStr: string | undefined) => {
+    if (!dateStr) return undefined
+    if (dateStr.includes('T')) return dateStr
+    return `${dateStr}T00:00:00.000Z`
+  }
+
+  const toIsoDateEnd = (dateStr: string | undefined) => {
+    if (!dateStr) return undefined
+    if (dateStr.includes('T')) return dateStr
+    return `${dateStr}T23:59:59.999Z`
+  }
+
+  const variables = {
+    page: query.page ? Number(query.page) : 1,
+    limit: query.limit ? Number(query.limit) : 10,
+    sortOrder: (query.sortOrder as string) || 'desc',
+    status: (query.status as string) || undefined,
+    paymentStatus: (query.paymentStatus as string) || undefined,
+    search: (query.search as string) || undefined,
+    stadionId: (query.stadionId as string) || undefined,
+    startDate: toIsoDate(query.startDate as string),
+    endDate: toIsoDateEnd(query.endDate as string),
+    date: toIsoDate(query.date as string),
+  }
+
   try {
     const response = await $fetch<{
-      data?: { bookings?: any[] }
+      data?: {
+        bookings?: BookingResponse
+      }
       errors?: Array<{
         message?: string
         extensions?: {
@@ -29,8 +90,8 @@ export default defineEventHandler(async (event) => {
         Authorization: `Bearer ${token}`,
       },
       body: {
-        query: QUERY_GET_BOOKINGS,
-        variables: {}
+        query: QUERY_GET_BOOKINGS_PAGINATED,
+        variables
       },
     })
 
@@ -41,17 +102,30 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const bookings = response.data?.bookings || []
-    
-    const sortedBookings = bookings.sort((a: any, b: any) => {
-      const dateA = new Date(a.createdAt || 0).getTime()
-      const dateB = new Date(b.createdAt || 0).getTime()
-      return dateB - dateA
-    })
+    // Return complete response with data, pagination, and summary
+    const defaultResponse = {
+      data: [],
+      pagination: { page: 1, limit: 10, total: 0, totalPages: 0, hasNextPage: false, hasPrevPage: false },
+      summary: {
+        totalRevenue: 0,
+        totalCount: 0,
+        paidCount: 0,
+        unpaidCount: 0,
+        academicCount: 0,
+        nonAcademicCount: 0,
+        academicRevenue: 0,
+        nonAcademicRevenue: 0,
+        paidPercentage: 0,
+        averagePerBooking: 0,
+        approvedCount: 0,
+        cancelledCount: 0,
+        pendingCount: 0
+      }
+    }
 
-    return sortedBookings
-  } catch (error: unknown) {
-    if (error as unknown as Error) throw error
+    return response.data?.bookings || defaultResponse
+  } catch (error: any) {
+    if (error?.statusCode) throw error
     throw createError({ statusCode: 502, statusMessage: 'Bookings service unreachable' })
   }
 })

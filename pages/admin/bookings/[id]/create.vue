@@ -219,6 +219,12 @@ async function handleSubmit(){
     return
   }
 
+  // Check slot availability before proceeding (race condition prevention)
+  const slotsAvailable = await checkSlotAvailability()
+  if (!slotsAvailable) {
+    return // Error message already set by checkSlotAvailability
+  }
+
   bookingForm.name = bookingForm.name.trim()
   bookingForm.contact = bookingForm.contact.trim()
   bookingForm.email = bookingForm.email.trim()

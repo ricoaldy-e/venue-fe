@@ -22,14 +22,14 @@ const { confirm } = useConfirmation()
 
 const primaryNav: NavItem[] = [
   { label: 'Dashboard', icon: 'dashboard', to: '/admin', exact: true },
-  { label: 'Manajemen Booking', icon: 'booking', to: '/admin/bookings' },
+  { label: 'Booking', icon: 'booking', to: '/admin/bookings' },
 ]
 
 const menuLainnya: NavItem[] = [
-  { label: 'Manajemen Stadion', icon: 'stadium', to: '/admin/stadiums' },
-  { label: 'Manajemen Lapangan', icon: 'field', to: '/admin/fields' },
-  { label: 'Manajemen Fasilitas', icon: 'facility', to: '/admin/facilities' },
-  { label: 'Manajemen Jadwal', icon: 'schedule', to: '/admin/schedules' },
+  { label: 'Stadion', icon: 'stadium', to: '/admin/stadiums' },
+  { label: 'Lapangan', icon: 'field', to: '/admin/fields' },
+  { label: 'Fasilitas', icon: 'facility', to: '/admin/facilities' },
+  { label: 'Jadwal', icon: 'schedule', to: '/admin/schedules' },
   { label: 'Pengaturan', icon: 'option', to: '/admin/options' },
 ]
 
@@ -47,12 +47,10 @@ const isActive = (item: NavItem) => {
   return currentPath.value === target || currentPath.value.startsWith(`${target}/`)
 }
 
-// Check if any menu lainnya item is active
 const isMenuLainnyaActive = computed(() => {
   return menuLainnya.some(item => isActive(item))
 })
 
-// Auto-open menu lainnya if any of its items is active
 if (isMenuLainnyaActive.value) {
   isMenuLainnyaOpen.value = true
 }
@@ -142,7 +140,6 @@ const handleAction = async (item: NavItem) => {
 
             <span class="flex-1 whitespace-nowrap">{{ item.label }}</span>
 
-            <!-- Active indicator for primary menu -->
             <span
               v-if="isActive(item)"
               class="w-2 h-2 rounded-full bg-white shadow-sm"
@@ -150,7 +147,6 @@ const handleAction = async (item: NavItem) => {
           </NuxtLink>
         </li>
 
-        <!-- Menu Lainnya Collapsible -->
         <li>
           <button
             type="button"
@@ -176,7 +172,7 @@ const handleAction = async (item: NavItem) => {
               </svg>
             </span>
 
-            <span class="flex-1 whitespace-nowrap text-left">Menu Lainnya</span>
+            <span class="flex-1 whitespace-nowrap text-left">Master</span>
 
             <!-- Expand/Collapse indicator -->
             <svg

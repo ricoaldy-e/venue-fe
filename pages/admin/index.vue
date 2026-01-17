@@ -134,7 +134,7 @@ onMounted(() => {
   })
 })
 
-const rawBookings = computed<any[]>(() => (bookingsResponse.value as any)?.data?.bookings || [])
+const rawBookings = computed<any[]>(() => (bookingsResponse.value as any)?.data?.bookings?.data || [])
 
 const dashboardData = computed<DashboardCardItem[]>(() => {
   let fieldsToCheck = allFields.value
@@ -201,7 +201,7 @@ const switchMode = (mode: 'daily' | 'range') => {
         <div>
           <h1 class="text-2xl uppercase font-bold text-gray-900 tracking-tight">Dashboard Analisis</h1>
           <p class="text-sm text-gray-500 mt-1 leading-relaxed">
-            Pantau ketersediaan lapangan secara real-time untuk efisiensi manajemen.
+            Pantau ketersediaan lapangan secara real-time untuk efisiensi pengelolaan.
           </p>
         </div>
       </div>
@@ -466,12 +466,12 @@ const switchMode = (mode: 'daily' | 'range') => {
         </thead>
         <tbody>
           <tr v-for="(item, index) in dashboardData" :key="item.id" :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
-            <td class="border border-gray-900 px-1.5 py-1.5 font-semibold text-gray-900 text-center">{{ index + 1 }}</td>
-            <td class="border border-gray-900 px-2 py-1.5 font-semibold text-gray-900">{{ item.name }}</td>
-            <td class="border border-gray-900 px-1.5 py-1.5 font-semibold text-gray-900 text-center">{{ item.totalCapacity }}</td>
-            <td class="border border-gray-900 px-1.5 py-1.5 font-semibold text-gray-900 text-center">{{ item.totalBooked }}</td>
-            <td class="border border-gray-900 px-1.5 py-1.5 font-semibold text-gray-900 text-center">{{ item.remaining }}</td>
-            <td class="border border-gray-900 px-1.5 py-1.5 font-semibold text-center print:bg-transparent print:text-gray-900" :class="item.occupancyRate >= 100 ? 'bg-red-100 text-red-900' : (item.occupancyRate > 75 ? 'bg-amber-100 text-amber-900' : 'bg-green-100 text-green-900')">
+            <td class="border border-gray-900 px-1.5 py-1.5 font-medium text-gray-900 text-center">{{ index + 1 }}</td>
+            <td class="border border-gray-900 px-2 py-1.5 font-medium text-gray-900">{{ item.name }}</td>
+            <td class="border border-gray-900 px-1.5 py-1.5 font-medium text-gray-900 text-center">{{ item.totalCapacity }}</td>
+            <td class="border border-gray-900 px-1.5 py-1.5 font-medium text-gray-900 text-center">{{ item.totalBooked }}</td>
+            <td class="border border-gray-900 px-1.5 py-1.5 font-medium text-gray-900 text-center">{{ item.remaining }}</td>
+            <td class="border border-gray-900 px-1.5 py-1.5 font-medium text-center print:bg-transparent print:text-gray-900" :class="item.occupancyRate >= 100 ? 'bg-red-100 text-red-900' : (item.occupancyRate > 75 ? 'bg-amber-100 text-amber-900' : 'bg-green-100 text-green-900')">
               {{ Math.round(item.occupancyRate) }}%
             </td>
           </tr>
@@ -493,35 +493,18 @@ const switchMode = (mode: 'daily' | 'range') => {
         <div class="border-t border-gray-400 pt-2">
           <p class="font-bold mb-1.5 text-[10px]">Keterangan Informasi:</p>
           <ul class="list-disc list-inside space-y-0.5 text-gray-700 ml-2">
-            <li><span class="font-semibold">Total Kuota:</span> Kapasitas slot operasional lapangan selama periode yang dipilih</li>
-            <li><span class="font-semibold">Terbooking:</span> Jumlah slot yang sudah dipesan oleh pengguna</li>
-            <li><span class="font-semibold">Sisa:</span> Jumlah slot yang masih tersedia untuk dipesan</li>
-            <li><span class="font-semibold">Persentase Okupansi:</span> Tingkat penggunaan lapangan (Terbooking / Total Kuota × 100%)</li>
+            <li><span class="font-semibold">Total Kuota:</span> Kapasitas slot operasional lapangan selama periode yang dipilih.</li>
+            <li><span class="font-semibold">Terbooking:</span> Jumlah slot yang sudah dipesan oleh pengguna.</li>
+            <li><span class="font-semibold">Sisa:</span> Jumlah slot yang masih tersedia untuk dipesan.</li>
+            <li><span class="font-semibold">Persentase Okupansi:</span> Tingkat penggunaan lapangan (Terbooking / Total Kuota × 100%).</li>
           </ul>
         </div>
 
         <div class="border-t border-gray-400 pt-2">
-          <p class="font-bold mb-1.5 text-[10px]">Status Ketersediaan Lapangan:</p>
-          <ul class="list-disc list-inside space-y-0.5 text-gray-700 ml-2">
-            <li><span class="font-semibold">Tersedia:</span> Kapasitas masih banyak (0-75% terisi)</li>
-            <li><span class="font-semibold">Hampir Penuh:</span> Kapasitas terbatas (76-99% terisi)</li>
-            <li><span class="font-semibold">Full Booked:</span> Semua kapasitas telah dipesan (100% terisi)</li>
-          </ul>
-        </div>
-
-        <div class="border-t border-gray-400 pt-2">
-          <p class="text-gray-600 italic text-[8px]">Laporan ini dicetak secara otomatis oleh Sistem Informasi Manajemen Lapangan VENUE UNDIP</p>
+          <p class="text-gray-600 italic text-[8px]">Laporan ini dicetak secara otomatis oleh Sistem Informasi VENUE UNDIP.</p>
         </div>
       </div>
     </div>
-
-    <div class="hidden print:block w-full border-t border-gray-300 bg-white py-1 mt-4">
-      <div class="flex justify-between items-center text-[8px] text-gray-500 px-4">
-        <p>Sistem Informasi Manajemen Lapangan - VENUE UNDIP</p>
-        <p>Dicetak: {{ printTimestamp }}</p>
-      </div>
-    </div>
-
   </div>
 </template>
 
