@@ -2,7 +2,6 @@ import { defineEventHandler, createError } from 'h3'
 import { $fetch } from 'ofetch'
 import { QUERY_STADIONS_DATA } from "~/graphql/queries/get_stadions_data"
 import { QUERY_BOOKINGS_WITH_DETAILS } from "~/graphql/queries/get_bookings_with_details"
-const config = useRuntimeConfig()
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
