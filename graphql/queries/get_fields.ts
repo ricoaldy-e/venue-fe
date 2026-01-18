@@ -6,6 +6,7 @@ export const QUERY_GET_FIELDS = `
       name
       description
       pricePerHour
+      priceTendik
       status
       Stadion {
         id

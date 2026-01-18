@@ -29,9 +29,10 @@ const bookingForm = reactive({
   name: '',
   contact: '',
   email: '',
-  isAcademic: false,
+  renterType: 'UMUM' as 'UMUM' | 'TENDIK' | 'AKADEMIK',
   institution: '',
-  suratFile: null as File | null
+  suratFile: null as File | null,
+  sptjmFile: null as File | null
 })
 
 const errorMsg = ref<string | null>(null)
@@ -106,7 +107,7 @@ const validateEmail = () => {
 }
 
 const validateInstitution = () => {
-  if (!bookingForm.isAcademic) {
+  if (bookingForm.renterType === 'UMUM') {
     fieldErrors.value.institution = ''
     return true
   }
@@ -123,17 +124,27 @@ const validateInstitution = () => {
   return true
 }
 
-function handleFileUpload(e: Event){
+function handleSuratUpload(e: Event){
   const input = e.target as HTMLInputElement
   bookingForm.suratFile = input.files?.[0] || null
 }
 
+function handleSptjmUpload(e: Event){
+  const input = e.target as HTMLInputElement
+  bookingForm.sptjmFile = input.files?.[0] || null
+}
+
 const totalPrice = computed(() => {
-  if(bookingForm.isAcademic) {
+  if(bookingForm.renterType === 'AKADEMIK') {
     return 0
   }
 
-  return selectedSlots.value.reduce((sum, s) => sum + (s.pricePerHour || 0), 0)
+  return selectedSlots.value.reduce((sum, s) => {
+    const price = bookingForm.renterType === 'TENDIK' && s.priceTendik 
+      ? s.priceTendik 
+      : (s.pricePerHour || 0)
+    return sum + price
+  }, 0)
 })
 
 /**
@@ -219,13 +230,22 @@ async function handleSubmit(){
     return
   }
 
+  // Check slot availability before proceeding (race condition prevention)
+  const slotsAvailable = await checkSlotAvailability()
+  if (!slotsAvailable) {
+    return // Error message already set by checkSlotAvailability
+  }
+
   bookingForm.name = bookingForm.name.trim()
   bookingForm.contact = bookingForm.contact.trim()
   bookingForm.email = bookingForm.email.trim()
   if (bookingForm.institution) bookingForm.institution = bookingForm.institution.trim()
 
     const details = selectedSlots.value.map((slot) => {
-    const price = bookingForm.isAcademic ? 0 : (slot.pricePerHour || 0)
+    let price = slot.pricePerHour || 0
+    if (bookingForm.renterType === 'AKADEMIK') price = 0
+    else if (bookingForm.renterType === 'TENDIK' && slot.priceTendik) price = slot.priceTendik
+
     const normalizedDate = new Date(slot.date)
     const utcMidnight = toUtcMidnightIso(normalizedDate)
 
@@ -236,17 +256,20 @@ async function handleSubmit(){
       subtotal: price,
     }
   })
-  const vars = {
+  const vars: any = {
     name: bookingForm.name,
     contact: bookingForm.contact,
     email: bookingForm.email,
-    institution: bookingForm.isAcademic ? bookingForm.institution : undefined,
-    isAcademic: bookingForm.isAcademic,
+    institution: bookingForm.renterType !== 'UMUM' ? bookingForm.institution : undefined,
+    renterType: bookingForm.renterType,
     details,
-    suratFile: null as File | null
+    suratFile: null,
+    sptjmFile: null
   }
 
+  // If uploading files, set variables to null initially
   if (bookingForm.suratFile) vars.suratFile = null
+  if (bookingForm.sptjmFile) vars.sptjmFile = null
 
   const operations = {
     query: MUTATION_CREATE_BOOKING,
@@ -254,12 +277,26 @@ async function handleSubmit(){
   }
 
   try {
-    if (bookingForm.suratFile) {
+    if (bookingForm.suratFile || bookingForm.sptjmFile) {
       const fd = new FormData()
       fd.append('operations', JSON.stringify(operations))
-      const map = { '0': ['variables.suratFile'] }
+      
+      const map: Record<string, string[]> = {}
+      let fileCounter = 0
+      
+      if (bookingForm.suratFile) {
+        map[`${fileCounter}`] = ['variables.suratFile']
+        fd.append(`${fileCounter}`, bookingForm.suratFile, bookingForm.suratFile.name)
+        fileCounter++
+      }
+      
+      if (bookingForm.sptjmFile) {
+        map[`${fileCounter}`] = ['variables.sptjmFile']
+        fd.append(`${fileCounter}`, bookingForm.sptjmFile, bookingForm.sptjmFile.name)
+        fileCounter++
+      }
+      
       fd.append('map', JSON.stringify(map))
-      fd.append('0', bookingForm.suratFile, bookingForm.suratFile.name)
 
       await new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest()
@@ -305,8 +342,8 @@ async function handleSubmit(){
         name: bookingForm.name,
         contact: bookingForm.contact,
         email: bookingForm.email,
-        institution: bookingForm.isAcademic ? bookingForm.institution : undefined,
-        isAcademic: bookingForm.isAcademic,
+        institution: bookingForm.renterType !== 'UMUM' ? bookingForm.institution : undefined,
+        renterType: bookingForm.renterType,
         details,
       }
 
@@ -337,8 +374,11 @@ async function handleSubmit(){
   }
 }
 
-watch(() => bookingForm.isAcademic, (val) => {
-  if (!val) bookingForm.suratFile = null
+watch(() => bookingForm.renterType, (val) => {
+  if (val === 'UMUM') {
+    bookingForm.suratFile = null
+    bookingForm.institution = ''
+  }
 })
 </script>
 
@@ -402,10 +442,19 @@ watch(() => bookingForm.isAcademic, (val) => {
                       <span class="font-medium">{{ slot.startHour }}:00 - {{ slot.startHour + 1 }}:00</span>
                     </div>
                   </div>
-                  <!-- HARGA DISEMBUNYIKAN SEMENTARA -->
+                  <!-- HARGA DINAMIS BERDASARKAN TIPE PENYEWA -->
                   <div class="text-right">
                     <p class="text-xs text-gray-500 uppercase tracking-wide font-bold">Harga</p>
-                    <p class="text-lg font-bold text-blue-600 mt-1">Rp {{ slot.pricePerHour.toLocaleString('id-ID') }}</p>
+                    <template v-if="bookingForm.renterType === 'AKADEMIK'">
+                      <p class="text-lg font-bold text-green-600 mt-1">GRATIS</p>
+                    </template>
+                    <template v-else-if="bookingForm.renterType === 'TENDIK' && slot.priceTendik">
+                      <p class="text-lg font-bold text-purple-600 mt-1">Rp {{ slot.priceTendik.toLocaleString('id-ID') }}</p>
+                      <p class="text-xs text-gray-400 line-through">Rp {{ slot.pricePerHour.toLocaleString('id-ID') }}</p>
+                    </template>
+                    <template v-else>
+                      <p class="text-lg font-bold text-blue-600 mt-1">Rp {{ slot.pricePerHour.toLocaleString('id-ID') }}</p>
+                    </template>
                   </div>
                 </div>
               </div>
@@ -502,31 +551,52 @@ watch(() => bookingForm.isAcademic, (val) => {
             <p class="text-xs text-gray-500 mt-0.5">Pilih jenis booking untuk keperluan akademik.</p>
           </div>
           <div class="p-6 space-y-6">
-            <div class="flex items-start gap-3 p-4 bg-blue-50 rounded-xl border border-blue-200">
-              <input 
-                id="academic" 
-                type="checkbox" 
-                v-model="bookingForm.isAcademic"
-                class="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" 
-              />
-              <div class="flex-1">
-                <label for="academic" class="block text-sm font-bold text-gray-900 cursor-pointer">
-                  Booking untuk Keperluan Akademik
-                </label>
-                <p class="text-xs text-gray-600 mt-1">
-                  Centang jika booking ini untuk kegiatan akademik.
-                </p>
+            <div class="space-y-1.5">
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Tipe Penyewa</label>
+              <div class="relative">
+                <select 
+                  v-model="bookingForm.renterType"
+                  class="block w-full rounded-xl border border-gray-300 pl-4 pr-10 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 bg-white shadow-sm transition-all appearance-none cursor-pointer"
+                >
+                  <option value="UMUM">Umum (Mahasiswa Umum)</option>
+                  <option value="TENDIK">Tendik (Tenaga Kependidikan)</option>
+                  <option value="AKADEMIK">Akademik (Mahasiswa dengan Kegiatan Kampus)</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                  <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </div>
               </div>
+              <p class="text-xs text-gray-500 mt-1">
+                Pilih kategori penyewa untuk menentukan harga sewa.
+              </p>
             </div>
 
-            <div v-if="bookingForm.isAcademic" class="space-y-4 pl-4 border-l-4 border-blue-500">
+            <!-- SPTJM Upload (Mandatory) -->
+            <div class="space-y-1.5">
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Upload SPTJM (PDF) <span class="text-red-500">*</span></label>
+              <div class="relative">
+                <input 
+                  type="file" 
+                  accept="application/pdf" 
+                  @change="handleSptjmUpload"
+                  class="block w-full text-sm text-gray-900 border border-gray-300 rounded-xl cursor-pointer bg-gray-50 focus:outline-none focus:border-blue-500 file:mr-4 file:py-3 file:px-4 file:rounded-l-xl file:border-0 file:text-sm file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition-all" 
+                />
+              </div>
+              <p class="text-xs text-gray-500 mt-1">
+                💡 Surat Pernyataan Tanggung Jawab Mutlak (Wajib), format PDF max 5MB.
+              </p>
+            </div>
+
+            <div v-if="bookingForm.renterType !== 'UMUM'" class="space-y-4 pt-4 border-t border-gray-100">
               <div class="space-y-1.5">
                 <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Nama Institusi <span class="text-red-500">*</span></label>
                 <input 
                   v-model="bookingForm.institution" 
                   type="text" 
                   required 
-                  placeholder="Fakultas / Jurusan / UKM / Organisasi..." 
+                  placeholder="Fakultas / Jurusan / Unit / Organisasi..." 
                   @blur="validateInstitution"
                   :class="[
                     'block w-full rounded-xl border pl-4 pr-4 py-3 text-sm font-medium text-gray-900 focus:ring-2 shadow-sm transition-all',
@@ -549,12 +619,12 @@ watch(() => bookingForm.isAcademic, (val) => {
                   <input 
                     type="file" 
                     accept="application/pdf" 
-                    @change="handleFileUpload"
+                    @change="handleSuratUpload"
                     class="block w-full text-sm text-gray-900 border border-gray-300 rounded-xl cursor-pointer bg-gray-50 focus:outline-none focus:border-blue-500 file:mr-4 file:py-3 file:px-4 file:rounded-l-xl file:border-0 file:text-sm file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition-all" 
                   />
                 </div>
                 <p class="text-xs text-gray-500 mt-1">
-                  💡 Format file harus PDF, maksimal 5MB.
+                  💡 Surat pengantar dari institusi/fakultas (Wajib untuk Akademik/Tendik).
                 </p>
                 
                 <div v-if="uploadProgress !== null" class="mt-3 space-y-2">
@@ -587,12 +657,20 @@ watch(() => bookingForm.isAcademic, (val) => {
               <span class="text-sm font-medium text-gray-700">Total Biaya Booking</span>
               <span class="text-lg font-bold text-gray-900">{{ formatCurrency(totalPrice) }}</span>
             </div>
-            <div v-if="bookingForm.isAcademic" class="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+            <div v-if="bookingForm.renterType === 'AKADEMIK'" class="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
               <div class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
-                <p class="text-xs font-semibold text-green-700">Total harga gratis untuk penggunaan akademik.</p>
+                <p class="text-xs font-semibold text-green-700">Gratis untuk kegiatan Akademik.</p>
+              </div>
+            </div>
+            <div v-else-if="bookingForm.renterType === 'TENDIK'" class="mt-3 p-3 bg-purple-50 border border-purple-200 rounded-lg">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <p class="text-xs font-semibold text-purple-700">Harga khusus Tendik diterapkan.</p>
               </div>
             </div>
           </div>

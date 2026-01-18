@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
+import { useDebounceFn } from '@vueuse/core'
 
 definePageMeta({
   middleware: 'auth-admin',
@@ -7,9 +8,9 @@ definePageMeta({
 })
 
 useHead({
-  title: 'Riwayat Booking - VENUE UNDIP',
+  title: 'Riwayat & Kelola Booking - VENUE UNDIP',
   meta: [
-    { name: 'description', content: 'Riwayat semua booking lapangan di VENUE UNDIP' }
+    { name: 'description', content: 'Riwayat & kelola semua booking lapangan di VENUE UNDIP' }
   ]
 })
 
@@ -26,7 +27,7 @@ interface BookingHistory {
   name: string
   contact: string
   email: string
-  isAcademic: boolean
+  renterType: 'UMUM' | 'TENDIK' | 'AKADEMIK'
   totalPrice: number
   status: 'PENDING' | 'APPROVED' | 'CANCELLED'
   paymentStatus: 'UNPAID' | 'PAID'
@@ -34,64 +35,114 @@ interface BookingHistory {
   details: BookingDetail[]
 }
 
-// Fetch bookings
-const { data: bookings, pending, error, refresh } = await useAsyncData(
-  'bookingsHistory',
-  () => $fetch<BookingHistory[]>('/api/bookings/history'),
+interface PaginationInfo {
+  page: number
+  limit: number
+  total: number
+  totalPages: number
+  hasNextPage: boolean
+  hasPrevPage: boolean
+}
+
+interface BookingSummary {
+  totalCount: number
+  paidCount: number
+  unpaidCount: number
+  academicCount: number
+  nonAcademicCount: number
+  approvedCount: number
+  cancelledCount: number
+  pendingCount: number
+}
+
+interface BookingResponse {
+  data: BookingHistory[]
+  pagination: PaginationInfo
+  summary: BookingSummary
+}
+
+// Filter state - sent to server
+const currentPage = ref(1)
+const itemsPerPage = ref(10)
+const searchQuery = ref('')
+const statusFilter = ref<'' | 'PENDING' | 'APPROVED' | 'CANCELLED'>('')
+const paymentFilter = ref<'' | 'PAID' | 'UNPAID'>('')
+const sortOrder = ref<'desc' | 'asc'>('desc')
+
+// Build query params for API
+const queryParams = computed(() => ({
+  page: currentPage.value,
+  limit: itemsPerPage.value,
+  search: searchQuery.value || undefined,
+  status: statusFilter.value || undefined,
+  paymentStatus: paymentFilter.value || undefined,
+  sortOrder: sortOrder.value,
+}))
+
+// Default summary values
+const defaultSummary: BookingSummary = {
+  totalCount: 0,
+  paidCount: 0,
+  unpaidCount: 0,
+  academicCount: 0,
+  nonAcademicCount: 0,
+  approvedCount: 0,
+  cancelledCount: 0,
+  pendingCount: 0
+}
+
+// Fetch bookings with server-side pagination
+const { data: response, pending, error, refresh } = await useFetch<BookingResponse>(
+  '/api/bookings/history',
   {
+    query: queryParams,
     server: false,
     lazy: true,
-    default: () => []
+    default: () => ({ 
+      data: [], 
+      pagination: { page: 1, limit: 10, total: 0, totalPages: 0, hasNextPage: false, hasPrevPage: false },
+      summary: defaultSummary
+    })
   }
 )
 
-const searchQuery = ref('')
+// Extracted data from response
+const bookings = computed(() => response.value?.data || [])
+const pagination = computed(() => response.value?.pagination || { page: 1, limit: 10, total: 0, totalPages: 0, hasNextPage: false, hasPrevPage: false })
+const summary = computed(() => response.value?.summary || defaultSummary)
 
-const filteredBookings = computed(() => {
-  if (!bookings.value) return []
-  
-  const query = searchQuery.value.toLowerCase().trim()
-  if (!query) return bookings.value
-  
-  return bookings.value.filter(booking => 
-    booking.bookingCode.toLowerCase().includes(query) ||
-    booking.name.toLowerCase().includes(query)
-  )
+// Debounced search to avoid too many requests
+const debouncedRefresh = useDebounceFn(() => {
+  currentPage.value = 1 // Reset to page 1 when filters change
+  refresh()
+}, 300)
+
+// Watch for filter changes (except page changes)
+watch([searchQuery, statusFilter, paymentFilter, sortOrder], () => {
+  debouncedRefresh()
 })
 
-const statusFilter = ref<'ALL' | 'PENDING' | 'APPROVED' | 'CANCELLED'>('ALL')
+// Pagination handlers
+const nextPage = () => {
+  if (pagination.value.hasNextPage) {
+    currentPage.value++
+  }
+}
 
-const paymentFilter = ref<'ALL' | 'PAID' | 'UNPAID'>('ALL')
+const prevPage = () => {
+  if (pagination.value.hasPrevPage) {
+    currentPage.value--
+  }
+}
 
-const filteredByStatus = computed(() => {
-  if (statusFilter.value === 'ALL') return filteredBookings.value
-  return filteredBookings.value.filter(booking => booking.status === statusFilter.value)
+// Pagination summary
+const paginationSummary = computed(() => {
+  const p = pagination.value
+  if (p.total === 0) return 'Tidak ada data'
+  const start = (p.page - 1) * p.limit + 1
+  const end = Math.min(p.page * p.limit, p.total)
+  return `Menampilkan ${start}-${end} dari ${p.total} data`
 })
-
-const filteredByPayment = computed(() => {
-  if (paymentFilter.value === 'ALL') return filteredByStatus.value
-  return filteredByStatus.value.filter(booking => booking.paymentStatus === paymentFilter.value)
-})
-
-const sortOrder = ref<'newest' | 'oldest'>('newest')
-const sortedBookings = computed(() => {
-  const sorted = [...filteredByPayment.value]
-  sorted.sort((a, b) => {
-    const dateA = new Date(a.createdAt).getTime()
-    const dateB = new Date(b.createdAt).getTime()
-    return sortOrder.value === 'newest' ? dateB - dateA : dateA - dateB
-  })
-  return sorted
-})
-
-const { 
-  currentPage, 
-  paginatedItems: paginatedBookings, 
-  summary: paginationSummary, 
-  nextPage, 
-  prevPage,
-  totalPages
-} = usePagination(sortedBookings, { itemsPerPage: 10 })
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString)
@@ -163,12 +214,6 @@ const getPaymentText = (status: string) => {
   return status === 'PAID' ? 'Lunas' : 'Belum Bayar'
 }
 
-const getTotalBookings = (status?: string) => {
-  if (!bookings.value) return 0
-  if (!status || status === 'ALL') return bookings.value.length
-  return bookings.value.filter(b => b.status === status).length
-}
-
 const navigateToDetail = (bookingCode: string) => {
   navigateTo(`/admin/bookings/detail/${bookingCode}`)
 }
@@ -186,7 +231,7 @@ const navigateToDetail = (bookingCode: string) => {
           </svg>
         </div>
         <div>
-          <h1 class="text-2xl uppercase font-bold text-gray-900 tracking-tight">Riwayat Booking</h1>
+          <h1 class="text-2xl uppercase font-bold text-gray-900 tracking-tight">Riwayat & Kelola Booking</h1>
           <p class="text-sm text-gray-500 mt-1">
             Kelola dan pantau seluruh riwayat reservasi lapangan olahraga.
           </p>
@@ -219,20 +264,20 @@ const navigateToDetail = (bookingCode: string) => {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <!-- Total Booking Card -->
       <button
-        @click="statusFilter = 'ALL'"
+        @click="statusFilter = ''"
         :class="[
           'bg-white rounded-xl border p-5 shadow-sm text-left transition-all duration-200 hover:shadow-lg hover:scale-105 hover:border-blue-400 cursor-pointer',
-          statusFilter === 'ALL' ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200'
+          statusFilter === '' ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200'
         ]"
       >
         <div class="flex items-center justify-between">
           <div>
             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Total Booking</p>
-            <p class="text-2xl font-bold text-gray-900 mt-1">{{ getTotalBookings('ALL') }}</p>
+            <p class="text-2xl font-bold text-gray-900 mt-1">{{ pagination.total }}</p>
           </div>
           <div :class="[
             'p-3 rounded-lg transition-colors',
-            statusFilter === 'ALL' ? 'bg-blue-100' : 'bg-blue-50'
+            statusFilter === '' ? 'bg-blue-100' : 'bg-blue-50'
           ]">
             <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -240,30 +285,6 @@ const navigateToDetail = (bookingCode: string) => {
           </div>
         </div>
       </button>
-
-      <!-- Menunggu Card -->
-      <!-- <button
-        @click="statusFilter = 'PENDING'"
-        :class="[
-          'bg-white rounded-xl border p-5 shadow-sm text-left transition-all duration-200 hover:shadow-lg hover:scale-105 hover:border-yellow-400 cursor-pointer',
-          statusFilter === 'PENDING' ? 'border-yellow-500 ring-2 ring-yellow-200' : 'border-gray-200'
-        ]"
-      >
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Menunggu</p>
-            <p class="text-2xl font-bold text-yellow-600 mt-1">{{ getTotalBookings('PENDING') }}</p>
-          </div>
-          <div :class="[
-            'p-3 rounded-lg transition-colors',
-            statusFilter === 'PENDING' ? 'bg-yellow-100' : 'bg-yellow-50'
-          ]">
-            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-        </div>
-      </button> -->
 
       <!-- Disetujui Card -->
       <button
@@ -276,7 +297,7 @@ const navigateToDetail = (bookingCode: string) => {
         <div class="flex items-center justify-between">
           <div>
             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Disetujui</p>
-            <p class="text-2xl font-bold text-green-600 mt-1">{{ getTotalBookings('APPROVED') }}</p>
+            <p class="text-2xl font-bold text-green-600 mt-1">{{ summary.approvedCount }}</p>
           </div>
           <div :class="[
             'p-3 rounded-lg transition-colors',
@@ -300,7 +321,7 @@ const navigateToDetail = (bookingCode: string) => {
         <div class="flex items-center justify-between">
           <div>
             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Dibatalkan</p>
-            <p class="text-2xl font-bold text-red-600 mt-1">{{ getTotalBookings('CANCELLED') }}</p>
+            <p class="text-2xl font-bold text-red-600 mt-1">{{ summary.cancelledCount }}</p>
           </div>
           <div :class="[
             'p-3 rounded-lg transition-colors',
@@ -312,6 +333,30 @@ const navigateToDetail = (bookingCode: string) => {
           </div>
         </div>
       </button>
+
+      <!-- Pending Card (hidden as per request) -->
+      <!-- <button
+        @click="statusFilter = 'PENDING'"
+        :class="[
+          'bg-white rounded-xl border p-5 shadow-sm text-left transition-all duration-200 hover:shadow-lg hover:scale-105 hover:border-yellow-400 cursor-pointer',
+          statusFilter === 'PENDING' ? 'border-yellow-500 ring-2 ring-yellow-200' : 'border-gray-200'
+        ]"
+      >
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Pending</p>
+            <p class="text-2xl font-bold text-yellow-600 mt-1">-</p>
+          </div>
+          <div :class="[
+            'p-3 rounded-lg transition-colors',
+            statusFilter === 'PENDING' ? 'bg-yellow-100' : 'bg-yellow-50'
+          ]">
+            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+        </div>
+      </button> -->
     </div>
 
     <!-- Filters and Search -->
@@ -339,10 +384,10 @@ const navigateToDetail = (bookingCode: string) => {
             <div class="flex items-center gap-2 flex-wrap">
               <span class="text-xs font-semibold text-gray-600 mr-1">Status Pembayaran:</span>
               <button
-                @click="paymentFilter = 'ALL'"
+                @click="paymentFilter = ''"
                 :class="[
                   'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all',
-                  paymentFilter === 'ALL'
+                  paymentFilter === ''
                     ? 'bg-blue-600 text-white shadow-md'
                     : 'bg-white text-gray-600 border border-gray-300 hover:bg-gray-50'
                 ]"
@@ -373,14 +418,14 @@ const navigateToDetail = (bookingCode: string) => {
               </button>
             </div>
 
-            <!-- Sort Filter (NEW) -->
+            <!-- Sort Filter -->
             <div class="flex items-center gap-2">
               <span class="text-xs font-semibold text-gray-600 mr-1">Urutkan:</span>
               <button
-                @click="sortOrder = 'newest'"
+                @click="sortOrder = 'desc'"
                 :class="[
                   'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1',
-                  sortOrder === 'newest'
+                  sortOrder === 'desc'
                     ? 'bg-blue-600 text-white shadow-md'
                     : 'bg-white text-gray-600 border border-gray-300 hover:bg-gray-50'
                 ]"
@@ -391,10 +436,10 @@ const navigateToDetail = (bookingCode: string) => {
                 Terbaru
               </button>
               <button
-                @click="sortOrder = 'oldest'"
+                @click="sortOrder = 'asc'"
                 :class="[
                   'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1',
-                  sortOrder === 'oldest'
+                  sortOrder === 'asc'
                     ? 'bg-blue-600 text-white shadow-md'
                     : 'bg-white text-gray-600 border border-gray-300 hover:bg-gray-50'
                 ]"
@@ -416,7 +461,7 @@ const navigateToDetail = (bookingCode: string) => {
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
-        <p class="text-sm font-semibold text-gray-900 mb-1">Gagal memuat data riwayat booking</p>
+        <p class="text-sm font-semibold text-gray-900 mb-1">Gagal memuat data booking</p>
         <button @click="refresh()" class="mt-3 text-sm font-semibold text-blue-600 hover:text-blue-700 underline">
           Coba lagi
         </button>
@@ -430,7 +475,7 @@ const navigateToDetail = (bookingCode: string) => {
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="sortedBookings.length === 0" class="p-12 text-center">
+      <div v-else-if="bookings.length === 0" class="p-12 text-center">
         <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
           <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -469,7 +514,7 @@ const navigateToDetail = (bookingCode: string) => {
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
             <tr 
-              v-for="booking in paginatedBookings" 
+              v-for="booking in bookings" 
               :key="booking.id"
               class="hover:bg-gray-50 transition-colors"
             >
@@ -498,11 +543,17 @@ const navigateToDetail = (bookingCode: string) => {
                   <span class="text-sm font-semibold text-gray-900">{{ booking.name }}</span>
                   <div class="flex items-center gap-2 flex-wrap">
                     <span class="text-xs text-gray-600">{{ booking.contact }}</span>
-                    <span v-if="booking.isAcademic" class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 border border-blue-200 rounded-md text-[10px] font-bold text-blue-700">
+                    <span v-if="booking.renterType === 'AKADEMIK'" class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 border border-blue-200 rounded-md text-[10px] font-bold text-blue-700">
                       <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                       </svg>
                       Akademik
+                    </span>
+                    <span v-else-if="booking.renterType === 'TENDIK'" class="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-50 border border-purple-200 rounded-md text-[10px] font-bold text-purple-700">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      Tendik
                     </span>
                   </div>
                   <span class="text-xs text-gray-500">{{ booking.email }}</span>
@@ -561,7 +612,7 @@ const navigateToDetail = (bookingCode: string) => {
 
       <!-- Pagination -->
       <nav
-        v-if="!pending && totalPages > 1"
+        v-if="!pending && pagination.totalPages > 1"
         class="flex flex-col-reverse items-center justify-between gap-4 bg-gray-50/30 px-6 py-4 border-t border-gray-200 sm:flex-row"
       >
         <span class="text-xs text-gray-500 font-medium">
@@ -571,7 +622,7 @@ const navigateToDetail = (bookingCode: string) => {
         <div class="flex items-center gap-2">
           <button
             @click="prevPage"
-            :disabled="currentPage === 1"
+            :disabled="!pagination.hasPrevPage"
             class="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -580,12 +631,12 @@ const navigateToDetail = (bookingCode: string) => {
           </button>
 
           <div class="px-4 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-bold text-gray-700 shadow-sm">
-            {{ currentPage }} / {{ totalPages }}
+            {{ pagination.page }} / {{ pagination.totalPages }}
           </div>
 
           <button
             @click="nextPage"
-            :disabled="currentPage === totalPages"
+            :disabled="!pagination.hasNextPage"
             class="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">

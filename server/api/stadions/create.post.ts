@@ -10,6 +10,8 @@ export default defineEventHandler(async (event) => {
   const token = getCookie(event, 'admin_token')
   if (!token) throw createError({ statusCode: 401, statusMessage: 'Not authenticated' })
 
+  const body = await readBody(event)
+
   try {
     const response = await $fetch<{ data?: any; errors?: any[] }>(endpoint, {
       method: 'POST',

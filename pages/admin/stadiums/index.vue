@@ -59,7 +59,7 @@ const getStatusClasses = (status: 'ACTIVE' | 'INACTIVE') => {
           </svg>
         </div>
         <div>
-          <h1 class="text-2xl font-bold uppercase text-gray-900 tracking-tight">Manajemen Stadion</h1>
+          <h1 class="text-2xl font-bold uppercase text-gray-900 tracking-tight">Kelola Stadion</h1>
           <p class="text-sm text-gray-500 mt-1">
             Kelola data stadion, status operasional, dan fasilitas venue.
           </p>

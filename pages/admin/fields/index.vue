@@ -73,7 +73,7 @@ const getStatusClasses = (status?: 'ACTIVE' | 'INACTIVE') => {
           </svg>
         </div>
         <div>
-          <h1 class="text-2xl uppercase font-bold text-gray-900 tracking-tight">Manajemen Lapangan</h1>
+          <h1 class="text-2xl uppercase font-bold text-gray-900 tracking-tight">Kelola Lapangan</h1>
           <p class="text-sm text-gray-500 mt-1">
             Kelola data lapangan, tarif sewa, dan status ketersediaan.
           </p>

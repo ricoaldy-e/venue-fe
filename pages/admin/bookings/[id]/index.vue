@@ -25,6 +25,7 @@ interface Field {
   id: string
   name: string
   pricePerHour: number
+  priceTendik?: number
   status?: string
   description?: string
   images?: Images[]
@@ -70,7 +71,7 @@ interface BookingDetails {
 interface BookingsResult {
   bookingCode: string
   name?: string
-  isAcademic?: boolean
+  renterType?: 'UMUM' | 'TENDIK' | 'AKADEMIK'
   details: BookingDetails[]
 }
 
@@ -117,6 +118,7 @@ const { data: stadion, pending, error } = await useAsyncData(
       const { openHour, closeHour } = extractOperatingHours(stadion.operatingHours)
       const fields = stadion.fields.map(field => ({
         ...field,
+        priceTendik: field.priceTendik,
         gallery: field.images?.map(img => img.imageUrl) || [],
         slots: generateTimeSlots(openHour, closeHour, field.pricePerHour)
       }))
@@ -249,26 +251,6 @@ const loadPublicBookings = async () => {
 onMounted(loadPublicBookings)
 watch(selectedDateKey, () => loadPublicBookings())
 
-const logOverflowingElements = () => {
-  if (!import.meta.dev) return
-
-  const viewportWidth = window.innerWidth
-  const offenders: Array<{ el: Element; right: number; width: number }> = []
-
-  document.querySelectorAll('body *').forEach((el) => {
-    const element = el as HTMLElement
-    const rect = element.getBoundingClientRect()
-    const right = rect.right
-    const width = rect.width
-
-    if (right > viewportWidth + 1 || width > viewportWidth + 1) {
-      offenders.push({ el, right, width })
-    }
-  })
-
-  const docScrollWidth = document.documentElement.scrollWidth
-}
-
 onMounted(() => {
   const handleVisibilityChange = () => {
     if (!document.hidden) {
@@ -283,9 +265,6 @@ onMounted(() => {
   }, 15000)
   
   document.addEventListener('visibilitychange', handleVisibilityChange)
-
-  setTimeout(logOverflowingElements, 300)
-  setTimeout(logOverflowingElements, 1200)
   
   onBeforeUnmount(() => {
     document.removeEventListener('visibilitychange', handleVisibilityChange)
@@ -359,7 +338,7 @@ function getBookingInfo(fieldId: number, startHour: number) {
   )
   return booking ? {
     name: booking.name,
-    isAcademic: booking.isAcademic,
+    renterType: booking.renterType,
     bookingCode: booking.bookingCode
   } : null
 }
@@ -370,7 +349,7 @@ function getFirstName(fullName?: string) {
   return names[0] || 'N/A'
 }
 
-function handleSlotClick(fieldId: number, startHour: number, pricePerHour: number, fieldName: string) {
+function handleSlotClick(fieldId: number, startHour: number, pricePerHour: number, fieldName: string, priceTendik?: number) {
   if (isSlotBooked(fieldId, startHour)) {
     const bookingCode = getBookingCode(fieldId, startHour)
     if (bookingCode) {
@@ -388,12 +367,12 @@ function handleSlotClick(fieldId: number, startHour: number, pricePerHour: numbe
     return
   }
   
-  toggleSlot(fieldId, startHour, pricePerHour, fieldName)
+  toggleSlot(fieldId, startHour, pricePerHour, fieldName, priceTendik)
 }
 
-const selectedSlots = ref<{fieldId: number; startHour: number; date: string; pricePerHour: number; fieldName: string}[]>([])
+const selectedSlots = ref<{fieldId: number; startHour: number; date: string; pricePerHour: number; priceTendik?: number; fieldName: string}[]>([])
 
-function toggleSlot(fieldId: number, startHour: number, pricePerHour: number, fieldName: string) {
+function toggleSlot(fieldId: number, startHour: number, pricePerHour: number, fieldName: string, priceTendik?: number) {
   const date = selectedDate.value as string
   const index = selectedSlots.value.findIndex(
     (s) => s.fieldId === fieldId && s.startHour === startHour && s.date === date
@@ -407,6 +386,7 @@ function toggleSlot(fieldId: number, startHour: number, pricePerHour: number, fi
       startHour,
       date,
       pricePerHour,
+      priceTendik,
       fieldName
     })
   }
@@ -583,7 +563,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
               <!-- Subtle Street Map Background Pattern -->
               <div class="absolute inset-0 opacity-[0.08] pointer-events-none">
                 <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid slice">
-                  <!-- Main roads berkelok natural -->
+
                   <path d="M 0 150 Q 50 145, 100 150 Q 140 155, 180 150 Q 220 145, 260 140 Q 300 138, 350 140" stroke="#94a3b8" stroke-width="2.5" fill="none"/>
                   <path d="M 350 140 Q 400 142, 450 145 Q 500 148, 550 150 L 600 152" stroke="#94a3b8" stroke-width="2" fill="none"/>
                   
@@ -591,14 +571,14 @@ watch(() => selectedSlots.value.length, (newLength) => {
                   
                   <path d="M 420 0 Q 415 50, 420 100 Q 425 130, 420 160 Q 418 200, 420 240 L 420 300" stroke="#94a3b8" stroke-width="2" fill="none"/>
                   
-                  <!-- Secondary roads berkelok -->
+
                   <path d="M 0 80 Q 40 78, 80 80 Q 120 82, 160 85 Q 200 83, 240 80 Q 280 78, 320 80" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
                   
                   <path d="M 100 50 Q 102 70, 100 90 Q 98 120, 100 150 Q 102 180, 105 210" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
                   
                   <path d="M 0 220 Q 60 218, 120 220 Q 180 222, 240 220 Q 300 218, 360 220 Q 420 222, 480 220 L 600 218" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
                   
-                  <!-- Small connecting roads berkelok -->
+
                   <path d="M 350 140 Q 360 120, 370 100 Q 380 85, 390 80" stroke="#94a3b8" stroke-width="1" fill="none"/>
                   
                   <path d="M 260 80 Q 270 100, 280 120 Q 285 135, 280 150" stroke="#94a3b8" stroke-width="1" fill="none"/>
@@ -607,7 +587,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
                   
                   <path d="M 300 220 Q 310 200, 320 180 Q 330 160, 340 145" stroke="#94a3b8" stroke-width="1" fill="none"/>
                   
-                  <!-- Intersection points (biru) -->
+
                   <circle cx="180" cy="150" r="3" fill="#3b82f6" opacity="0.7"/>
                   <circle cx="350" cy="140" r="3" fill="#3b82f6" opacity="0.7"/>
                   <circle cx="420" cy="160" r="3" fill="#3b82f6" opacity="0.7"/>
@@ -690,7 +670,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
             <SmartDatePicker v-model="selectedDate" :allow-past-dates="true" />
           </div>
 
-          <!-- Informasi Tanggal Terpilih -->
+
           <div class="px-4 sm:px-6 py-3 sm:py-3.5 bg-white border-b border-gray-200">
             <div class="flex items-center gap-2.5 sm:gap-3">
               <div class="flex items-center gap-2 sm:gap-2.5 flex-1 min-w-0">
@@ -762,7 +742,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
             </div>
           </div>
 
-          <!-- Empty State - Belum Ada Lapangan -->
+
           <div 
             v-if="!stadion?.fields || stadion.fields.length === 0"
             class="flex flex-col items-center justify-center py-16 px-4"
@@ -927,7 +907,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
                         ? 'bg-[#1f2a56] text-white border-[#1f2a56] shadow-md ring-2 ring-[#1f2a56] ring-offset-2'
                         : 'bg-white text-gray-900 border-gray-200 hover:border-emerald-500 hover:bg-emerald-50 hover:shadow-lg hover:shadow-emerald-500/20 hover:scale-105 active:scale-100 cursor-pointer'
                     ]"
-                    @click="handleSlotClick(Number(field.id), Number(slot.start.split(':')[0]), Number(slot.price), field.name)"
+                    @click="handleSlotClick(Number(field.id), Number(slot.start.split(':')[0]), Number(slot.price), field.name, field.priceTendik)"
                   >
                     <div
                       v-if="isSlotBooked(Number(field.id), Number(slot.start.split(':')[0]))"
@@ -942,7 +922,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
                       </span>
                     </div>
 
-                    <!-- Nama Booker & Label Akademik/Umum untuk slot yang booked -->
+
                     <div
                       v-if="isSlotBooked(Number(field.id), Number(slot.start.split(':')[0]))"
                       class="flex items-center justify-between mb-1 group-hover:opacity-0 transition-opacity"
@@ -950,19 +930,26 @@ watch(() => selectedSlots.value.length, (newLength) => {
                       <p class="text-[10px] sm:text-[0.65rem] font-bold text-blue-700 truncate flex-1 pr-1">
                         {{ getFirstName(getBookingInfo(Number(field.id), Number(slot.start.split(':')[0]))?.name) }}
                       </p>
-                      <span
+                        <span
                         class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] sm:text-[9px] font-semibold whitespace-nowrap"
-                        :class="getBookingInfo(Number(field.id), Number(slot.start.split(':')[0]))?.isAcademic 
-                          ? 'bg-purple-100 text-purple-700 border border-purple-200' 
+                        :class="getBookingInfo(Number(field.id), Number(slot.start.split(':')[0]))?.renterType === 'AKADEMIK'
+                          ? 'bg-blue-100 text-blue-700 border border-blue-200' 
+                          : getBookingInfo(Number(field.id), Number(slot.start.split(':')[0]))?.renterType === 'TENDIK'
+                          ? 'bg-purple-100 text-purple-700 border border-purple-200'
                           : 'bg-gray-100 text-gray-700 border border-gray-200'"
                       >
-                        <svg v-if="getBookingInfo(Number(field.id), Number(slot.start.split(':')[0]))?.isAcademic" class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="currentColor" viewBox="0 0 20 20">
+                        <svg v-if="getBookingInfo(Number(field.id), Number(slot.start.split(':')[0]))?.renterType === 'AKADEMIK'" class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="currentColor" viewBox="0 0 20 20">
                           <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+                        </svg>
+                        <svg v-else-if="getBookingInfo(Number(field.id), Number(slot.start.split(':')[0]))?.renterType === 'TENDIK'" class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
                         <svg v-else class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="currentColor" viewBox="0 0 20 20">
                           <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
                         </svg>
-                        {{ getBookingInfo(Number(field.id), Number(slot.start.split(':')[0]))?.isAcademic ? 'Akademik' : 'Umum' }}
+                        <span v-if="getBookingInfo(Number(field.id), Number(slot.start.split(':')[0]))?.renterType === 'AKADEMIK'">Akademik</span>
+                        <span v-else-if="getBookingInfo(Number(field.id), Number(slot.start.split(':')[0]))?.renterType === 'TENDIK'">Tendik</span>
+                        <span v-else>Umum</span>
                       </span>
                     </div>
 

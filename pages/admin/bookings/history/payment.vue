@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { useDebounceFn } from '@vueuse/core'
 import dayjs from 'dayjs'
 import 'dayjs/locale/id'
 
@@ -39,7 +40,7 @@ interface BookingHistory {
   name: string
   contact: string
   email: string
-  isAcademic: boolean
+  renterType: 'UMUM' | 'TENDIK' | 'AKADEMIK'
   totalPrice: number
   status: 'PENDING' | 'APPROVED' | 'CANCELLED'
   paymentStatus: 'UNPAID' | 'PAID'
@@ -52,25 +53,34 @@ interface Stadion {
   name: string
 }
 
-// Fetch bookings
-const { data: bookings, pending, error, refresh } = await useAsyncData(
-  'paymentReportBookings',
-  () => $fetch<BookingHistory[]>('/api/bookings/history'),
-  {
-    server: false,
-    lazy: true,
-    default: () => []
-  }
-)
+interface PaginationInfo {
+  page: number
+  limit: number
+  total: number
+  totalPages: number
+  hasNextPage: boolean
+  hasPrevPage: boolean
+}
 
-// Fetch stadions
-const { data: stadionsData } = await useFetch('/api/stadions', {
-  server: false,
-  lazy: true,
-  default: () => []
-})
+// Summary dari server (dihitung dari SEMUA data sesuai filter, bukan hanya halaman ini)
+interface BookingSummary {
+  totalRevenue: number
+  totalCount: number
+  paidCount: number
+  unpaidCount: number
+  academicCount: number
+  nonAcademicCount: number
+  academicRevenue: number
+  nonAcademicRevenue: number
+  paidPercentage: number
+  averagePerBooking: number
+}
 
-const stadions = computed(() => (stadionsData.value as any) || [])
+interface BookingResponse {
+  data: BookingHistory[]
+  pagination: PaginationInfo
+  summary: BookingSummary
+}
 
 // Filter Mode: daily or range
 const filterMode = ref<'daily' | 'range'>('daily')
@@ -83,7 +93,96 @@ const printTimestamp = ref('')
 const selectedStadionId = ref<string>('')
 
 // Payment status filter
-const paymentStatusFilter = ref<'ALL' | 'PAID' | 'UNPAID'>('ALL')
+const paymentStatusFilter = ref<'' | 'PAID' | 'UNPAID'>('')
+
+// Pagination
+const currentPage = ref(1)
+const itemsPerPage = ref(10)
+
+// Build query params for API
+const queryParams = computed(() => {
+  const params: any = {
+    page: currentPage.value,
+    limit: itemsPerPage.value,
+    sortOrder: 'desc',
+  }
+
+  // Date filters
+  if (filterMode.value === 'daily') {
+    params.date = selectedDate.value
+  } else {
+    params.startDate = startDate.value
+    params.endDate = endDate.value
+  }
+
+  // Stadium filter
+  if (selectedStadionId.value) {
+    params.stadionId = selectedStadionId.value
+  }
+
+  // Payment status filter
+  if (paymentStatusFilter.value) {
+    params.paymentStatus = paymentStatusFilter.value
+  }
+
+  return params
+})
+
+// Default summary values
+const defaultSummary: BookingSummary = {
+  totalRevenue: 0,
+  totalCount: 0,
+  paidCount: 0,
+  unpaidCount: 0,
+  academicCount: 0,
+  nonAcademicCount: 0,
+  academicRevenue: 0,
+  nonAcademicRevenue: 0,
+  paidPercentage: 0,
+  averagePerBooking: 0
+}
+
+// Fetch bookings with server-side pagination and summary
+const { data: response, pending, error, refresh } = await useFetch<BookingResponse>(
+  '/api/bookings/history',
+  {
+    query: queryParams,
+    server: false,
+    lazy: true,
+    default: () => ({ 
+      data: [], 
+      pagination: { page: 1, limit: 10, total: 0, totalPages: 0, hasNextPage: false, hasPrevPage: false },
+      summary: defaultSummary
+    })
+  }
+)
+
+// Fetch stadions
+const { data: stadionsData } = await useFetch('/api/stadions', {
+  server: false,
+  lazy: true,
+  default: () => []
+})
+
+const stadions = computed(() => (stadionsData.value as any) || [])
+
+// Extracted data from response
+const bookings = computed(() => response.value?.data || [])
+const pagination = computed(() => response.value?.pagination || { page: 1, limit: 10, total: 0, totalPages: 0, hasNextPage: false, hasPrevPage: false })
+
+// Summary dari server (AKURAT - dihitung dari SEMUA data sesuai filter)
+const serverSummary = computed(() => response.value?.summary || defaultSummary)
+
+// Debounced refresh
+const debouncedRefresh = useDebounceFn(() => {
+  currentPage.value = 1
+  refresh()
+}, 300)
+
+// Watch for filter changes
+watch([filterMode, selectedDate, startDate, endDate, selectedStadionId, paymentStatusFilter], () => {
+  debouncedRefresh()
+})
 
 // Set date range shortcuts
 const setDateRange = (days: number) => {
@@ -117,103 +216,45 @@ const selectedDayName = computed(() => {
   return dayjs(selectedDate.value).format('dddd')
 })
 
-// Filter by date
-const filteredByDate = computed(() => {
-  if (!bookings.value) return []
-  
-  if (filterMode.value === 'daily') {
-    const selected = dayjs(selectedDate.value)
-    return bookings.value.filter(booking => {
-      const bookingDate = dayjs(booking.createdAt)
-      return bookingDate.isSame(selected, 'day')
-    })
-  } else {
-    const start = dayjs(startDate.value).startOf('day')
-    const end = dayjs(endDate.value).endOf('day')
-    
-    return bookings.value.filter(booking => {
-      const bookingDate = dayjs(booking.createdAt)
-      return bookingDate.isAfter(start) && bookingDate.isBefore(end)
-    })
+// Pagination handlers
+const nextPage = () => {
+  if (pagination.value.hasNextPage) {
+    currentPage.value++
   }
+}
+
+const prevPage = () => {
+  if (pagination.value.hasPrevPage) {
+    currentPage.value--
+  }
+}
+
+// Pagination summary
+const paginationSummary = computed(() => {
+  const p = pagination.value
+  if (p.total === 0) return 'Tidak ada data'
+  const start = (p.page - 1) * p.limit + 1
+  const end = Math.min(p.page * p.limit, p.total)
+  return `Menampilkan ${start}-${end} dari ${p.total} data`
 })
 
-// Filter by stadium
-const filteredByStadion = computed(() => {
-  if (!selectedStadionId.value) return filteredByDate.value
-  
-  return filteredByDate.value.filter(booking => {
-    return booking.details.some(detail => {
-      const stadionId = detail.Field?.stadionId || detail.Field?.Stadion?.id
-      return String(stadionId) === String(selectedStadionId.value)
-    })
-  })
-})
-
-// Filter by payment status
-const filteredBookings = computed(() => {
-  if (paymentStatusFilter.value === 'ALL') return filteredByStadion.value
-  return filteredByStadion.value.filter(b => b.paymentStatus === paymentStatusFilter.value)
-})
-
-// Sort by date (newest first)
-const sortedBookings = computed(() => {
-  const sorted = [...filteredBookings.value]
-  sorted.sort((a, b) => {
-    const dateA = new Date(a.createdAt).getTime()
-    const dateB = new Date(b.createdAt).getTime()
-    return dateB - dateA
-  })
-  return sorted
-})
-
-// Pagination
-const { 
-  currentPage, 
-  paginatedItems: paginatedBookings, 
-  summary: paginationSummary, 
-  nextPage, 
-  prevPage,
-  totalPages
-} = usePagination(sortedBookings)
-
-// Payment Summary
+// Payment Summary - Menggunakan data dari SERVER (AKURAT untuk semua data sesuai filter)
+// PENTING: Ini menampilkan total dari SEMUA data yang sesuai filter, bukan hanya halaman ini
 const paymentSummary = computed(() => {
-  const all = filteredBookings.value
-  
-  const totalRevenue = all
-    .filter(b => b.paymentStatus === 'PAID')
-    .reduce((sum, b) => sum + b.totalPrice, 0)
-  
-  const totalBookings = all.length
-  const paidBookings = all.filter(b => b.paymentStatus === 'PAID').length
-  const unpaidBookings = all.filter(b => b.paymentStatus === 'UNPAID').length
-  
-  const academicBookings = all.filter(b => b.isAcademic).length
-  const nonAcademicBookings = all.filter(b => !b.isAcademic).length
-  
-  const academicRevenue = all
-    .filter(b => b.isAcademic && b.paymentStatus === 'PAID')
-    .reduce((sum, b) => sum + b.totalPrice, 0)
-  
-  const nonAcademicRevenue = all
-    .filter(b => !b.isAcademic && b.paymentStatus === 'PAID')
-    .reduce((sum, b) => sum + b.totalPrice, 0)
-  
-  const avgPerBooking = paidBookings > 0 ? totalRevenue / paidBookings : 0
-  const paidPercentage = totalBookings > 0 ? (paidBookings / totalBookings) * 100 : 0
+  const summary = serverSummary.value
   
   return {
-    totalRevenue,
-    totalBookings,
-    paidBookings,
-    unpaidBookings,
-    academicBookings,
-    nonAcademicBookings,
-    academicRevenue,
-    nonAcademicRevenue,
-    avgPerBooking,
-    paidPercentage
+    // Data dari server (AKURAT - dihitung dari semua data)
+    totalRevenue: summary.totalRevenue,
+    totalBookings: summary.totalCount,
+    paidBookings: summary.paidCount,
+    unpaidBookings: summary.unpaidCount,
+    academicBookings: summary.academicCount,
+    nonAcademicBookings: summary.nonAcademicCount,
+    academicRevenue: summary.academicRevenue,
+    nonAcademicRevenue: summary.nonAcademicRevenue,
+    avgPerBooking: summary.averagePerBooking,
+    paidPercentage: summary.paidPercentage
   }
 })
 
@@ -230,17 +271,6 @@ const formatDate = (dateString: string) => {
     day: 'numeric',
     month: 'short',
     year: 'numeric'
-  })
-}
-
-const formatDateTime = (dateString: string) => {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('id-ID', { 
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
   })
 }
 
@@ -293,23 +323,17 @@ const stadiumNameMap = computed(() => {
 const getStadiumName = (booking: BookingHistory) => {
   if (!booking.details || booking.details.length === 0) return '-'
 
-  // Manual mapping: prioritize stadiumNameMap lookup, fallback to GraphQL relation
   const stadiumNames = [...new Set(booking.details
     .map(d => {
-      // First priority: use stadionId to lookup from stadiumNameMap (most reliable)
       if (d.Field?.stadionId) {
         const mappedName = stadiumNameMap.value.get(Number(d.Field.stadionId))
         if (mappedName) {
           return mappedName
         }
       }
-
-      // Second priority: use populated GraphQL relation
       if (d.Field?.Stadion?.name) {
         return d.Field.Stadion.name
       }
-
-      // If neither works, return null
       return null
     })
     .filter(name => name !== null && name !== '-' && name !== undefined)
@@ -319,6 +343,7 @@ const getStadiumName = (booking: BookingHistory) => {
   if (stadiumNames.length === 1) return stadiumNames[0]
   return `${stadiumNames[0]} (+${stadiumNames.length - 1})`
 }
+
 const getPaymentStatusClasses = (status: string) => {
   return status === 'PAID'
     ? 'bg-green-50 text-green-700 border-green-200'
@@ -345,13 +370,53 @@ const getStatusText = (status: string) => {
 const getPaymentText = (status: string) => {
   return status === 'PAID' ? 'Lunas' : 'Belum Bayar'
 }
+
+// Print Handling - Fetch ALL data before printing
+const isPrinting = ref(false)
+const originalItemsPerPage = ref(10)
+
+const printAllData = async () => {
+  if (isPrinting.value) return
+  isPrinting.value = true
+  
+  // Set timestamp
+  printTimestamp.value = dayjs().format('DD MMMM YYYY, HH:mm WIB')
+  
+  // Save current pagination state
+  originalItemsPerPage.value = itemsPerPage.value
+  
+  // Set limit to total records to fetch EVERYTHING
+  // If total is 0, use a safe default like 1000
+  const totalRecords = pagination.value.total > 0 ? pagination.value.total : 1000
+  itemsPerPage.value = totalRecords
+  
+  try {
+    // Wait for data to refresh with new limit
+    await refresh()
+    
+    // Small delay to ensure DOM is updated
+    setTimeout(() => {
+      window.print()
+      
+      // Restore pagination after print dialog is closed (approximation)
+      // Browsers block JS during print dialog, so this runs after
+      itemsPerPage.value = originalItemsPerPage.value
+      isPrinting.value = false
+      refresh() 
+    }, 500)
+  } catch (e) {
+    console.error('Error preparing print:', e)
+    itemsPerPage.value = originalItemsPerPage.value
+    isPrinting.value = false
+  }
+}
 </script>
 
 <template>
   <section class="flex w-full flex-col gap-6 sm:gap-8 pb-16 print:pb-8">
     
     <!-- PRINT HEADER -->
-    <div class="hidden print:block mb-6 pb-4 border-b-2 border-gray-900">
+    <div class="hidden print:block pb-4 border-b-2 border-gray-900">
       <div class="flex items-start gap-4">
         <div class="w-16 h-16 flex items-center justify-center shrink-0">
           <img src="~/assets/images/VENUE-UNDIP-LOGO.png" alt="VENUE UNDIP Logo" class="w-full h-full object-contain logo-print-color" />
@@ -376,7 +441,6 @@ const getPaymentText = (status: string) => {
       </div>
     </div>
     
-    <!-- SCREEN HEADER -->
     <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 print:hidden">
       <div class="flex items-start gap-4">
         <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-100 shrink-0 hidden sm:flex items-center justify-center">
@@ -403,7 +467,7 @@ const getPaymentText = (status: string) => {
           <span>Kembali</span>
         </NuxtLink>
         <button
-          @click="handlePrint"
+          @click="printAllData"
           class="inline-flex items-center gap-2 rounded-lg border border-gray-800 bg-gray-800 px-4 py-2 text-sm font-bold text-white shadow-sm transition-all hover:bg-gray-900 active:scale-95"
         >
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -414,9 +478,7 @@ const getPaymentText = (status: string) => {
       </div>
     </header>
 
-    <!-- PAYMENT SUMMARY CARDS -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 print:hidden">
-      <!-- Total Pendapatan -->
       <div class="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl p-6 text-white shadow-lg min-h-[120px] flex flex-col">
         <div class="flex items-center justify-between mb-2">
           <span class="text-xs font-bold uppercase tracking-wide opacity-90">Total Pendapatan</span>
@@ -475,24 +537,24 @@ const getPaymentText = (status: string) => {
     </div>
 
     <!-- PRINT SUMMARY -->
-    <div class="hidden print:block mb-2">
+    <div class="hidden print:block">
       <!-- Summary Cards -->
-      <div class="grid grid-cols-4 gap-4 mb-4">
-        <div class="bg-gray-100 p-3 rounded border border-gray-300">
-          <p class="text-[9px] font-bold text-gray-600 uppercase mb-1">Total Pendapatan</p>
-          <p class="text-base font-black text-gray-900">{{ formatCurrency(paymentSummary.totalRevenue) }}</p>
+      <div class="grid grid-cols-4 gap-4 mb-2">
+        <div class="bg-transparent p-3 rounded border border-gray-900">
+          <p class="text-[9px] font-bold text-black uppercase mb-1">Total Pendapatan</p>
+          <p class="text-base font-black text-black">{{ formatCurrency(paymentSummary.totalRevenue) }}</p>
         </div>
-        <div class="bg-gray-100 p-3 rounded border border-gray-300">
-          <p class="text-[9px] font-bold text-gray-600 uppercase mb-1">Lunas / Belum</p>
-          <p class="text-base font-black text-gray-900">{{ paymentSummary.paidBookings }} / {{ paymentSummary.unpaidBookings }}</p>
+        <div class="bg-transparent p-3 rounded border border-gray-900">
+          <p class="text-[9px] font-bold text-black uppercase mb-1">Lunas / Belum</p>
+          <p class="text-base font-black text-black">{{ paymentSummary.paidBookings }} / {{ paymentSummary.unpaidBookings }}</p>
         </div>
-        <div class="bg-gray-100 p-3 rounded border border-gray-300">
-          <p class="text-[9px] font-bold text-gray-600 uppercase mb-1">Akademik / Non</p>
-          <p class="text-base font-black text-gray-900">{{ paymentSummary.academicBookings }} / {{ paymentSummary.nonAcademicBookings }}</p>
+        <div class="bg-transparent p-3 rounded border border-gray-900">
+          <p class="text-[9px] font-bold text-black uppercase mb-1">Akademik / Non</p>
+          <p class="text-base font-black text-black">{{ paymentSummary.academicBookings }} / {{ paymentSummary.nonAcademicBookings }}</p>
         </div>
-        <div class="bg-gray-100 p-3 rounded border border-gray-300">
-          <p class="text-[9px] font-bold text-gray-600 uppercase mb-1">Rata-rata</p>
-          <p class="text-base font-black text-gray-900">{{ formatCurrency(paymentSummary.avgPerBooking) }}</p>
+        <div class="bg-transparent p-3 rounded border border-gray-900">
+          <p class="text-[9px] font-bold text-black uppercase mb-1">Rata-rata</p>
+          <p class="text-base font-black text-black">{{ formatCurrency(paymentSummary.avgPerBooking) }}</p>
         </div>
       </div>
     </div>
@@ -522,7 +584,6 @@ const getPaymentText = (status: string) => {
             </div>
           </div>
 
-          <!-- Daily Mode -->
           <div v-if="filterMode === 'daily'">
             <label class="block text-xs font-semibold text-gray-600 mb-2">Pilih Tanggal</label>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -533,15 +594,6 @@ const getPaymentText = (status: string) => {
               >
               <!-- Day Name Info -->
               <div class="hidden sm:flex items-center gap-2 w-full text-sm font-medium text-gray-600 bg-gray-50 px-4 py-3 rounded-xl border border-gray-300 border-dashed">
-                <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span class="font-semibold">{{ selectedDayName }}</span>
-                <span class="text-gray-400">•</span>
-                <span>{{ dayjs(selectedDate).format('DD/MM/YYYY') }}</span>
-              </div>
-              <!-- Day Name Info - Mobile -->
-              <div v-if="selectedDate" class="flex sm:hidden items-center gap-2 w-full text-sm font-medium text-gray-600 bg-gray-50 px-4 py-3 rounded-xl border border-gray-300 border-dashed mt-2">
                 <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
@@ -625,7 +677,7 @@ const getPaymentText = (status: string) => {
                   v-model="paymentStatusFilter"
                   class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
                 >
-                  <option value="ALL">Semua Status</option>
+                  <option value="">Semua Status</option>
                   <option value="PAID">Lunas</option>
                   <option value="UNPAID">Belum Bayar</option>
                 </select>
@@ -641,14 +693,59 @@ const getPaymentText = (status: string) => {
       </div>
     </div>
 
-    <!-- DATA TABLE -->
-    <div class="bg-white rounded-2xl border border-gray-300 shadow-sm overflow-hidden">
+    <!-- PRINT-ONLY TABLE (Strict Dashboard Design) -->
+    <div class="hidden print:block mb-6">
+      <table class="w-full border-collapse border border-gray-900 text-[9px]">
+        <thead>
+          <!-- Header with light gray bg like dashboard context -->
+          <tr class="bg-gray-100"> 
+            <th class="border border-gray-900 px-2 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide" style="width: 5%;">No</th>
+            <th class="border border-gray-900 px-2 py-1.5 text-left font-bold text-gray-900 uppercase tracking-wide">Kode</th>
+            <th class="border border-gray-900 px-2 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide">Tanggal</th>
+            <th class="border border-gray-900 px-2 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide">Client</th>
+            <th class="border border-gray-900 px-2 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide">Stadion</th>
+            <th class="border border-gray-900 px-2 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide">Total</th>
+            <th class="border border-gray-900 px-2 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide">Pembayaran</th>
+            <th class="border border-gray-900 px-2 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(booking, index) in bookings" :key="'print-'+booking.id">
+            <td class="border border-gray-900 px-2 py-1.5 text-center font-medium text-gray-900 align-middle">{{ index + 1 }}</td>
+            <td class="border border-gray-900 px-2 py-1.5 font-medium text-gray-900 align-middle">{{ booking.bookingCode }}</td>
+            <td class="border border-gray-900 px-2 py-1.5 text-gray-900 align-middle">
+              <span class="block font-medium">{{ formatDate(booking.createdAt) }}</span>
+              <span class="block text-[8px]">{{ formatSlotDate(booking) }}</span>
+            </td>
+            <td class="border border-gray-900 px-2 py-1.5 text-gray-900 align-middle">
+               <span class="font-medium">{{ booking.name }}</span>
+               <span v-if="booking.renterType === 'AKADEMIK'" class="block text-[8px] italic">(Akademik)</span>
+               <span v-else-if="booking.renterType === 'TENDIK'" class="block text-[8px] italic">(Tendik)</span>
+            </td>
+            <td class="border border-gray-900 px-2 py-1.5 text-gray-900 align-middle">{{ getStadiumName(booking) }}</td>
+            <td class="border border-gray-900 px-2 py-1.5 text-right font-medium text-gray-900 align-middle">
+              {{ formatCurrency(booking.totalPrice) }}
+              <span class="block text-[8px] font-normal">{{ booking.details.length }} slot</span>
+            </td>
+            <td class="border border-gray-900 px-2 py-1.5 text-center font-medium text-gray-900 align-middle uppercase text-[8px]">
+              {{ getPaymentText(booking.paymentStatus) }}
+            </td>
+            <td class="border border-gray-900 px-2 py-1.5 text-center font-medium text-gray-900 align-middle uppercase text-[8px]">
+              {{ getStatusText(booking.status) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- DATA TABLE (Screen Only) -->
+    <div class="bg-white rounded-2xl border border-gray-300 shadow-sm overflow-hidden print:hidden">
       <!-- Table Header -->
       <div class="p-5 border-b border-gray-200 bg-gray-50/30 print:hidden">
         <div class="flex items-center justify-between">
           <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider">Data Booking</h3>
           <div class="text-sm text-gray-600">
-            <span class="font-bold text-blue-600">{{ sortedBookings.length }}</span> transaksi
+            <span class="font-bold text-blue-600">{{ pagination.total }}</span> transaksi
           </div>
         </div>
       </div>
@@ -673,7 +770,7 @@ const getPaymentText = (status: string) => {
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="sortedBookings.length === 0" class="p-12 text-center">
+      <div v-else-if="bookings.length === 0" class="p-12 text-center">
         <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
           <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -688,28 +785,28 @@ const getPaymentText = (status: string) => {
         <table class="w-full">
           <thead class="bg-gray-50 border-b border-gray-200">
             <tr>
-              <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Kode</th>
-              <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Tanggal</th>
-              <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Client</th>
-              <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Stadion</th>
-              <th class="px-4 py-3 text-right text-xs font-bold text-gray-600 uppercase tracking-wider">Total</th>
-              <th class="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider print:hidden">Pembayaran</th>
-              <th class="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider print:hidden">Status</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Kode</th>
+              <th class="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">Tanggal</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Client</th>
+              <th class="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">Stadion</th>
+              <th class="px-6 py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider">Total</th>
+              <th class="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">Pembayaran</th>
+              <th class="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">Status</th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
             <tr 
-              v-for="booking in paginatedBookings" 
+              v-for="booking in bookings" 
               :key="booking.id"
               class="hover:bg-gray-50 transition-colors print:hover:bg-transparent"
             >
               <!-- Kode Booking -->
-              <td class="px-4 py-3">
-                <span class="text-sm font-bold text-blue-600">{{ booking.bookingCode }}</span>
+              <td class="px-6 py-4">
+                <span class="text-sm font-bold text-blue-600 print:text-gray-900">{{ booking.bookingCode }}</span>
               </td>
 
               <!-- Tanggal -->
-              <td class="px-4 py-3">
+              <td class="px-6 py-4 text-center">
                 <div class="flex flex-col">
                   <span class="text-xs text-gray-700 font-medium">{{ formatDate(booking.createdAt) }}</span>
                   <span class="text-[10px] text-gray-500">Slot: {{ formatSlotDate(booking) }}</span>
@@ -717,44 +814,56 @@ const getPaymentText = (status: string) => {
               </td>
 
               <!-- Client -->
-              <td class="px-4 py-3">
+              <td class="px-6 py-4">
                 <div class="flex flex-col">
                   <span class="text-sm font-semibold text-gray-900">{{ booking.name }}</span>
-                  <span v-if="booking.isAcademic" class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-blue-50 border border-blue-200 rounded text-[10px] font-bold text-blue-700 w-fit">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <span v-if="booking.renterType === 'AKADEMIK'" class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-blue-50 border border-blue-200 rounded text-[10px] font-bold text-blue-700 w-fit print:bg-gray-100 print:text-gray-800 print:border-gray-400">
+                    <svg class="w-3 h-3 print:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
                     Akademik
+                  </span>
+                  <span v-else-if="booking.renterType === 'TENDIK'" class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-purple-50 border border-purple-200 rounded text-[10px] font-bold text-purple-700 w-fit print:bg-gray-100 print:text-gray-800 print:border-gray-400">
+                    <svg class="w-3 h-3 print:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    Tendik
                   </span>
                 </div>
               </td>
 
               <!-- Stadion -->
-              <td class="px-4 py-3">
-                <span class="text-xs font-semibold text-gray-900">{{ getStadiumName(booking) }}</span>
+              <td class="px-6 py-4 text-center">
+                <span class="text-xs font-semibold text-gray-900">
+                  {{ getStadiumName(booking) }}
+                </span>
               </td>
 
               <!-- Total Harga -->
-              <td class="px-4 py-3 text-right">
+              <td class="px-6 py-4 text-right">
                 <div class="flex flex-col items-end">
-                  <span class="text-sm font-bold text-gray-900">{{ formatCurrency(booking.totalPrice) }}</span>
-                  <span class="text-[10px] text-gray-500">{{ booking.details.length }} slot</span>
+                  <span class="text-sm font-bold text-gray-900">
+                    {{ formatCurrency(booking.totalPrice) }}
+                  </span>
+                  <span class="text-[10px] text-gray-500">
+                    {{ booking.details.length }} slot
+                  </span>
                 </div>
               </td>
 
               <!-- Payment Status -->
-              <td class="px-4 py-3 text-center print:hidden">
+              <td class="px-6 py-4 text-center">
                 <span 
-                  :class="['inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold border shadow-sm', getPaymentStatusClasses(booking.paymentStatus)]"
+                  :class="['inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold border shadow-sm print:shadow-none print:border-none print:text-black print:bg-transparent print:p-0', getPaymentStatusClasses(booking.paymentStatus)]"
                 >
                   {{ getPaymentText(booking.paymentStatus) }}
                 </span>
               </td>
 
               <!-- Booking Status -->
-              <td class="px-4 py-3 text-center print:hidden">
+              <td class="px-6 py-4 text-center">
                 <span 
-                  :class="['inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold border shadow-sm', getStatusClasses(booking.status)]"
+                  :class="['inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold border shadow-sm print:shadow-none print:border-none print:text-black print:bg-transparent print:p-0', getStatusClasses(booking.status)]"
                 >
                   {{ getStatusText(booking.status) }}
                 </span>
@@ -766,7 +875,7 @@ const getPaymentText = (status: string) => {
 
       <!-- PAGINATION -->
       <nav
-        v-if="!pending && totalPages > 1"
+        v-if="!pending && pagination.totalPages > 1"
         class="flex flex-col-reverse items-center justify-between gap-4 bg-gray-50/30 px-6 py-4 border-t border-gray-200 sm:flex-row print:hidden"
       >
         <span class="text-xs text-gray-500 font-medium">
@@ -776,19 +885,19 @@ const getPaymentText = (status: string) => {
         <div class="flex items-center gap-2">
           <button
             @click="prevPage"
-            :disabled="currentPage === 1"
+            :disabled="!pagination.hasPrevPage"
             class="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
           </button>
 
           <div class="px-4 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-bold text-gray-700 shadow-sm">
-            {{ currentPage }} / {{ totalPages }}
+            {{ pagination.page }} / {{ pagination.totalPages }}
           </div>
 
           <button
             @click="nextPage"
-            :disabled="currentPage === totalPages"
+            :disabled="!pagination.hasNextPage"
             class="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
@@ -811,23 +920,67 @@ const getPaymentText = (status: string) => {
     -webkit-filter: none !important;
   }
 
+  /* Professional Table Structure */
   table {
     width: 100%;
     border-collapse: collapse;
-    page-break-inside: auto;
-    font-size: 9px;
+    font-size: 8pt;
+    border: 1px solid #4b5563; /* Gray-600 */
+    margin-bottom: 20px;
   }
 
+  /* Table Header */
   thead {
     display: table-header-group;
     page-break-inside: avoid;
   }
 
+  thead tr {
+    background-color: transparent !important;
+  }
+
+  /* Match Dashboard Print Style: Black Borders, 9px Font */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9px;
+    border: 1px solid #111827; /* Gray-900/Black */
+    margin-bottom: 20px;
+  }
+
+  thead th {
+    border: 1px solid #111827; /* Gray-900/Black */
+    padding: 4px 6px; /* Compact padding like dashboard */
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #111827;
+    text-align: center;
+  }
+  
+  /* Specific alignments */
+  thead th:nth-child(2)
+  {
+    text-align: left;
+  }
+
+  /* Table Body */
   tbody tr {
     page-break-inside: avoid;
     page-break-after: auto;
   }
 
+  tbody tr:nth-child(even) {
+    background-color: transparent !important;
+  }
+
+  tbody td {
+    border: 1px solid #111827; /* Gray-900/Black */
+    padding: 4px 6px; /* Compact padding */
+    vertical-align: middle;
+    color: #000;
+  }
+
+  /* Ensure content wrapping */
   th, td {
     word-wrap: break-word;
     overflow-wrap: break-word;
@@ -839,7 +992,17 @@ const getPaymentText = (status: string) => {
 @media print {
   @page {
     size: A4 portrait;
-    margin: 1.5cm 1.5cm 1cm 1.5cm;
+    margin: 1.5cm 1.5cm 1.5cm 1.5cm;
+  }
+  
+  /* Page Footer with Numbering */
+  @page {
+    @bottom-center {
+      content: "Halaman " counter(page) " dari " counter(pages);
+      font-size: 8pt;
+      color: #6b7280;
+      font-family: ui-sans-serif, system-ui, sans-serif;
+    }
   }
 
   nav, header, aside, footer, .sidebar, .top-bar, .layout-header, .navbar {
@@ -851,6 +1014,10 @@ const getPaymentText = (status: string) => {
     padding: 0 !important;
     width: 100% !important;
     background-color: white !important;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
+
+  /* Grayscale everything except specific overrides */
+  /* REMOVED global print-color-adjust to allow clean white background */
 }
 </style>

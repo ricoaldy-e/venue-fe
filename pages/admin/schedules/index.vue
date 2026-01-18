@@ -159,7 +159,7 @@ const handleSubmit = async () => {
           </svg>
         </div>
         <div>
-          <h1 class="text-2xl uppercase font-bold text-gray-900 tracking-tight">Manajemen Jadwal</h1>
+          <h1 class="text-2xl uppercase font-bold text-gray-900 tracking-tight">Kelola Jadwal</h1>
           <p class="text-sm text-gray-500 mt-1">
             Atur jam operasional venue untuk membatasi ketersediaan pemesanan.
           </p>
