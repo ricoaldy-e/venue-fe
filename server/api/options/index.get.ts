@@ -21,7 +21,12 @@ export default defineEventHandler(async () => {
   }
 
   try {
-    const response = await $fetch<{
+    const response = await $fetch(endpoint, {
+      method: 'POST',
+      body: {
+        query: print(QUERY_GET_OPTION),
+      },
+    }) as {
       data?: { options?: Option }
       errors?: Array<{
         message?: string
@@ -29,12 +34,7 @@ export default defineEventHandler(async () => {
           code?: string
         }
       }>
-    }>(endpoint, {
-      method: 'POST',
-      body: {
-        query: print(QUERY_GET_OPTION),
-      },
-    })
+    }
 
     if (response?.errors?.length) {
       const firstError = response.errors[0]
