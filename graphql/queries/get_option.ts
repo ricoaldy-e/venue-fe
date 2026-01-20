@@ -5,6 +5,8 @@ export const QUERY_GET_OPTION = gql`
         options {
             address
             description
+            unitName
+            unitDesc
             email
             name
             nohp
