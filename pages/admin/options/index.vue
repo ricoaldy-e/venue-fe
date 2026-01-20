@@ -20,6 +20,8 @@ type OptionRecord = {
   id: number;
   name: string;
   description: string;
+  unitName: string;
+  unitDesc: string;
   email: string;
   nohp: string;
   address: string;
@@ -48,6 +50,8 @@ const submitError = ref<string | null>(null);
 const formState = reactive({
   name: "",
   description: "",
+  unitName: "",
+  unitDesc: "",
   email: "",
   nohp: "",
   address: "",
@@ -60,6 +64,8 @@ const syncFormFromData = () => {
   formState.email = source.email;
   formState.nohp = source.nohp;
   formState.address = source.address;
+  formState.unitName = source.unitName;
+  formState.unitDesc = source.unitDesc;
 };
 
 watch(
@@ -87,6 +93,8 @@ const startEditing = () => {
     !formState.description ||
     !formState.email ||
     !formState.nohp ||
+    !formState.unitName ||
+    !formState.unitDesc ||
     !formState.address
   ) {
     syncFormFromData();
@@ -302,6 +310,94 @@ const handleSubmit = async () => {
                 {{ options?.description }}
               </p>
               <p class="text-xs text-gray-500">Tagline Platform</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Unit Info Card Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <!-- Nama Unit Card - Large Featured -->
+          <div
+            class="group lg:col-span-2 relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 p-8 text-white shadow-xl hover:shadow-2xl transition-all duration-300"
+          >
+            <!-- Decorative Elements -->
+            <div class="absolute -right-12 -top-12 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="absolute -left-8 -bottom-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+            
+            <div class="relative z-10">
+              <div class="flex items-start justify-between mb-6">
+                <div class="flex items-center gap-4">
+                  <div
+                    class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg group-hover:bg-white/40 transition-all duration-300"
+                  >
+                    <svg
+                      class="w-8 h-8 text-white group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-300"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <p class="text-sm font-bold text-blue-100 uppercase tracking-wider mb-1">
+                      Nama Unit
+                    </p>
+                    <p class="text-xs text-blue-200 opacity-90">
+                      Identitas Unit
+                    </p>
+                  </div>
+                </div>
+                <span class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-lg text-xs font-bold text-white">
+                  PRIMARY
+                </span>
+              </div>
+              
+              <h2 class="text-4xl font-black tracking-tight break-words">
+                {{ options?.unitName }}
+              </h2>
+            </div>
+          </div>
+
+          <!-- Description Card -->
+          <div
+            class="group relative overflow-hidden rounded-xl bg-white border border-gray-200 p-5 shadow-sm hover:shadow-lg hover:border-indigo-300 transition-all duration-300"
+          >
+            <div class="absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-full opacity-50 group-hover:opacity-70 transition-opacity"></div>
+            
+            <div class="relative z-10">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center group-hover:bg-indigo-600 transition-colors">
+                  <svg
+                    class="w-5 h-5 text-indigo-600 group-hover:text-white transition-colors"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    Deskripsi Unit
+                  </p>
+                </div>
+              </div>
+              
+              <p class="text-sm font-semibold text-gray-900 break-words leading-relaxed mb-1 line-clamp-3">
+                {{ options?.unitDesc }}
+              </p>
+              <p class="text-xs text-gray-500">Tagline Unit</p>
             </div>
           </div>
         </div>
@@ -655,6 +751,84 @@ const handleSubmit = async () => {
                   </div>
                   <input
                     v-model="formState.description"
+                    type="text"
+                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400"
+                    placeholder="Platform booking lapangan..."
+                    required
+                    :disabled="submitting"
+                  >
+                </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Unit Fields Section -->
+            <div>
+              <h3 class="text-base font-bold text-gray-900 mb-1 flex items-center gap-2">
+                <div class="w-1 h-5 bg-blue-600 rounded-full"></div>
+                Informasi Unit
+              </h3>
+              <p class="text-xs text-gray-500 mb-5 ml-3">Data identitas platform</p>
+              
+              <div class="grid gap-6 sm:grid-cols-2">
+              <div class="space-y-2">
+                <label
+                  class="block text-xs font-bold text-gray-700 uppercase tracking-wider"
+                  >Nama Unit</label
+                >
+                <div class="relative group">
+                  <div
+                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                  >
+                    <svg
+                      class="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    v-model="formState.unitName"
+                    type="text"
+                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400"
+                    placeholder="Contoh: VENUE UNDIP"
+                    required
+                    :disabled="submitting"
+                  >
+                </div>
+              </div>
+              <div class="space-y-2">
+                <label
+                  class="block text-xs font-bold text-gray-700 uppercase tracking-wider"
+                  >Deskripsi Unit</label
+                >
+                <div class="relative group">
+                  <div
+                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                  >
+                    <svg
+                      class="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    v-model="formState.unitDesc"
                     type="text"
                     class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400"
                     placeholder="Platform booking lapangan..."
