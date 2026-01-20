@@ -26,6 +26,12 @@ const options = computed(() => appOptions.value.data);
 const contactEmail = computed(() => options.value?.email || FALLBACK_CONTACT.email);
 const contactWhatsApp = computed(() => options.value?.nohp || FALLBACK_CONTACT.nohp);
 const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
+
+const whatsAppLink = computed(() => {
+  const phone = contactWhatsApp.value.replace(/[^0-9]/g, '');
+  const message = encodeURIComponent(`Halo Admin ${venueName.value}, saya ingin bertanya mengenai booking lapangan.`);
+  return `https://wa.me/${phone}?text=${message}`;
+});
 </script>
 
 <template>
@@ -39,14 +45,61 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
           </svg>
         </div>
         <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Panduan Booking Lapangan</h1>
-        <p class="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">Untuk saat ini Platform hanya digunakan untuk <span class="font-semibold text-[#1f2a56]">melihat ketersediaan sisa booking</span>. Untuk melakukan booking, <span class="font-semibold text-[#1f2a56]">silahkan datang langsung ke venue terkait.</span></p>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">Platform ini digunakan untuk <span class="font-semibold text-[#1f2a56]">melihat ketersediaan sisa booking</span>. Untuk melakukan booking, silakan <span class="font-semibold text-[#1f2a56]">hubungi operator via WhatsApp</span> atau <span class="font-semibold text-[#1f2a56]">datang langsung ke venue</span>.</p>
         <div class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-lg">
           <svg class="h-5 w-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
           </svg>
           <span class="text-sm font-semibold text-blue-800">Layanan Khusus Sivitas Akademika Universitas Diponegoro</span>
         </div>
+      </div>
 
+      <!-- Booking Types Info -->
+      <div class="rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 p-6 lg:p-8 shadow-lg border border-blue-100/50 mb-8">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-3">
+          <svg class="h-6 w-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+          </svg>
+          Tipe Booking yang Tersedia
+        </h2>
+        <div class="grid md:grid-cols-3 gap-4">
+          <div class="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-blue-100">
+                <svg class="h-4 w-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                </svg>
+              </span>
+              <span class="font-bold text-gray-900">Umum</span>
+            </div>
+            <p class="text-sm text-gray-600">Untuk kegiatan umum/pribadi. Dikenakan biaya sewa sesuai tarif yang berlaku.</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-emerald-100">
+                <svg class="h-4 w-4 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
+                </svg>
+              </span>
+              <span class="font-bold text-gray-900">Tendik</span>
+            </div>
+            <p class="text-sm text-gray-600">Untuk Tenaga Kependidikan UNDIP. Dikenakan tarif khusus Tendik.</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-purple-100">
+                <svg class="h-4 w-4 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+                </svg>
+              </span>
+              <span class="font-bold text-gray-900">Akademik</span>
+            </div>
+            <p class="text-sm text-gray-600">Untuk kegiatan akademik resmi. <span class="font-semibold text-purple-700">Dapat dibebaskan dari biaya</span> setelah validasi.</p>
+          </div>
+        </div>
+        <div class="mt-4 bg-amber-50 border-l-4 border-amber-500 p-3 rounded-r-lg">
+          <p class="text-sm text-amber-900"><span class="font-bold">📄 Persyaratan:</span> Semua tipe booking wajib melampirkan <span class="font-semibold">Surat Pernyataan Tanggung Jawab Mutlak (SPTJM)</span> dan untuk Tendik serta Akademik wajib melampikan <span class="font-semibold">surat pengantar</span> dalam format PDF kepada operator.</p>
+        </div>
       </div>
 
       <!-- Steps -->
@@ -60,7 +113,7 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
               </div>
             </div>
             <div class="flex-1">
-              <h3 class="text-xl font-bold text-gray-900 mb-3">Cek Ketersediaan Lapangan Online</h3>
+              <h3 class="text-xl font-bold text-gray-900 mb-3">Cek Ketersediaan Lapangan</h3>
               <p class="text-gray-600 mb-4 leading-relaxed">Buka platform {{ venueName }} dan lihat daftar stadion yang tersedia kemudian lihat daftar lapangan. Platform ini menampilkan <span class="font-semibold text-blue-700">sisa booking mulai dari hari besok.</span></p>
               <ul class="space-y-2 mb-4">
                 <li class="flex items-start gap-2 text-gray-700">
@@ -84,7 +137,7 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
               </ul>
               <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
                 <p class="text-sm text-blue-900">
-                  <span class="font-semibold">💡 Tips:</span> Perhatikan jadwal slot yang masih tersedia sebelum Anda datang ke venue untuk booking.
+                  <span class="font-semibold">💡 Tips:</span> Perhatikan jadwal slot yang masih tersedia sebelum menghubungi operator atau datang ke venue.
                 </p>
               </div>
             </div>
@@ -100,31 +153,48 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
               </div>
             </div>
             <div class="flex-1">
-              <h3 class="text-xl font-bold text-gray-900 mb-3">Datang Langsung ke Venue</h3>
-              <p class="text-gray-600 mb-4 leading-relaxed">Setelah melihat slot yang tersedia, <span class="font-semibold text-emerald-700">datang langsung ke lokasi venue</span> untuk melakukan booking melalui admin/operator yang bertugas.</p>
-              <ul class="space-y-2 mb-4">
-                <li class="flex items-start gap-2 text-gray-700">
-                  <svg class="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                  </svg>
-                  <span>Bawa <span class="font-semibold">Kartu Identias / Kartu Tanda Mahasiswa (KTM) UNDIP</span> sebagai bukti identitas.</span>
-                </li>
-                <li class="flex items-start gap-2 text-gray-700">
-                  <svg class="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                  </svg>
-                  <span>Datang pada jam operasional venue.</span>
-                </li>
-                <li class="flex items-start gap-2 text-gray-700">
-                  <svg class="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                  </svg>
-                  <span>Temui admin/operator dan sampaikan keinginan untuk booking.</span>
-                </li>
-              </ul>
+              <h3 class="text-xl font-bold text-gray-900 mb-3">Hubungi Operator atau Datang ke Venue</h3>
+              <p class="text-gray-600 mb-4 leading-relaxed">Setelah melihat slot yang tersedia, Anda dapat <span class="font-semibold text-emerald-700">menghubungi operator via WhatsApp</span> atau <span class="font-semibold text-emerald-700">datang langsung ke venue</span> untuk melakukan booking.</p>
+              
+              <div class="grid md:grid-cols-2 gap-4 mb-4">
+                <!-- Via WhatsApp -->
+                <div class="bg-green-50 rounded-xl p-4 border border-green-200">
+                  <h4 class="font-semibold text-green-900 mb-2 flex items-center gap-2">
+                    <svg class="h-5 w-5 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                      <path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.75.75 0 00.918.918l4.458-1.495A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.487 0-4.807-.857-6.63-2.29l-.126-.096-2.65.888.888-2.65-.096-.126A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+                    </svg>
+                    Via WhatsApp
+                  </h4>
+                  <ul class="space-y-1 text-sm text-green-800">
+                    <li>• Hubungi operator via WhatsApp.</li>
+                    <li>• Sampaikan jadwal yang diinginkan.</li>
+                    <li>• Kirim SPTJM dalam format PDF.</li>
+                    <li>• Kirim Surat Pengantar jika Tendik atau Akademik dalam format PDF.</li>
+                    <li>• Lakukan pembayaran (transfer/di venue).</li>
+                  </ul>
+                </div>
+                <!-- Datang Langsung -->
+                <div class="bg-blue-50 rounded-xl p-4 border border-blue-200">
+                  <h4 class="font-semibold text-blue-900 mb-2 flex items-center gap-2">
+                    <svg class="h-5 w-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                    </svg>
+                    Datang ke Venue
+                  </h4>
+                  <ul class="space-y-1 text-sm text-blue-800">
+                    <li>• Datang langsung ke venue.</li>
+                    <li>• Sampaikan jadwal yang diinginkan.</li>
+                    <li>• Serahkan SPTJM dalam format PDF.</li>
+                    <li>• Serahkan Surat Pengantar jika Tendik atau Akademik dalam format PDF.</li>
+                    <li>• Lakukan pembayaran (transfer/di venue).</li>
+                  </ul>
+                </div>
+              </div>
+              
               <div class="bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-r-lg">
                 <p class="text-sm text-emerald-900">
-                  <span class="font-semibold">📍 Lokasi Admin:</span> Admin/operator berada di masing-masing venue sesuai jam operasional yang tertera di platform.
+                  <span>📍 Untuk SPTJM Anda akan mendapatkan formulir dari Operator untuk diisi dan digunakan sebagai SPTJM. Kontak Operator:</span> WhatsApp <span class="font-semibold">{{ contactWhatsApp }}</span> atau Email <span class="font-semibold">{{ contactEmail }}.</span>
                 </p>
               </div>
             </div>
@@ -140,8 +210,8 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
               </div>
             </div>
             <div class="flex-1">
-              <h3 class="text-xl font-bold text-gray-900 mb-3">Operator Membooking untuk Anda</h3>
-              <p class="text-gray-600 mb-4 leading-relaxed">Admin/operator akan menginput data Anda ke sistem dan memproses booking. Sampaikan keinginan Anda untuk booking: <span class="font-semibold text-amber-700">stadion, lapangan, tanggal, jam, dan keperluan akademik atau tidak</span>. Berikan informasi berikut kepada operator:</p>
+              <h3 class="text-xl font-bold text-gray-900 mb-3">Operator Memproses Booking Anda</h3>
+              <p class="text-gray-600 mb-4 leading-relaxed">Operator akan menginput data Anda ke sistem dan memproses booking. Sampaikan informasi berikut:</p>
               <div class="grid sm:grid-cols-2 gap-3 mb-4">
                 <div class="flex items-center gap-2 text-gray-700 text-sm">
                   <svg class="h-4 w-4 text-amber-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -165,26 +235,30 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
                   <svg class="h-4 w-4 text-amber-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                   </svg>
-                  <span>Slot waktu yang diinginkan.</span>
+                  <span>Jadwal yang diinginkan.</span>
+                </div>
+                <div class="flex items-center gap-2 text-gray-700 text-sm">
+                  <svg class="h-4 w-4 text-amber-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  <span>Tipe booking (Umum/Tendik/Akademik).</span>
+                </div>
+                <div class="flex items-center gap-2 text-gray-700 text-sm">
+                  <svg class="h-4 w-4 text-amber-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  <span>SPTJM dalam format PDF.</span>
                 </div>
               </div>
-              <ul class="space-y-2 mb-4">
-                <li class="flex items-start gap-2 text-gray-700 text-sm">
-                  <span class="text-amber-600 font-bold mt-0.5">•</span>
-                  <span>Informasikan keperluan booking: <span class="font-semibold">kegiatan umum</span> atau <span class="font-semibold">kegiatan akademik</span>.</span>
-                </li>
-                <li class="flex items-start gap-2 text-gray-700 text-sm">
-                  <span class="text-amber-600 font-bold mt-0.5">•</span>
-                  <span>Untuk kegiatan akademik: siapkan <span class="font-semibold">softfile surat (PDF)</span> yang relevan.</span>
-                </li>
-                <li class="flex items-start gap-2 text-gray-700 text-sm">
-                  <span class="text-amber-600 font-bold mt-0.5">•</span>
-                  <span>Operator akan memilih lapangan, tanggal, dan jam booking sesuai kebutuhan Anda.</span>
-                </li>
-              </ul>
-              <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
+              <div class="flex items-center gap-2 text-gray-700 text-sm">
+                <svg class="h-4 w-4 text-amber-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span>Surat Pengantar jika Tendik atau Akademik dalam format PDF.</span>
+              </div>
+              <div class="mt-4 bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg">
                 <p class="text-sm text-amber-900">
-                  <span class="font-semibold">🎓 Kegiatan Akademik:</span> Untuk keperluan akademik, booking dapat divalidasi oleh admin dan berkemungkinan untuk booking tanpa biaya (gratis) tergantung jenis kegiatan. Pastikan membawa surat resmi dari instansi/unit terkait.
+                  <span class="font-semibold">🎓 Kegiatan Akademik:</span> Untuk keperluan akademik, booking dapat divalidasi oleh admin dan <span class="font-semibold">dapat dibebaskan dari biaya</span> tergantung jenis kegiatan. Pastikan melampirkan surat resmi dari instansi/unit terkait.
                 </p>
               </div>
             </div>
@@ -200,32 +274,45 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
               </div>
             </div>
             <div class="flex-1">
-              <h3 class="text-xl font-bold text-gray-900 mb-3">Pembayaran (Cash / QRIS / Transfer)</h3>
-              <p class="text-gray-600 mb-4 leading-relaxed">Lakukan pembayaran kepada admin/operator di venue. Metode pembayaran: <span class="font-semibold text-purple-700">Cash, QRIS, atau Transfer</span>.</p>
+              <h3 class="text-xl font-bold text-gray-900 mb-3">Pembayaran</h3>
+              <p class="text-gray-600 mb-4 leading-relaxed">Lakukan pembayaran kepada operator. Pembayaran dapat dilakukan <span class="font-semibold text-purple-700">via transfer</span> atau <span class="font-semibold text-purple-700">langsung di venue</span>.</p>
+              <div class="grid grid-cols-3 gap-3 mb-4">
+                <div class="bg-purple-50 rounded-lg p-3 text-center border border-purple-200">
+                  <div class="text-2xl mb-1">💵</div>
+                  <div class="text-sm font-semibold text-purple-900">Cash</div>
+                </div>
+                <div class="bg-purple-50 rounded-lg p-3 text-center border border-purple-200">
+                  <div class="text-2xl mb-1">📱</div>
+                  <div class="text-sm font-semibold text-purple-900">QRIS</div>
+                </div>
+                <div class="bg-purple-50 rounded-lg p-3 text-center border border-purple-200">
+                  <div class="text-2xl mb-1">🏦</div>
+                  <div class="text-sm font-semibold text-purple-900">Transfer</div>
+                </div>
+              </div>
               <ul class="space-y-2 mb-4">
                 <li class="flex items-start gap-2 text-gray-700">
                   <svg class="h-5 w-5 text-purple-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"/>
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                   </svg>
-                  <span><span class="font-semibold">Kegiatan Umum:</span> Pembayaran wajib dilakukan (Cash/QRIS/Transfer).</span>
+                  <span><span class="font-semibold">Umum:</span> Dikenakan biaya sewa sesuai tarif yang berlaku.</span>
                 </li>
                 <li class="flex items-start gap-2 text-gray-700">
                   <svg class="h-5 w-5 text-purple-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                   </svg>
-                  <span><span class="font-semibold">Kegiatan Akademik:</span> Berkemungkinan tanpa biaya (gratis) setelah divalidasi oleh admin (tergantung keperluan).</span>
+                  <span><span class="font-semibold">Tendik:</span> Dikenakan tarif khusus untuk Tenaga Kependidikan.</span>
                 </li>
                 <li class="flex items-start gap-2 text-gray-700">
                   <svg class="h-5 w-5 text-purple-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                   </svg>
-                  <span><span class="font-semibold">Waktu Pembayaran:</span> Dapat dilakukan saat booking, saat kegiatan, atau setelah kegiatan selesai.</span>
+                  <span><span class="font-semibold">Akademik:</span> Dapat dibebaskan dari biaya (gratis) setelah divalidasi oleh admin.</span>
                 </li>
               </ul>
               <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-lg">
                 <p class="text-sm text-purple-900">
-                  <span class="font-semibold">💳 Metode Pembayaran:</span> Tanyakan kepada admin/operator metode pembayaran yang tersedia di venue terkait. Tidak ada pembayaran online melalui platform.
+                  <span class="font-semibold">💳 Metode Pembayaran:</span> Tanyakan kepada operator metode pembayaran yang tersedia. Pembayaran dapat dilakukan sebelum atau sesudah kegiatan sesuai kesepakatan.
                 </p>
               </div>
             </div>
@@ -242,7 +329,7 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
             </div>
             <div class="flex-1">
               <h3 class="text-xl font-bold text-gray-900 mb-3">Terima Email Konfirmasi & Kode Booking</h3>
-              <p class="text-gray-600 mb-4 leading-relaxed">Setelah operator selesai memproses booking, sistem akan <span class="font-semibold text-green-700">otomatis mengirim email konfirmasi</span> ke alamat email yang Anda berikan. Email dikirim dari <span class="font-semibold">noreply@undip.ac.id</span>. Jika ada pertanyaan, hubungi <span class="font-semibold">{{ contactEmail }}</span>.</p>
+              <p class="text-gray-600 mb-4 leading-relaxed">Setelah operator selesai memproses booking, sistem akan <span class="font-semibold text-green-700">otomatis mengirim email konfirmasi</span> ke alamat email Anda.</p>
               <div class="grid gap-3 mb-4">
                 <div class="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 p-4 rounded-xl">
                   <h4 class="font-semibold text-green-900 mb-2 flex items-center gap-2">
@@ -257,24 +344,6 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
                     <li class="flex gap-2"><span class="font-semibold">•</span> Informasi status booking.</li>
                     <li class="flex gap-2"><span class="font-semibold">•</span> Kontak admin untuk bantuan.</li>
                   </ul>
-                </div>
-                <div class="bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-200 p-4 rounded-xl">
-                  <div class="flex items-center gap-2 mb-2">
-                    <svg class="h-5 w-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-                    </svg>
-                    <span class="font-semibold text-blue-900 text-sm">Email Pengingat</span>
-                  </div>
-                  <p class="text-xs text-blue-800">Anda akan menerima email pengingat ketika waktu booking sudah dekat.</p>
-                </div>
-                <div class="bg-gradient-to-br from-red-50 to-rose-50 border border-red-200 p-4 rounded-xl">
-                  <div class="flex items-center gap-2 mb-2">
-                    <svg class="h-5 w-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                    </svg>
-                    <span class="font-semibold text-red-900 text-sm">Email Pembatalan</span>
-                  </div>
-                  <p class="text-xs text-red-800">Jika booking dibatalkan admin, Anda akan menerima notifikasi pembatalan via email.</p>
                 </div>
               </div>
             </div>
@@ -311,19 +380,13 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
                   </svg>
                   <span>Gunakan fasilitas sesuai aturan yang berlaku.</span>
                 </li>
-                <li class="flex items-start gap-2 text-gray-700">
-                  <svg class="h-5 w-5 text-teal-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                  </svg>
-                  <span>Jaga kebersihan dan kembalikan peralatan pada tempatnya.</span>
-                </li>
               </ul>
-              <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
-                <p class="text-sm text-red-900 mb-2">
-                  <span class="font-semibold">❌ Pembatalan Booking:</span>
+              <div class="bg-red-50 border-l-4 border-red-500 p-3 sm:p-4 rounded-r-lg">
+                <p class="text-xs sm:text-sm text-red-900 mb-2">
+                  <span class="font-semibold">📋 Pembatalan atau Perubahan Jadwal:</span>
                 </p>
-                <p class="text-sm text-red-900">
-                  Jika ingin membatalkan, segera hubungi admin melalui <span class="font-semibold">WhatsApp ({{ contactWhatsApp }})</span> atau <span class="font-semibold">email ({{ contactEmail }})</span> dengan menyertakan kode booking. Anda akan menerima email notifikasi pembatalan.
+                <p class="text-xs sm:text-sm text-red-900">
+                  Jika ingin membatalkan atau mengubah jadwal booking, Anda dapat <span class="font-semibold">menghubungi operator via WhatsApp ({{ contactWhatsApp }})</span>, <span class="font-semibold">email ({{ contactEmail }})</span>, atau <span class="font-semibold">datang langsung ke venue</span>. Pastikan menyertakan kode booking Anda.
                 </p>
               </div>
             </div>
@@ -342,25 +405,37 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
         <div class="space-y-4">
           <details class="group">
             <summary class="flex cursor-pointer items-center justify-between rounded-xl bg-gray-50 px-4 py-3 font-semibold text-gray-900 hover:bg-gray-100 transition-colors">
-              <span>Apakah saya bisa booking online melalui platform ini?</span>
+              <span>Apakah saya bisa booking melalui platform ini?</span>
               <svg class="h-5 w-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
               </svg>
             </summary>
             <div class="mt-3 px-4 pb-3 text-gray-600">
-              <p><span class="font-semibold">Tidak.</span> Platform ini hanya untuk melihat ketersediaan sisa booking. Untuk melakukan booking, Anda diharapkan datang langsung ke venue dan admin/operator akan membooking untuk Anda.</p>
+              <p><span class="font-semibold">Platform ini hanya untuk melihat ketersediaan sisa booking.</span> Untuk melakukan booking, Anda dapat menghubungi operator via WhatsApp atau datang langsung ke venue.</p>
             </div>
           </details>
 
           <details class="group">
             <summary class="flex cursor-pointer items-center justify-between rounded-xl bg-gray-50 px-4 py-3 font-semibold text-gray-900 hover:bg-gray-100 transition-colors">
-              <span>Apakah saya bisa booking untuk kegiatan akademik?</span>
+              <span>Apa saja tipe booking yang tersedia?</span>
               <svg class="h-5 w-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
               </svg>
             </summary>
             <div class="mt-3 px-4 pb-3 text-gray-600">
-              <p><span class="font-semibold">Ya.</span> Untuk keperluan akademik, booking dapat divalidasi oleh admin dan berkemungkinan tanpa biaya (gratis) tergantung jenis kegiatan. Siapkan softfile surat resmi (PDF) dari instansi/unit terkait sebagai bukti kegiatan akademik.</p>
+              <p>Tersedia 3 tipe booking: <span class="font-semibold">Umum</span> (berbayar sesuai tarif), <span class="font-semibold">Tendik</span> (tarif khusus Tenaga Kependidikan), dan <span class="font-semibold">Akademik</span> (dapat dibebaskan dari biaya setelah validasi).</p>
+            </div>
+          </details>
+
+          <details class="group">
+            <summary class="flex cursor-pointer items-center justify-between rounded-xl bg-gray-50 px-4 py-3 font-semibold text-gray-900 hover:bg-gray-100 transition-colors">
+              <span>Apa itu SPTJM dan apakah wajib?</span>
+              <svg class="h-5 w-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </summary>
+            <div class="mt-3 px-4 pb-3 text-gray-600">
+              <p><span class="font-semibold">SPTJM (Surat Pernyataan Tanggung Jawab Mutlak)</span> adalah surat pernyataan yang <span class="font-semibold">wajib dilampirkan</span> untuk semua tipe booking. Operator akan memberikan Anda formulir untuk diisi sebagai bukti pertanggungjawaban. Kirimkan dalam format PDF kepada operator.</p>
             </div>
           </details>
 
@@ -372,7 +447,7 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
               </svg>
             </summary>
             <div class="mt-3 px-4 pb-3 text-gray-600">
-              <p>Pembayaran dilakukan kepada admin/operator di venue dengan metode <span class="font-semibold">Cash, QRIS, atau Transfer</span>. Untuk kegiatan umum wajib berbayar, sedangkan kegiatan akademik berkemungkinan tanpa biaya (gratis) setelah divalidasi admin. Pembayaran dapat dilakukan saat booking, saat kegiatan, atau setelah kegiatan selesai. <span class="font-semibold">Tidak ada pembayaran online melalui platform.</span></p>
+              <p>Pembayaran dapat dilakukan <span class="font-semibold">via transfer</span> atau <span class="font-semibold">langsung di venue</span> dengan metode Cash, QRIS, atau Transfer. Untuk kegiatan Akademik, dapat dibebaskan dari biaya setelah validasi admin.</p>
             </div>
           </details>
         </div>
@@ -381,16 +456,29 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
       <!-- CTA -->
       <div class="text-center rounded-2xl bg-gradient-to-br from-[#0f1f4a] via-[#1a2d5a] to-[#0f1f4a] p-8 lg:p-12 shadow-2xl shadow-[#0f1f4a]/40">
         <h2 class="text-2xl lg:text-3xl font-bold text-white mb-4">Siap Melakukan Booking?</h2>
-        <p class="text-blue-100 mb-6 max-w-xl mx-auto">Temukan stadion pilihan Anda dan pesan lapangan sekarang juga dengan mudah dan cepat!</p>
-        <NuxtLink
-          to="/"
-          class="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-4 text-base font-bold text-[#1f2a56] shadow-lg shadow-white/20 transition-all duration-300 hover:shadow-xl hover:scale-105"
-        >
-          Mulai Booking
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-          </svg>
-        </NuxtLink>
+        <p class="text-blue-100 mb-6 max-w-xl mx-auto">Lihat ketersediaan lapangan dan hubungi operator untuk melakukan booking sekarang!</p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a
+            :href="whatsAppLink"
+            target="_blank"
+            class="inline-flex items-center gap-2 rounded-xl bg-green-500 px-8 py-4 text-base font-bold text-white shadow-lg shadow-green-500/30 transition-all duration-300 hover:bg-green-600 hover:shadow-xl hover:scale-105"
+          >
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+              <path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.75.75 0 00.918.918l4.458-1.495A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.487 0-4.807-.857-6.63-2.29l-.126-.096-2.65.888.888-2.65-.096-.126A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+            </svg>
+            Hubungi Operator
+          </a>
+          <NuxtLink
+            to="/"
+            class="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-4 text-base font-bold text-[#1f2a56] shadow-lg shadow-white/20 transition-all duration-300 hover:shadow-xl hover:scale-105"
+          >
+            Lihat Ketersediaan
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+            </svg>
+          </NuxtLink>
+        </div>
       </div>
     </div>
   </div>

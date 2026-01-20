@@ -64,10 +64,10 @@ export function detectSQLInjection(input: string): boolean {
 
 export const STATUS = {
   BOOKING: {
-    PENDING: 'PENDING',
+    // PENDING: 'PENDING', // Temporarily disabled - not currently in use
     APPROVED: 'APPROVED',
     CANCELLED: 'CANCELLED',
-    REJECTED: 'REJECTED',
+    // REJECTED: 'REJECTED', // Temporarily disabled - not in BE schema
   },
   PAYMENT: {
     UNPAID: 'UNPAID',
@@ -94,7 +94,7 @@ export const UI = {
 } as const
 
 export const API = {
-  TIMEOUT: 5*60*1000,
+  TIMEOUT: 5 * 60 * 1000,
   RETRY_COUNT: 0,
   CACHE_TTL: {
     STADIONS: 60,

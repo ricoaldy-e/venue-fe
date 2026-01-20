@@ -235,7 +235,41 @@ const onSubmit = async () => {
             </button>
           </div>
         </label>
-        <NuxtTurnstile v-model="token" />
+        <!-- Security Verification / CAPTCHA -->
+        <div class="grid gap-1.5">
+          <span class="text-xs font-semibold text-ds-text flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-ds-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            Verifikasi Keamanan
+          </span>
+          <div 
+            :class="[
+              'relative flex items-center justify-center rounded-lg border-2 p-3 transition-all duration-300 min-h-[70px]',
+              errorField === 'token'
+                ? 'border-red-500 bg-red-50/50'
+                : token 
+                  ? 'border-green-500 bg-green-50/30'
+                  : 'border-gray-200 bg-gray-50/50'
+            ]"
+          >
+            <!-- Verified Badge -->
+            <div 
+              v-if="token" 
+              class="absolute top-1.5 right-1.5 flex items-center gap-1 px-2 py-1 bg-green-50 border border-green-200 rounded-md shadow-sm"
+            >
+              <svg class="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              <span class="text-[10px] font-semibold text-green-700">Terverifikasi</span>
+            </div>
+            
+            <NuxtTurnstile v-model="token" />
+          </div>
+          <p v-if="!token && !errorField" class="text-[10px] text-ds-muted/70 text-center">
+            Sistem akan memverifikasi secara otomatis
+          </p>
+        </div>
 
         <!-- Error Message -->
         <div

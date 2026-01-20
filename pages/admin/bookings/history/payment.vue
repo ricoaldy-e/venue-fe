@@ -45,7 +45,7 @@ interface BookingHistory {
   email: string
   renterType: 'UMUM' | 'TENDIK' | 'AKADEMIK'
   totalPrice: number
-  status: 'PENDING' | 'APPROVED' | 'CANCELLED'
+  status: /* 'PENDING' | */ 'APPROVED' | 'CANCELLED' // PENDING temporarily disabled
   paymentStatus: 'UNPAID' | 'PAID'
   createdAt: string
   details: BookingDetail[]
@@ -467,7 +467,7 @@ const getPaymentStatusClasses = (status: string) => {
 
 const getStatusClasses = (status: string) => {
   const classes = {
-    'PENDING': 'bg-yellow-50 text-yellow-700 border-yellow-200',
+    // 'PENDING': 'bg-yellow-50 text-yellow-700 border-yellow-200', // Temporarily disabled
     'APPROVED': 'bg-green-50 text-green-700 border-green-200',
     'CANCELLED': 'bg-red-50 text-red-700 border-red-200'
   }

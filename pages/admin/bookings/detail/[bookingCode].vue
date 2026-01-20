@@ -162,7 +162,7 @@ const formatCurrency = (amount: number) => {
 
 const getStatusClasses = (status: string) => {
   const classes = {
-    'PENDING': 'bg-yellow-50 text-yellow-700 border-yellow-200',
+    // 'PENDING': 'bg-yellow-50 text-yellow-700 border-yellow-200', // Temporarily disabled
     'APPROVED': 'bg-green-50 text-green-700 border-green-200',
     'CANCELLED': 'bg-red-50 text-red-700 border-red-200'
   }
@@ -177,7 +177,7 @@ const getPaymentStatusClasses = (status: string) => {
 
 const getStatusText = (status: string) => {
   const texts = {
-    'PENDING': 'Menunggu Persetujuan',
+    // 'PENDING': 'Menunggu Persetujuan', // Temporarily disabled
     'APPROVED': 'Disetujui',
     'CANCELLED': 'Dibatalkan'
   }
@@ -518,6 +518,7 @@ const groupedDetails = computed(() => {
           <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-4">Aksi Booking</h3>
           
           <div class="space-y-3">
+            <!-- PENDING approval button - Temporarily disabled
             <button
               v-if="booking.status === 'PENDING'"
               @click="handleStatusChange('APPROVED')"
@@ -529,6 +530,7 @@ const groupedDetails = computed(() => {
               </svg>
               Setujui Booking
             </button>
+            -->
             
             <button
               @click="handleStatusChange('CANCELLED')"
@@ -552,8 +554,8 @@ const groupedDetails = computed(() => {
             <div>
               <p class="text-xs font-bold text-gray-900 mb-1">Informasi</p>
               <p class="text-xs text-gray-600 leading-relaxed">
-                Booking dibuat pada {{ formatDate(booking.createdAt) }}. 
-                {{ booking.status === 'PENDING' ? 'Segera proses untuk konfirmasi kepada pemesan.' : '' }}
+                Booking dibuat pada {{ formatDate(booking.createdAt) }}.
+                <!-- {{ booking.status === 'PENDING' ? 'Segera proses untuk konfirmasi kepada pemesan.' : '' }} -->
               </p>
             </div>
           </div>

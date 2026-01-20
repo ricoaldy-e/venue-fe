@@ -81,7 +81,6 @@ export const QUERY_GET_BOOKINGS_PAGINATED = `
   }
 `
 
-// Query for backward compatibility (tanpa summary)
 export const QUERY_GET_BOOKINGS = `
   query Bookings($stadionId: ID, $date: DateTime, $startDate: DateTime, $endDate: DateTime) {
     bookings(stadionId: $stadionId, date: $date, startDate: $startDate, endDate: $endDate) {

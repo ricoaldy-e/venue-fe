@@ -24,6 +24,12 @@ const options = computed(() => appOptions.value.data);
 const contactEmail = computed(() => options.value?.email || FALLBACK_EMAIL);
 const contactWhatsApp = computed(() => options.value?.nohp || FALLBACK_WHATSAPP);
 const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
+
+const whatsAppLink = computed(() => {
+  const phone = contactWhatsApp.value.replace(/[^0-9]/g, '');
+  const message = encodeURIComponent(`Halo Admin ${venueName.value}, saya ingin bertanya mengenai kebijakan privasi.`);
+  return `https://wa.me/${phone}?text=${message}`;
+});
 </script>
 
 <template>
@@ -44,7 +50,7 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
           </svg>
           <span class="text-sm font-semibold text-blue-800">Layanan Khusus Sivitas Akademika Universitas Diponegoro</span>
         </div>
-        <p class="text-sm text-gray-500 mt-3">Terakhir diperbarui: 6 Januari 2026</p>
+        <p class="text-sm text-gray-500 mt-3">Terakhir diperbarui: 20 Januari 2026</p>
       </div>
 
       <!-- Content -->
@@ -60,16 +66,16 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
             <div class="flex-1">
               <h2 class="text-xl font-bold text-gray-900 mb-3">Pendahuluan</h2>
               <p class="text-gray-600 leading-relaxed mb-3">
-                {{ venueName }} adalah platform booking lapangan olahraga yang dikelola oleh Universitas Diponegoro <span class="font-semibold text-[#1f2a56]">khusus untuk Sivitas Akademika UNDIP</span>. Kebijakan privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, menyimpan, dan melindungi informasi pribadi Anda saat menggunakan layanan kami.
+                {{ venueName }} adalah platform booking lapangan olahraga yang dikelola oleh Universitas Diponegoro <span class="font-semibold text-[#1f2a56]">khusus untuk Sivitas Akademika Universitas Diponegoro</span>. Kebijakan privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, menyimpan, dan melindungi informasi pribadi Anda saat menggunakan layanan kami.
               </p>
               <p class="text-gray-600 leading-relaxed mb-3">
-                Platform ini digunakan untuk melihat ketersediaan lapangan. <span class="font-semibold text-[#1f2a56]">Booking dilakukan langsung di venue oleh admin/operator</span> yang akan menginput data Anda ke sistem.
+                Platform ini digunakan untuk melihat ketersediaan lapangan. <span class="font-semibold text-[#1f2a56]">Booking dilakukan dengan menghubungi operator via WhatsApp atau datang langsung ke venue</span> yang akan menginput data Anda ke sistem.
               </p>
               <p class="text-gray-600 leading-relaxed mb-3">
                 Dengan menggunakan layanan {{ venueName }}, Anda menyetujui pengumpulan dan penggunaan informasi sesuai dengan kebijakan ini.
               </p>
               <div class="bg-blue-50 border-l-4 border-blue-500 p-3 rounded-r-lg mt-4">
-                <p class="text-sm text-blue-900"><span class="font-bold">ℹ️ Penting:</span> Layanan ini <span class="font-semibold">hanya untuk Sivitas Akademika Universitas Diponegoro</span>. Data Anda dikumpulkan oleh admin/operator saat booking di venue dan diinput ke sistem untuk keperluan pengelolaan fasilitas olahraga.</p>
+                <p class="text-sm text-blue-900"><span class="font-bold">ℹ️ Penting:</span> Layanan ini <span class="font-semibold">hanya untuk Sivitas Akademika Universitas Diponegoro</span>. Data Anda dikumpulkan oleh operator saat booking (via WhatsApp atau di venue) dan diinput ke sistem untuk keperluan pengelolaan fasilitas olahraga.</p>
               </div>
             </div>
           </div>
@@ -136,11 +142,15 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
                     </li>
                     <li class="flex items-start gap-2">
                       <span class="text-emerald-600">•</span>
-                      <span>Riwayat transaksi.</span>
+                      <span>Tipe booking (Umum/Tendik/Akademik).</span>
                     </li>
                     <li class="flex items-start gap-2">
                       <span class="text-emerald-600">•</span>
-                      <span>Status pembayaran.</span>
+                      <span>Riwayat transaksi dan status pembayaran.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                      <span class="text-emerald-600">•</span>
+                      <span>Surat Pernyataan Tanggung Jawab Mutlak (SPTJM).</span>
                     </li>
                   </ul>
                 </div>
@@ -196,7 +206,7 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
                   <svg class="h-5 w-5 text-purple-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                   </svg>
-                  <span class="text-gray-600">Mengirimkan konfirmasi booking dan notifikasi penting (email otomatis dari noreply@undip.ac.id).</span>
+                  <span class="text-gray-600">Mengirimkan konfirmasi booking dan notifikasi penting.</span>
                 </li>
                 <li class="flex items-start gap-3">
                   <svg class="h-5 w-5 text-purple-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -209,12 +219,6 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                   </svg>
                   <span class="text-gray-600">Menyediakan dukungan pelanggan dan menangani pertanyaan.</span>
-                </li>
-                <li class="flex items-start gap-3">
-                  <svg class="h-5 w-5 text-purple-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                  </svg>
-                  <span class="text-gray-600">Melakukan analisis statistik untuk pengembangan platform.</span>
                 </li>
                 <li class="flex items-start gap-3">
                   <svg class="h-5 w-5 text-purple-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -361,21 +365,10 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
                     </div>
                   </div>
                 </div>
-                <div class="bg-indigo-50 rounded-xl p-4 border border-indigo-200">
-                  <div class="flex items-start gap-3">
-                    <svg class="h-5 w-5 text-indigo-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                    </svg>
-                    <div>
-                      <p class="font-semibold text-indigo-900 text-sm mb-1">Hak Pembatasan</p>
-                      <p class="text-xs text-indigo-700">Membatasi pemrosesan data pribadi dalam kondisi tertentu.</p>
-                    </div>
-                  </div>
-                </div>
               </div>
               <div class="mt-4 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
                 <p class="text-sm text-blue-900">
-                  <span class="font-semibold">📧 Untuk menggunakan hak Anda,</span> silakan hubungi kami melalui email <a :href="`mailto:${contactEmail}`" class="underline font-semibold hover:text-blue-700">{{ contactEmail }}</a>
+                  <span class="font-semibold">📧 Untuk menggunakan hak Anda,</span> silakan hubungi kami melalui email <a :href="`mailto:${contactEmail}`" class="underline font-semibold hover:text-blue-700">{{ contactEmail }}</a> atau WhatsApp <span class="font-semibold">{{ contactWhatsApp }}.</span>
                 </p>
               </div>
             </div>
@@ -383,46 +376,6 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
         </div>
 
         <!-- Section 7 -->
-        <div class="rounded-2xl bg-white p-6 lg:p-8 shadow-lg shadow-gray-200/50 border border-gray-100/50">
-          <div class="flex items-start gap-4 mb-4">
-            <div class="flex-shrink-0 inline-flex items-center justify-center h-10 w-10 rounded-full bg-orange-100">
-              <svg class="h-5 w-5 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z" clip-rule="evenodd"/>
-              </svg>
-            </div>
-            <div class="flex-1">
-              <h2 class="text-xl font-bold text-gray-900 mb-3">Cookie dan Teknologi Pelacakan</h2>
-              <p class="text-gray-600 leading-relaxed mb-4">
-                Kami menggunakan cookie dan teknologi serupa untuk meningkatkan pengalaman Anda di platform kami. Cookie adalah file kecil yang disimpan di perangkat Anda yang membantu kami:
-              </p>
-              <ul class="space-y-2">
-                <li class="flex items-start gap-2 text-gray-600">
-                  <svg class="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                  </svg>
-                  <span>Mengingat preferensi dan pengaturan Anda.</span>
-                </li>
-                <li class="flex items-start gap-2 text-gray-600">
-                  <svg class="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                  </svg>
-                  <span>Memahami bagaimana Anda menggunakan layanan kami.</span>
-                </li>
-                <li class="flex items-start gap-2 text-gray-600">
-                  <svg class="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                  </svg>
-                  <span>Meningkatkan keamanan dan mencegah penipuan.</span>
-                </li>
-              </ul>
-              <p class="text-gray-600 leading-relaxed mt-4">
-                Anda dapat mengatur preferensi cookie melalui pengaturan browser Anda. Namun, menonaktifkan cookie dapat mempengaruhi fungsi tertentu dari platform kami.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Section 8 -->
         <div class="rounded-2xl bg-white p-6 lg:p-8 shadow-lg shadow-gray-200/50 border border-gray-100/50">
           <div class="flex items-start gap-4 mb-4">
             <div class="flex-shrink-0 inline-flex items-center justify-center h-10 w-10 rounded-full bg-teal-100">
@@ -455,14 +408,11 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
                   <span>Setelah periode retensi, data akan <span class="font-semibold">dihapus atau dianonimkan</span> secara aman.</span>
                 </li>
               </ul>
-              <div class="bg-teal-50 border-l-4 border-teal-500 p-3 rounded-r-lg mt-4">
-                <p class="text-sm text-teal-900"><span class="font-bold">📅 Periode Retensi:</span> Kebijakan retensi sesuai dengan standar administrasi Universitas Diponegoro untuk keperluan audit dan pelaporan.</p>
-              </div>
             </div>
           </div>
         </div>
 
-        <!-- Section 9 -->
+        <!-- Section 8 -->
         <div class="rounded-2xl bg-white p-6 lg:p-8 shadow-lg shadow-gray-200/50 border border-gray-100/50">
           <div class="flex items-start gap-4 mb-4">
             <div class="flex-shrink-0 inline-flex items-center justify-center h-10 w-10 rounded-full bg-pink-100">
@@ -495,29 +445,36 @@ const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
         <div class="flex flex-col items-center justify-center gap-4">
           <div class="flex flex-col sm:flex-row items-center gap-4">
             <p class="text-white text-lg">
-              <span class="text-blue-200">Email:</span> 
+              <span class="text-blue-200">Email: </span> 
               <a :href="`mailto:${contactEmail}`" class="text-white font-semibold hover:text-blue-200 transition-colors underline decoration-2 underline-offset-4">
                 {{ contactEmail }}
               </a>
             </p>
-            <span class="hidden sm:block text-white/40">|</span>
-            <p class="text-white text-lg">
-              <span class="text-blue-200">WhatsApp:</span> 
-              <span class="text-white font-semibold">{{ contactWhatsApp }}</span>
-            </p>
           </div>
-          <NuxtLink
-            to="/"
-            class="inline-flex items-center gap-2 rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-8 py-4 text-base font-bold text-white transition-all duration-300 hover:bg-white/20 hover:border-white/50"
-          >
-            Kembali ke Beranda
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-            </svg>
-          </NuxtLink>
+          <div class="flex flex-col sm:flex-row items-center gap-4">
+            <a
+              :href="whatsAppLink"
+              target="_blank"
+              class="inline-flex items-center gap-2 rounded-xl bg-green-500 px-8 py-4 text-base font-bold text-white shadow-lg shadow-green-500/30 transition-all duration-300 hover:bg-green-600 hover:shadow-xl hover:scale-105"
+            >
+              <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.75.75 0 00.918.918l4.458-1.495A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.487 0-4.807-.857-6.63-2.29l-.126-.096-2.65.888.888-2.65-.096-.126A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+              </svg>
+              Hubungi Operator
+            </a>
+            <NuxtLink
+              to="/"
+              class="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-4 text-base font-bold text-[#1f2a56] shadow-lg shadow-white/20 transition-all duration-300 hover:shadow-xl hover:scale-105"
+            >
+              Kembali ke Beranda
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+              </svg>
+            </NuxtLink>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
-

@@ -1,7 +1,7 @@
 <template>
   <footer class="mt-16 bg-gradient-to-br from-[#0f1f4a] via-[#1a2d5a] to-[#0f1f4a] text-white">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 mb-12">
+      <div class="grid grid-cols-1 gap-y-8 gap-x-12 sm:grid-cols-2 lg:grid-cols-4 mb-12">
         <div class="space-y-4">
           <div class="flex items-center gap-3">
             <img
@@ -52,28 +52,28 @@
           <h3 class="text-sm font-bold uppercase tracking-wider text-white mb-4">Bantuan</h3>
           <ul class="space-y-2.5">
             <li>
-              <NuxtLink to="/bantuan/panduan-booking" class="group inline-flex items-center gap-2 text-sm text-blue-100/80 hover:text-white transition-all duration-200">
+              <button @click="handlePanduanBookingClick" class="group inline-flex items-center gap-2 text-sm text-blue-100/80 hover:text-white transition-all duration-200">
                 <span class="relative">
                   Panduan Booking
                   <span class="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-300"></span>
                 </span>
-              </NuxtLink>
+              </button>
             </li>
             <li>
-              <NuxtLink to="/bantuan/kebijakan-privasi" class="group inline-flex items-center gap-2 text-sm text-blue-100/80 hover:text-white transition-all duration-200">
+              <button @click="handleKebijakanPrivasiClick" class="group inline-flex items-center gap-2 text-sm text-blue-100/80 hover:text-white transition-all duration-200">
                 <span class="relative">
                   Kebijakan Privasi
                   <span class="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-300"></span>
                 </span>
-              </NuxtLink>
+              </button>
             </li>
             <li>
-              <NuxtLink to="/bantuan/syarat-ketentuan" class="group inline-flex items-center gap-2 text-sm text-blue-100/80 hover:text-white transition-all duration-200">
+              <button @click="handleSyaratKetentuanClick" class="group inline-flex items-center gap-2 text-sm text-blue-100/80 hover:text-white transition-all duration-200">
                 <span class="relative">
                   Syarat & Ketentuan
                   <span class="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-300"></span>
                 </span>
-              </NuxtLink>
+              </button>
             </li>
           </ul>
         </div>
@@ -256,6 +256,30 @@ import { useAppOptions } from '~/composables/useAppOptions'
           scrollToStadiumList()
         }, 1000) 
       })
+    }
+  }
+  
+  const handlePanduanBookingClick = () => {
+    if (route.path === '/bantuan/panduan-booking') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      router.push('/bantuan/panduan-booking')
+    }
+  }
+  
+  const handleKebijakanPrivasiClick = () => {
+    if (route.path === '/bantuan/kebijakan-privasi') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      router.push('/bantuan/kebijakan-privasi')
+    }
+  }
+  
+  const handleSyaratKetentuanClick = () => {
+    if (route.path === '/bantuan/syarat-ketentuan') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      router.push('/bantuan/syarat-ketentuan')
     }
   }
   

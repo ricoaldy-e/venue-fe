@@ -196,8 +196,7 @@ const filteredDashboardData = computed(() => {
   
   const query = searchQuery.value.toLowerCase().trim()
   return dashboardData.value.filter(item => 
-    item.name.toLowerCase().includes(query) ||
-    item.stadionName.toLowerCase().includes(query)
+    item.name.toLowerCase().includes(query)
   )
 })
 
@@ -315,7 +314,7 @@ const switchMode = (mode: 'daily' | 'range') => {
 
       <!-- Search Input -->
       <div class="flex-1 w-full">
-        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Cari Stadion / Lapangan</label>
+        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Cari Lapangan</label>
         <div class="relative">
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -245,7 +245,8 @@ const handleSubmit = async () => {
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
           <!-- Nama Venue Card - Large Featured -->
           <div
-            class="group lg:col-span-2 relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 p-8 text-white shadow-xl hover:shadow-2xl transition-all duration-300"
+            @click="startEditing"
+            class="group lg:col-span-2 relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 p-8 text-white shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer"
           >
             <!-- Decorative Elements -->
             <div class="absolute -right-12 -top-12 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
@@ -293,7 +294,8 @@ const handleSubmit = async () => {
 
           <!-- Description Card -->
           <div
-            class="group relative overflow-hidden rounded-xl bg-white border border-gray-200 p-5 shadow-sm hover:shadow-lg hover:border-indigo-300 transition-all duration-300"
+            @click="startEditing"
+            class="group relative overflow-hidden rounded-xl bg-white border border-gray-200 p-5 shadow-sm hover:shadow-lg hover:border-indigo-300 transition-all duration-300 cursor-pointer"
           >
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-full opacity-50 group-hover:opacity-70 transition-opacity"></div>
             
@@ -333,7 +335,8 @@ const handleSubmit = async () => {
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
           <!-- Nama Keterangan Card -->
           <div
-            class="group relative overflow-hidden rounded-xl bg-white border border-gray-200 p-5 shadow-sm hover:shadow-lg hover:border-cyan-300 transition-all duration-300"
+            @click="startEditing"
+            class="group relative overflow-hidden rounded-xl bg-white border border-gray-200 p-5 shadow-sm hover:shadow-lg hover:border-cyan-300 transition-all duration-300 cursor-pointer"
           >
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br from-cyan-50 to-sky-50 rounded-full opacity-50 group-hover:opacity-70 transition-opacity"></div>
             
@@ -370,7 +373,8 @@ const handleSubmit = async () => {
 
           <!-- Unit Name Card -->
           <div
-            class="group relative overflow-hidden rounded-xl bg-white border border-gray-200 p-5 shadow-sm hover:shadow-lg hover:border-violet-300 transition-all duration-300"
+            @click="startEditing"
+            class="group relative overflow-hidden rounded-xl bg-white border border-gray-200 p-5 shadow-sm hover:shadow-lg hover:border-violet-300 transition-all duration-300 cursor-pointer"
           >
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br from-violet-50 to-purple-50 rounded-full opacity-50 group-hover:opacity-70 transition-opacity"></div>
             
@@ -407,7 +411,8 @@ const handleSubmit = async () => {
 
           <!-- Unit Description Card -->
           <div
-            class="group relative overflow-hidden rounded-xl bg-white border border-gray-200 p-5 shadow-sm hover:shadow-lg hover:border-rose-300 transition-all duration-300"
+            @click="startEditing"
+            class="group relative overflow-hidden rounded-xl bg-white border border-gray-200 p-5 shadow-sm hover:shadow-lg hover:border-rose-300 transition-all duration-300 cursor-pointer"
           >
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br from-rose-50 to-pink-50 rounded-full opacity-50 group-hover:opacity-70 transition-opacity"></div>
             
@@ -447,7 +452,8 @@ const handleSubmit = async () => {
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
           <!-- Email Card -->
           <div
-            class="group relative overflow-hidden rounded-xl bg-white border border-gray-200 p-5 shadow-sm hover:shadow-lg hover:border-emerald-300 transition-all duration-300"
+            @click="startEditing"
+            class="group relative overflow-hidden rounded-xl bg-white border border-gray-200 p-5 shadow-sm hover:shadow-lg hover:border-emerald-300 transition-all duration-300 cursor-pointer"
           >
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-full opacity-50 group-hover:opacity-70 transition-opacity"></div>
             
@@ -484,7 +490,8 @@ const handleSubmit = async () => {
 
           <!-- WhatsApp Card -->
           <div
-            class="group relative overflow-hidden rounded-xl bg-white border border-gray-200 p-5 shadow-sm hover:shadow-lg hover:border-purple-300 transition-all duration-300"
+            @click="startEditing"
+            class="group relative overflow-hidden rounded-xl bg-white border border-gray-200 p-5 shadow-sm hover:shadow-lg hover:border-purple-300 transition-all duration-300 cursor-pointer"
           >
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br from-purple-50 to-pink-50 rounded-full opacity-50 group-hover:opacity-70 transition-opacity"></div>
             
@@ -521,7 +528,8 @@ const handleSubmit = async () => {
 
           <!-- Address Card -->
           <div
-            class="group relative overflow-hidden rounded-xl bg-white border border-gray-200 p-5 shadow-sm hover:shadow-lg hover:border-orange-300 transition-all duration-300"
+            @click="startEditing"
+            class="group relative overflow-hidden rounded-xl bg-white border border-gray-200 p-5 shadow-sm hover:shadow-lg hover:border-orange-300 transition-all duration-300 cursor-pointer"
           >
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br from-orange-50 to-amber-50 rounded-full opacity-50 group-hover:opacity-70 transition-opacity"></div>
             
@@ -695,6 +703,7 @@ const handleSubmit = async () => {
               <p class="text-xs text-gray-500 mb-5 ml-3">Data identitas platform</p>
               
               <div class="grid gap-6 sm:grid-cols-2">
+              <!-- Nama Venue -->
               <div class="space-y-2">
                 <label
                   class="block text-xs font-bold text-gray-700 uppercase tracking-wider"
@@ -721,97 +730,19 @@ const handleSubmit = async () => {
                   <input
                     v-model="formState.name"
                     type="text"
+                    maxlength="30"
                     class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400"
                     placeholder="Contoh: VENUE UNDIP"
                     required
                     :disabled="submitting"
                   >
                 </div>
-              </div>
-              <div class="space-y-2">
-                <label
-                  class="block text-xs font-bold text-gray-700 uppercase tracking-wider"
-                  >Alamat</label
-                >
-                <div class="relative group">
-                  <div
-                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-                  >
-                    <svg
-                      class="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                      />
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
-                  </div>
-                  <input
-                    v-model="formState.address"
-                    type="text"
-                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400"
-                    placeholder="Jl. Prof. Soedarto, Tembalang..."
-                    required
-                    :disabled="submitting"
-                  >
+                <div class="flex justify-between text-xs text-gray-500">
+                  <span>Identitas utama platform</span>
+                  <span :class="formState.name.length > 25 ? 'text-amber-600 font-medium' : ''">{{ formState.name.length }}/30</span>
                 </div>
               </div>
-              <div class="space-y-2">
-                <label
-                  class="block text-xs font-bold text-gray-700 uppercase tracking-wider"
-                  >Deskripsi</label
-                >
-                <div class="relative group">
-                  <div
-                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-                  >
-                    <svg
-                      class="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                      />
-                    </svg>
-                  </div>
-                  <input
-                    v-model="formState.description"
-                    type="text"
-                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400"
-                    placeholder="Platform booking lapangan..."
-                    required
-                    :disabled="submitting"
-                  >
-                </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Secondary Info Section -->
-            <div class="pt-6 border-t-2 border-gray-100">
-              <h3 class="text-base font-bold text-gray-900 mb-1 flex items-center gap-2">
-                <div class="w-1 h-5 bg-cyan-600 rounded-full"></div>
-                Informasi Tambahan
-              </h3>
-              <p class="text-xs text-gray-500 mb-5 ml-3">Data tambahan platform dan unit pengelola</p>
-              
-              <div class="grid gap-6 sm:grid-cols-2">
+              <!-- Keterangan Nama -->
               <div class="space-y-2">
                 <label
                   class="block text-xs font-bold text-gray-700 uppercase tracking-wider"
@@ -846,10 +777,107 @@ const handleSubmit = async () => {
                   >
                 </div>
                 <div class="flex justify-between text-xs text-gray-500">
-                  <span>Teks di bawah nama venue di TopBar</span>
+                  <span>Ditampilkan di bawah nama venue di TopBar</span>
                   <span :class="formState.nameKet.length > 60 ? 'text-amber-600 font-medium' : ''">{{ formState.nameKet.length }}/70</span>
                 </div>
               </div>
+              <!-- Deskripsi -->
+              <div class="space-y-2">
+                <label
+                  class="block text-xs font-bold text-gray-700 uppercase tracking-wider"
+                  >Deskripsi</label
+                >
+                <div class="relative group">
+                  <div
+                    class="absolute top-3 left-0 pl-3 flex items-start pointer-events-none"
+                  >
+                    <svg
+                      class="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                  </div>
+                  <textarea
+                    v-model="formState.description"
+                    rows="3"
+                    maxlength="300"
+                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400 resize-none"
+                    placeholder="Platform booking lapangan olahraga..."
+                    required
+                    :disabled="submitting"
+                  ></textarea>
+                </div>
+                <div class="flex justify-between text-xs text-gray-500">
+                  <span>Ditampilkan sebagai tagline platform di halaman utama</span>
+                  <span :class="formState.description.length > 280 ? 'text-amber-600 font-medium' : ''">{{ formState.description.length }}/300</span>
+                </div>
+              </div>
+              <!-- Alamat -->
+              <div class="space-y-2">
+                <label
+                  class="block text-xs font-bold text-gray-700 uppercase tracking-wider"
+                  >Alamat</label
+                >
+                <div class="relative group">
+                  <div
+                    class="absolute top-3 left-0 pl-3 flex items-start pointer-events-none"
+                  >
+                    <svg
+                      class="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                  </div>
+                  <textarea
+                    v-model="formState.address"
+                    rows="3"
+                    maxlength="200"
+                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400 resize-none"
+                    placeholder="Jl. Prof. Soedarto, Tembalang, Semarang..."
+                    required
+                    :disabled="submitting"
+                  ></textarea>
+                </div>
+                <div class="flex justify-between text-xs text-gray-500">
+                  <span>Ditampilkan di Footer dan halaman bantuan</span>
+                  <span :class="formState.address.length > 180 ? 'text-amber-600 font-medium' : ''">{{ formState.address.length }}/200</span>
+                </div>
+              </div>
+              </div>
+            </div>
+
+            <!-- Secondary Info Section -->
+            <div class="pt-6 border-t-2 border-gray-100">
+              <h3 class="text-base font-bold text-gray-900 mb-1 flex items-center gap-2">
+                <div class="w-1 h-5 bg-cyan-600 rounded-full"></div>
+                Informasi Tambahan
+              </h3>
+              <p class="text-xs text-gray-500 mb-5 ml-3">Data unit pengelola</p>
+              
+              <div class="grid gap-6 sm:grid-cols-2">
+              <!-- Nama Unit -->
               <div class="space-y-2">
                 <label
                   class="block text-xs font-bold text-gray-700 uppercase tracking-wider"
@@ -884,11 +912,11 @@ const handleSubmit = async () => {
                   >
                 </div>
                 <div class="flex justify-between text-xs text-gray-500">
-                  <span>Nama unit pengelola di halaman utama</span>
+                  <span>Ditampilkan di halaman utama dan footer</span>
                   <span :class="formState.unitName.length > 60 ? 'text-amber-600 font-medium' : ''">{{ formState.unitName.length }}/70</span>
                 </div>
               </div>
-              <div class="space-y-2 sm:col-span-2">
+              <div class="space-y-2">
                 <label
                   class="block text-xs font-bold text-gray-700 uppercase tracking-wider"
                   >Deskripsi Unit</label
@@ -925,7 +953,7 @@ const handleSubmit = async () => {
                   <span>Keterangan unit pengelola</span>
                   <span :class="formState.unitDesc.length > 280 ? 'text-amber-600 font-medium' : ''">{{ formState.unitDesc.length }}/300</span>
                 </div>
-                </div>
+              </div>
               </div>
             </div>
             <!-- Contact Section -->
