@@ -435,17 +435,10 @@ const handleSubmit = async () => {
                 </div>
               </div>
               
-<<<<<<< HEAD
               <p class="text-sm font-semibold text-gray-900 break-words leading-relaxed mb-1 line-clamp-2">
                 {{ options?.unitDesc }}
               </p>
               <p class="text-xs text-gray-500">Keterangan unit pengelola</p>
-=======
-              <p class="text-sm font-semibold text-gray-900 break-words leading-relaxed mb-1 line-clamp-3">
-                {{ options?.unitDesc }}
-              </p>
-              <p class="text-xs text-gray-500">Tagline Unit</p>
->>>>>>> 1921d3571a6a7871b19d2dbcabeb8b30c080efe4
             </div>
           </div>
         </div>
@@ -890,17 +883,12 @@ const handleSubmit = async () => {
                     :disabled="submitting"
                   >
                 </div>
-<<<<<<< HEAD
                 <div class="flex justify-between text-xs text-gray-500">
                   <span>Nama unit pengelola di halaman utama</span>
                   <span :class="formState.unitName.length > 60 ? 'text-amber-600 font-medium' : ''">{{ formState.unitName.length }}/70</span>
                 </div>
               </div>
               <div class="space-y-2 sm:col-span-2">
-=======
-              </div>
-              <div class="space-y-2">
->>>>>>> 1921d3571a6a7871b19d2dbcabeb8b30c080efe4
                 <label
                   class="block text-xs font-bold text-gray-700 uppercase tracking-wider"
                   >Deskripsi Unit</label
@@ -940,10 +928,6 @@ const handleSubmit = async () => {
                 </div>
               </div>
             </div>
-<<<<<<< HEAD
-=======
-
->>>>>>> 1921d3571a6a7871b19d2dbcabeb8b30c080efe4
             <!-- Contact Section -->
             <div class="pt-6 border-t-2 border-gray-100">
               <h3 class="text-base font-bold text-gray-900 mb-1 flex items-center gap-2">
