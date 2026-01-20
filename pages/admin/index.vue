@@ -15,6 +15,9 @@ import { OPERATING_HOURS } from '~/utils/constants'
 
 definePageMeta({ middleware: 'auth-admin', layout: 'admin' })
 
+const { options } = useAppOptions()
+const appName = computed(() => options.value.data?.name || 'VENUE UNDIP')
+
 useHead({
   title: 'Dashboard Admin - VENUE UNDIP',
   meta: [
@@ -34,8 +37,35 @@ const formattedSingleDate = computed(() => dayjs(singleDate.value).format('dddd,
 const startDate = ref(dayjs().format('YYYY-MM-DD'))
 const endDate = ref(dayjs().add(6, 'day').format('YYYY-MM-DD'))
 const selectedStadionId = ref<string>('')
+const searchQuery = ref('')
 
 const printTimestamp = ref('')
+
+// Auto-refresh state
+const lastRefreshTime = ref<string>('')
+const isRefreshing = ref(false)
+
+// Format last refresh time
+const updateLastRefreshTime = () => {
+  const now = new Date()
+  lastRefreshTime.value = now.toLocaleTimeString('id-ID', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  })
+}
+
+// Manual refresh handler
+const handleManualRefresh = async () => {
+  if (isRefreshing.value) return
+  isRefreshing.value = true
+  try {
+    await refreshBookings()
+    updateLastRefreshTime()
+  } finally {
+    isRefreshing.value = false
+  }
+}
 
 const formattedRangeDate = computed(() => {
   return `${dayjs(startDate.value).format('DD MMM YYYY')} - ${dayjs(endDate.value).format('DD MMM YYYY')}`
@@ -113,24 +143,33 @@ const { data: bookingsResponse, pending: isLoading, refresh: refreshBookings } =
   watch: [singleDate, startDate, endDate, filterMode, selectedStadionId] 
 })
 
+// Auto-refresh interval reference
+const autoRefreshInterval = ref<ReturnType<typeof setInterval> | null>(null)
+
 onMounted(() => {
+  updateLastRefreshTime()
+  
   const handleVisibilityChange = () => {
     if (!document.hidden) {
       refreshBookings()
+      updateLastRefreshTime()
     }
   }
   
-  const pollInterval = setInterval(() => {
+  autoRefreshInterval.value = setInterval(async () => {
     if (!document.hidden) {
-      refreshBookings()
+      await refreshBookings()
+      updateLastRefreshTime()
     }
-  }, 60000)
+  }, 60000) // 60 seconds = 1 minute
   
   document.addEventListener('visibilitychange', handleVisibilityChange)
   
   onBeforeUnmount(() => {
     document.removeEventListener('visibilitychange', handleVisibilityChange)
-    clearInterval(pollInterval)
+    if (autoRefreshInterval.value) {
+      clearInterval(autoRefreshInterval.value)
+    }
   })
 })
 
@@ -151,9 +190,20 @@ const dashboardData = computed<DashboardCardItem[]>(() => {
     : calculateRangeStats(fieldsToCheck, rawBookings.value, opHours.value, startDate.value, endDate.value)
 })
 
-const totalAvailable = computed(() => dashboardData.value.reduce((acc, curr) => acc + curr.remaining, 0))
-const totalBooked = computed(() => dashboardData.value.reduce((acc, curr) => acc + curr.totalBooked, 0))
-const totalCapacity = computed(() => dashboardData.value.reduce((acc, curr) => acc + curr.totalCapacity, 0))
+// Filtered dashboard data based on search query
+const filteredDashboardData = computed(() => {
+  if (!searchQuery.value.trim()) return dashboardData.value
+  
+  const query = searchQuery.value.toLowerCase().trim()
+  return dashboardData.value.filter(item => 
+    item.name.toLowerCase().includes(query) ||
+    item.stadionName.toLowerCase().includes(query)
+  )
+})
+
+const totalAvailable = computed(() => filteredDashboardData.value.reduce((acc, curr) => acc + curr.remaining, 0))
+const totalBooked = computed(() => filteredDashboardData.value.reduce((acc, curr) => acc + curr.totalBooked, 0))
+const totalCapacity = computed(() => filteredDashboardData.value.reduce((acc, curr) => acc + curr.totalCapacity, 0))
 
 const switchMode = (mode: 'daily' | 'range') => {
   filterMode.value = mode
@@ -167,7 +217,7 @@ const switchMode = (mode: 'daily' | 'range') => {
     <div class="hidden print:block mb-6 pb-4 border-b-2 border-gray-900">
       <div class="flex items-start gap-4">
         <div class="w-16 h-16 flex items-center justify-center shrink-0">
-          <img src="~/assets/images/VENUE-UNDIP-LOGO.png" alt="VENUE UNDIP Logo" class="w-full h-full object-contain logo-print-color" />
+          <img src="~/assets/images/VENUE-UNDIP-LOGO.png" alt="{{ appName }} Logo" class="w-full h-full object-contain logo-print-color" />
         </div>
         
         <div class="flex-1">
@@ -203,6 +253,29 @@ const switchMode = (mode: 'daily' | 'range') => {
           <p class="text-sm text-gray-500 mt-1 leading-relaxed">
             Pantau ketersediaan lapangan secara real-time untuk efisiensi pengelolaan.
           </p>
+          <!-- Auto Refresh Info -->
+          <div class="flex items-center gap-3 mt-2">
+            <button
+              @click="handleManualRefresh"
+              :disabled="isRefreshing"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-all active:scale-95 disabled:opacity-50"
+              title="Refresh data"
+            >
+              <svg 
+                :class="['h-3.5 w-3.5', isRefreshing ? 'animate-spin' : '']"
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span>Refresh</span>
+            </button>
+            <span v-if="lastRefreshTime" class="text-xs text-gray-400">
+              <span class="hidden sm:inline">Update terakhir:</span> {{ lastRefreshTime }}
+            </span>
+            <span class="text-xs text-gray-400 hidden sm:inline">• Auto-refresh: 1 menit</span>
+          </div>
         </div>
       </div>
 
@@ -240,6 +313,24 @@ const switchMode = (mode: 'daily' | 'range') => {
         </div>
       </div>
 
+      <!-- Search Input -->
+      <div class="flex-1 w-full">
+        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Cari Stadion / Lapangan</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input
+            v-model="searchQuery"
+            type="search"
+            class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500 transition-shadow font-medium"
+            placeholder="Cari nama ..."
+          />
+        </div>
+      </div>
+
       <div class="flex-[2] w-full">
         <div class="flex justify-between items-center mb-2">
           <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider">
@@ -264,12 +355,7 @@ const switchMode = (mode: 'daily' | 'range') => {
       <div class="flex gap-2 w-full lg:w-auto">
         <button @click="handlePrint()" class="flex-1 lg:flex-none px-4 py-3 bg-gray-800 text-white rounded-xl hover:bg-gray-900 font-semibold transition-all flex items-center justify-center gap-2 shadow-sm">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
-          <span class="hidden sm:inline">Cetak</span>
-        </button>
-        <button @click="refreshBookings()" class="flex-1 lg:flex-none px-6 py-3 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 hover:text-blue-600 hover:border-blue-300 font-semibold transition-all flex items-center justify-center gap-2 group shadow-sm">
-          <svg v-if="!isLoading" class="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-          <svg v-else class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" /><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg>
-          <span>{{ isLoading ? 'Memuat...' : 'Refresh' }}</span>
+          <span>Cetak</span>
         </button>
       </div>
     </div>
@@ -378,21 +464,21 @@ const switchMode = (mode: 'daily' | 'range') => {
       </div>
     </div>
 
-    <div v-else-if="dashboardData.length === 0" class="flex flex-col items-center justify-center py-24 bg-white rounded-2xl border border-dashed border-gray-300 print:border-gray-800 print:py-10 print:mx-6 print:border-2">
+    <div v-else-if="filteredDashboardData.length === 0" class="flex flex-col items-center justify-center py-24 bg-white rounded-2xl border border-dashed border-gray-300 print:border-gray-800 print:py-10 print:mx-6 print:border-2">
       <div class="p-4 bg-gray-50 rounded-full mb-4 print:hidden">
         <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
       </div>
-      <h3 class="text-lg font-bold text-gray-900">Tidak ada data lapangan</h3>
-      <p class="text-gray-500 mt-1 max-w-sm text-center">Belum ada lapangan yang aktif atau sesuai dengan filter lokasi yang Anda pilih.</p>
+      <h3 class="text-lg font-bold text-gray-900">{{ searchQuery ? 'Tidak ada hasil pencarian' : 'Tidak ada data lapangan' }}</h3>
+      <p class="text-gray-500 mt-1 max-w-sm text-center">{{ searchQuery ? `Tidak ditemukan lapangan dengan kata kunci "${searchQuery}"` : 'Belum ada lapangan yang aktif atau sesuai dengan filter lokasi yang Anda pilih.' }}</p>
       
-      <button @click="resetFilters()" class="mt-6 px-5 py-2.5 text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-100 rounded-xl transition-colors print:hidden flex items-center gap-2">
+      <button @click="resetFilters(); searchQuery = ''" class="mt-6 px-5 py-2.5 text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-100 rounded-xl transition-colors print:hidden flex items-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
         Reset Filter Pencarian
       </button>
     </div>
 
     <div v-else class="print:hidden grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-      <div v-for="item in dashboardData" :key="item.id" class="group bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:border-blue-300 transition-all duration-300 overflow-hidden flex flex-col break-inside-avoid">
+      <div v-for="item in filteredDashboardData" :key="item.id" class="group bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:border-blue-300 transition-all duration-300 overflow-hidden flex flex-col break-inside-avoid">
         
         <div class="p-5 border-b border-gray-100 bg-gray-50/50">
           <div class="flex justify-between items-start gap-4">
@@ -452,7 +538,7 @@ const switchMode = (mode: 'daily' | 'range') => {
       </div>
     </div>
 
-    <div v-if="dashboardData.length > 0" class="hidden print:block pb-6">
+    <div v-if="filteredDashboardData.length > 0" class="hidden print:block pb-6">
       <table class="w-full border-collapse border border-gray-900 mb-6 text-[9px]">
         <thead>
           <tr class="bg-gray-200">
@@ -465,7 +551,7 @@ const switchMode = (mode: 'daily' | 'range') => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in dashboardData" :key="item.id" :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
+          <tr v-for="(item, index) in filteredDashboardData" :key="item.id" :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
             <td class="border border-gray-900 px-1.5 py-1.5 font-medium text-gray-900 text-center">{{ index + 1 }}</td>
             <td class="border border-gray-900 px-2 py-1.5 font-medium text-gray-900">{{ item.name }}</td>
             <td class="border border-gray-900 px-1.5 py-1.5 font-medium text-gray-900 text-center">{{ item.totalCapacity }}</td>
@@ -501,7 +587,7 @@ const switchMode = (mode: 'daily' | 'range') => {
         </div>
 
         <div class="border-t border-gray-400 pt-2">
-          <p class="text-gray-600 italic text-[8px]">Laporan ini dicetak secara otomatis oleh Sistem Informasi VENUE UNDIP.</p>
+          <p class="text-gray-600 italic text-[8px]">Laporan ini dicetak secara otomatis oleh Sistem Informasi {{ appName }}.</p>
         </div>
       </div>
     </div>

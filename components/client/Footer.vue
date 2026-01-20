@@ -9,9 +9,10 @@
               :alt="name"
               class="h-10 w-10 object-contain drop-shadow-lg"
             />
-            <div>
+          <div>
               <p class="text-lg font-bold leading-tight">{{ name }}</p>
-              <p class="text-xs text-blue-200/70">Booking Lapangan</p>
+              <p class="text-xs text-blue-200/70 hidden sm:block">{{ nameKet }}</p>
+              <p class="text-xs text-blue-200/70 sm:hidden">Booking Lapangan</p>
             </div>
           </div>
           <p class="text-sm text-blue-100/80 leading-relaxed">{{ description }}</p>
@@ -219,6 +220,7 @@ import { useAppOptions } from '~/composables/useAppOptions'
   
   const {options} = useAppOptions()
   const name = computed(() => options.value.data?.name || 'Venue UNDIP')
+  const nameKet = computed(() => options.value.data?.nameKet || 'Booking Lapangan Olahraga Universitas Diponegoro')
   const description = computed(() => options.value.data?.description || 'Platform booking lapangan olahraga terpercaya untuk Sivitas Akademika Universitas Diponegoro.')
   const email = computed(() => options.value.data?.email || 'default@example.com')
   const nohp = computed(() => options.value.data?.nohp || '+62 000 0000 0000')

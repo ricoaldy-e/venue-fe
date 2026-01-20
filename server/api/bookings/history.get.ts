@@ -65,6 +65,7 @@ export default defineEventHandler(async (event) => {
     sortOrder: (query.sortOrder as string) || 'desc',
     status: (query.status as string) || undefined,
     paymentStatus: (query.paymentStatus as string) || undefined,
+    renterType: (query.renterType as string) || undefined,
     search: (query.search as string) || undefined,
     stadionId: (query.stadionId as string) || undefined,
     startDate: toIsoDate(query.startDate as string),

@@ -6,6 +6,10 @@ import InfoModal from '~/components/InfoModal.vue'
 import { parseBackendError } from '~/utils/errorParser'
 import { UI } from '~/utils/constants'
 
+definePageMeta({
+  key: (route) => route.fullPath
+})
+
 type Slot = {
   start: string
   range: string
@@ -1063,7 +1067,8 @@ watch(selectedDate, () => {
     <InfoModal
       v-model="isInfoModalOpen"
       title="Informasi"
-      :message="`Maaf, untuk saat ini Anda hanya bisa melihat sisa kuota booking lapangan. Untuk booking, silahkan untuk datang langsung ke venue terkait.`"
+      :message="`Paltform ini digunakan untuk melihat sisa kuota booking. Untuk booking, silahkan hubungi operator atau datang langsung ke venue terkait.`"
+      :stadium-name="venue.name"
     />
 
     <Teleport to="body">
@@ -1126,6 +1131,9 @@ watch(selectedDate, () => {
       </div>
     </transition>
   </Teleport>
+
+    <!-- WhatsApp Floating Button -->
+    <ClientWhatsAppFloatingButton :stadium-name="venue.name" />
   </div>
 </template>
 

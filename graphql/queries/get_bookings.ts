@@ -5,6 +5,7 @@ export const QUERY_GET_BOOKINGS_PAGINATED = `
     $sortOrder: String
     $status: BookingStatus
     $paymentStatus: PaymentStatus
+    $renterType: RenterType
     $search: String
     $stadionId: ID
     $date: DateTime
@@ -17,6 +18,7 @@ export const QUERY_GET_BOOKINGS_PAGINATED = `
       sortOrder: $sortOrder
       status: $status
       paymentStatus: $paymentStatus
+      renterType: $renterType
       search: $search
       stadionId: $stadionId
       date: $date
@@ -63,6 +65,8 @@ export const QUERY_GET_BOOKINGS_PAGINATED = `
         totalCount
         paidCount
         unpaidCount
+        umumCount
+        tendikCount
         academicCount
         nonAcademicCount
         academicRevenue

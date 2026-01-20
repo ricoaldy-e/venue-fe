@@ -1,5 +1,11 @@
 <script setup lang="ts">
 const isHydrated = ref(false)
+const { fetchOptions } = useAppOptions()
+
+// Fetch options exactly once when the app app starts (client & server)
+await callOnce(async () => {
+  await fetchOptions()
+})
 
 onMounted(() => {
   isHydrated.value = true

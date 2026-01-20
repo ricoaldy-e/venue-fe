@@ -8,6 +8,9 @@ definePageMeta({
   layout: 'auth'
 })
 
+const { options } = useAppOptions()
+const appName = computed(() => options.value.data?.name || 'VENUE UNDIP')
+
 useHead({
   title: 'Login Admin - VENUE UNDIP',
   meta: [
@@ -128,7 +131,7 @@ const onSubmit = async () => {
         </div>
       </div>
       <h1 class="text-2xl sm:text-3xl font-bold text-ds-surface tracking-wide drop-shadow-lg">
-        VENUE UNDIP
+        {{ appName }}
       </h1>
       <div class="mt-2 h-0.5 w-16 bg-gradient-to-r from-transparent via-white to-transparent rounded-full"></div>
     </div>
@@ -274,7 +277,7 @@ const onSubmit = async () => {
 
     <!-- Copyright -->
     <p class="mt-5 text-[10px] text-white/60 relative z-10">
-      &copy; {{ new Date().getFullYear() }} VENUE UNDIP. All rights reserved.
+      &copy; {{ new Date().getFullYear() }} {{ appName }}. All rights reserved.
     </p>
   </div>
 </template>

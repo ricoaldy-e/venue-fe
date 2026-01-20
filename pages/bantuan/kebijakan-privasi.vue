@@ -16,12 +16,14 @@ type OptionRecord = {
 };
 
 const FALLBACK_EMAIL = "helpdesk@live.undip.ac.id";
+const FALLBACK_WHATSAPP = "+62 851 6566 0339";
 
-const { data: options } = await useAsyncData<OptionRecord | null>("options", () =>
-  $fetch<OptionRecord | null>("/api/options")
-);
+const { options: appOptions } = useAppOptions();
+const options = computed(() => appOptions.value.data);
 
 const contactEmail = computed(() => options.value?.email || FALLBACK_EMAIL);
+const contactWhatsApp = computed(() => options.value?.nohp || FALLBACK_WHATSAPP);
+const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
 </script>
 
 <template>
@@ -58,13 +60,13 @@ const contactEmail = computed(() => options.value?.email || FALLBACK_EMAIL);
             <div class="flex-1">
               <h2 class="text-xl font-bold text-gray-900 mb-3">Pendahuluan</h2>
               <p class="text-gray-600 leading-relaxed mb-3">
-                VENUE UNDIP adalah platform booking lapangan olahraga yang dikelola oleh Universitas Diponegoro <span class="font-semibold text-[#1f2a56]">khusus untuk Sivitas Akademika UNDIP</span>. Kebijakan privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, menyimpan, dan melindungi informasi pribadi Anda saat menggunakan layanan kami.
+                {{ venueName }} adalah platform booking lapangan olahraga yang dikelola oleh Universitas Diponegoro <span class="font-semibold text-[#1f2a56]">khusus untuk Sivitas Akademika UNDIP</span>. Kebijakan privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, menyimpan, dan melindungi informasi pribadi Anda saat menggunakan layanan kami.
               </p>
               <p class="text-gray-600 leading-relaxed mb-3">
                 Platform ini digunakan untuk melihat ketersediaan lapangan. <span class="font-semibold text-[#1f2a56]">Booking dilakukan langsung di venue oleh admin/operator</span> yang akan menginput data Anda ke sistem.
               </p>
               <p class="text-gray-600 leading-relaxed mb-3">
-                Dengan menggunakan layanan VENUE UNDIP, Anda menyetujui pengumpulan dan penggunaan informasi sesuai dengan kebijakan ini.
+                Dengan menggunakan layanan {{ venueName }}, Anda menyetujui pengumpulan dan penggunaan informasi sesuai dengan kebijakan ini.
               </p>
               <div class="bg-blue-50 border-l-4 border-blue-500 p-3 rounded-r-lg mt-4">
                 <p class="text-sm text-blue-900"><span class="font-bold">ℹ️ Penting:</span> Layanan ini <span class="font-semibold">hanya untuk Sivitas Akademika Universitas Diponegoro</span>. Data Anda dikumpulkan oleh admin/operator saat booking di venue dan diinput ke sistem untuk keperluan pengelolaan fasilitas olahraga.</p>
@@ -304,7 +306,7 @@ const contactEmail = computed(() => options.value?.email || FALLBACK_EMAIL);
                 </li>
                 <li class="flex items-start gap-2 text-gray-600">
                   <span class="text-red-600 font-bold">•</span>
-                  <span>Untuk melindungi hak, properti, atau keselamatan VENUE UNDIP dan penggunanya.</span>
+                  <span>Untuk melindungi hak, properti, atau keselamatan {{ venueName }} dan penggunanya.</span>
                 </li>
               </ul>
             </div>
@@ -491,12 +493,19 @@ const contactEmail = computed(() => options.value?.email || FALLBACK_EMAIL);
         <h2 class="text-2xl lg:text-3xl font-bold text-white mb-4">Ada Pertanyaan tentang Privasi?</h2>
         <p class="text-blue-100 mb-6 max-w-xl mx-auto">Jika Anda memiliki pertanyaan atau kekhawatiran tentang bagaimana kami menangani data pribadi Anda, jangan ragu untuk menghubungi kami.</p>
         <div class="flex flex-col items-center justify-center gap-4">
-          <p class="text-white text-lg">
-            <span class="text-blue-200">Email:</span> 
-            <a :href="`mailto:${contactEmail}`" class="text-white font-semibold hover:text-blue-200 transition-colors underline decoration-2 underline-offset-4">
-              {{ contactEmail }}
-            </a>
-          </p>
+          <div class="flex flex-col sm:flex-row items-center gap-4">
+            <p class="text-white text-lg">
+              <span class="text-blue-200">Email:</span> 
+              <a :href="`mailto:${contactEmail}`" class="text-white font-semibold hover:text-blue-200 transition-colors underline decoration-2 underline-offset-4">
+                {{ contactEmail }}
+              </a>
+            </p>
+            <span class="hidden sm:block text-white/40">|</span>
+            <p class="text-white text-lg">
+              <span class="text-blue-200">WhatsApp:</span> 
+              <span class="text-white font-semibold">{{ contactWhatsApp }}</span>
+            </p>
+          </div>
           <NuxtLink
             to="/"
             class="inline-flex items-center gap-2 rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-8 py-4 text-base font-bold text-white transition-all duration-300 hover:bg-white/20 hover:border-white/50"

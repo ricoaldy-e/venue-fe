@@ -14,9 +14,9 @@
             class="h-10 w-10 sm:h-12 sm:w-14 object-contain flex-shrink-0 group-hover:scale-105 transition-all duration-300 drop-shadow-lg"
           />
           <div class="min-w-0">
-            <div class="text-lg sm:text-2xl font-bold tracking-tight text-[#1f2a56] truncate group-hover:text-[#0f1a3c] group-hover:scale-105 transition-all duration-300 origin-left">VENUE UNDIP</div>
-            <div class="block sm:hidden text-xs text-gray-500 font-medium truncate group-hover:text-gray-700 group-hover:scale-105 transition-all duration-300 origin-left">Booking Lapangan Olahraga UNDIP</div>
-            <div class="hidden sm:block text-xs text-gray-500 font-medium truncate group-hover:text-gray-700 group-hover:scale-105 transition-all duration-300 origin-left">Booking Lapangan Olahraga Universitas Diponegoro</div>
+            <div class="text-lg sm:text-2xl font-bold tracking-tight text-[#1f2a56] truncate group-hover:text-[#0f1a3c] group-hover:scale-105 transition-all duration-300 origin-left">{{ name }}</div>
+            <div class="block sm:hidden text-xs text-gray-500 font-medium truncate group-hover:text-gray-700 group-hover:scale-105 transition-all duration-300 origin-left">Booking Lapangan UNDIP</div>
+            <div class="hidden sm:block text-xs text-gray-500 font-medium truncate group-hover:text-gray-700 group-hover:scale-105 transition-all duration-300 origin-left">{{ nameKet }}</div>
           </div>
         </button>
         
@@ -99,7 +99,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+
+const { options } = useAppOptions()
+
+const name = computed(() => options.value.data?.name || 'VENUE UNDIP')
+const nameKet = computed(() => options.value.data?.nameKet || 'Booking Lapangan Olahraga Universitas Diponegoro')
 
 const route = useRoute()
 const router = useRouter()

@@ -3,6 +3,9 @@ import { computed, ref } from 'vue'
 import { toUtcMidnightIso } from '~/utils/dateHelpers'
 import { parseBackendError } from '~/utils/errorParser'
 
+const { options } = useAppOptions()
+const appName = computed(() => options.value.data?.name || 'VENUE UNDIP')
+
 useHead({
   title: 'Booking Lapangan - VENUE UNDIP',
   meta: [
@@ -324,9 +327,7 @@ const createBooking = async () => {
     if (sptjmFile.value) {
       formData.append('0', sptjmFile.value)
     }
-    
 
-    
     const response = await fetch('/api/bookings/create', {
       method: 'POST',
       body: formData,

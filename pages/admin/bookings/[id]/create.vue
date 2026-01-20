@@ -8,6 +8,9 @@ definePageMeta({
   middleware: 'auth-admin'
 })
 
+const { options } = useAppOptions()
+const appName = computed(() => options.value.data?.name || 'VENUE UNDIP')
+
 useHead({
   title: 'Buat Booking Baru - VENUE UNDIP',
   meta: [

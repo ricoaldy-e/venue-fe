@@ -5,6 +5,9 @@ import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import { useAdminLayout } from '~/composables/useAdminLayout'
 import { useConfirmation } from '~/composables/useConfirmation'
 
+const { options } = useAppOptions()
+const venueName = computed(() => options.value.data?.name || 'Venue UNDIP')
+
 type NavItem = {
   label: string
   icon: 'dashboard' | 'stadium' | 'field' | 'facility' | 'schedule' | 'booking' | 'profile' | 'logout' | 'option' | 'more'
@@ -103,7 +106,7 @@ const handleAction = async (item: NavItem) => {
           class="h-11 w-11 object-contain drop-shadow-lg"
         />
         <div class="flex flex-col">
-          <p class="font-bold uppercase text-base text-white leading-tight tracking-wide">Venue UNDIP</p>
+          <p class="font-bold uppercase text-base text-white leading-tight tracking-wide">{{ venueName }}</p>
           <p class="text-xs text-blue-200/90 leading-tight font-medium">Admin Panel</p>
         </div>
       </div>

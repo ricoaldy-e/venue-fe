@@ -10,16 +10,19 @@ definePageMeta({
 });
 
 useHead({
-  title: "Pengaturan - VENUE UNDIP",
+  title: 'Pengaturan - VENUE UNDIP',
   meta: [
-    { name: "description", content: "Kelola pengaturan VENUE UNDIP" },
+    { name: "description", content: 'Kelola pengaturan VENUE UNDIP' },
   ],
 });
 
 type OptionRecord = {
   id: number;
   name: string;
+  nameKet: string;
   description: string;
+  unitName: string;
+  unitDesc: string;
   email: string;
   nohp: string;
   address: string;
@@ -27,27 +30,31 @@ type OptionRecord = {
 
 const FALLBACK_OPTIONS = {
   name: "VENUE UNDIP",
+  nameKet: "Booking Lapangan Olahraga Universitas Diponegoro",
   description: "Platform booking lapangan olahraga terpercaya untuk Sivitas Akademika Universitas Diponegoro.",
+  unitName: "UPT Layanan Seni, Budaya dan Olahraga",
+  unitDesc: "Unit Pelaksana Teknis untuk mengelola fasilitas olahraga di lingkungan Universitas Diponegoro",
   email: "contact@venueundip.id",
   nohp: "+62 851 6566 0339",
   address: "Jl. Prof. Soedarto, Tembalang, Kec. Tembalang, Kota Semarang, Jawa Tengah",
 };
 
-const {
-  data: options,
-  pending,
-  error,
-  refresh,
-} = await useAsyncData<OptionRecord | null>("options", () =>
-  $fetch<OptionRecord | null>("/api/options")
-);
+const { options: appOptions, refresh } = useAppOptions();
+
+// Create computed wrappers to match existing template usage
+const options = computed(() => appOptions.value.data);
+const pending = computed(() => appOptions.value.pending);
+const error = computed(() => appOptions.value.error);
 
 const editing = ref(false);
 const submitting = ref(false);
 const submitError = ref<string | null>(null);
 const formState = reactive({
   name: "",
+  nameKet: "",
   description: "",
+  unitName: "",
+  unitDesc: "",
   email: "",
   nohp: "",
   address: "",
@@ -56,7 +63,10 @@ const formState = reactive({
 const syncFormFromData = () => {
   const source = options.value ?? FALLBACK_OPTIONS;
   formState.name = source.name;
+  formState.nameKet = source.nameKet;
   formState.description = source.description;
+  formState.unitName = source.unitName;
+  formState.unitDesc = source.unitDesc;
   formState.email = source.email;
   formState.nohp = source.nohp;
   formState.address = source.address;
@@ -84,7 +94,10 @@ const startEditing = () => {
   submitError.value = null;
   if (
     !formState.name ||
+    !formState.nameKet ||
     !formState.description ||
+    !formState.unitName ||
+    !formState.unitDesc ||
     !formState.email ||
     !formState.nohp ||
     !formState.address
@@ -100,7 +113,10 @@ const cancelEditing = () => {
 const handleSubmit = async () => {
   if (
     !formState.name ||
+    !formState.nameKet ||
     !formState.description ||
+    !formState.unitName ||
+    !formState.unitDesc ||
     !formState.email ||
     !formState.nohp ||
     !formState.address
@@ -117,13 +133,16 @@ const handleSubmit = async () => {
       method: "POST",
       body: {
         name: formState.name,
+        nameKet: formState.nameKet,
         description: formState.description,
+        unitName: formState.unitName,
+        unitDesc: formState.unitDesc,
         email: formState.email,
         nohp: formState.nohp,
         address: formState.address,
       },
     });
-    options.value = updated;
+    await refresh(); // Refresh global state to reflect changes
     editing.value = false;
   } catch (err) {
     const parsed = parseBackendError(err);
@@ -161,7 +180,7 @@ const handleSubmit = async () => {
             Pengaturan
           </h1>
           <p class="text-sm text-gray-500 mt-1">
-            Atur pengaturan untuk informasi dasar VENUE UNDIP yang akan ditampilkan
+            Atur pengaturan untuk informasi dasar {{ options?.name || 'VENUE UNDIP' }} yang akan ditampilkan
             pada halaman publik.
           </p>
         </div>
@@ -302,6 +321,120 @@ const handleSubmit = async () => {
                 {{ options?.description }}
               </p>
               <p class="text-xs text-gray-500">Tagline Platform</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Secondary Info Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+          <!-- Nama Keterangan Card -->
+          <div
+            class="group relative overflow-hidden rounded-xl bg-white border border-gray-200 p-5 shadow-sm hover:shadow-lg hover:border-cyan-300 transition-all duration-300"
+          >
+            <div class="absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br from-cyan-50 to-sky-50 rounded-full opacity-50 group-hover:opacity-70 transition-opacity"></div>
+            
+            <div class="relative z-10">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center group-hover:bg-cyan-600 transition-colors">
+                  <svg
+                    class="w-5 h-5 text-cyan-600 group-hover:text-white transition-colors"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+                    />
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    Keterangan Nama
+                  </p>
+                </div>
+              </div>
+              
+              <p class="text-sm font-semibold text-gray-900 break-words leading-relaxed mb-1 line-clamp-2">
+                {{ options?.nameKet }}
+              </p>
+              <p class="text-xs text-gray-500">Teks di bawah nama venue</p>
+            </div>
+          </div>
+
+          <!-- Unit Name Card -->
+          <div
+            class="group relative overflow-hidden rounded-xl bg-white border border-gray-200 p-5 shadow-sm hover:shadow-lg hover:border-violet-300 transition-all duration-300"
+          >
+            <div class="absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br from-violet-50 to-purple-50 rounded-full opacity-50 group-hover:opacity-70 transition-opacity"></div>
+            
+            <div class="relative z-10">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-lg bg-violet-100 flex items-center justify-center group-hover:bg-violet-600 transition-colors">
+                  <svg
+                    class="w-5 h-5 text-violet-600 group-hover:text-white transition-colors"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                    />
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    Nama Unit
+                  </p>
+                </div>
+              </div>
+              
+              <p class="text-sm font-semibold text-gray-900 break-words leading-relaxed mb-1 line-clamp-2">
+                {{ options?.unitName }}
+              </p>
+              <p class="text-xs text-gray-500">Nama unit pengelola</p>
+            </div>
+          </div>
+
+          <!-- Unit Description Card -->
+          <div
+            class="group relative overflow-hidden rounded-xl bg-white border border-gray-200 p-5 shadow-sm hover:shadow-lg hover:border-rose-300 transition-all duration-300"
+          >
+            <div class="absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br from-rose-50 to-pink-50 rounded-full opacity-50 group-hover:opacity-70 transition-opacity"></div>
+            
+            <div class="relative z-10">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-lg bg-rose-100 flex items-center justify-center group-hover:bg-rose-600 transition-colors">
+                  <svg
+                    class="w-5 h-5 text-rose-600 group-hover:text-white transition-colors"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4 6h16M4 12h16M4 18h7"
+                    />
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    Deskripsi Unit
+                  </p>
+                </div>
+              </div>
+              
+              <p class="text-sm font-semibold text-gray-900 break-words leading-relaxed mb-1 line-clamp-2">
+                {{ options?.unitDesc }}
+              </p>
+              <p class="text-xs text-gray-500">Keterangan unit pengelola</p>
             </div>
           </div>
         </div>
@@ -451,7 +584,7 @@ const handleSubmit = async () => {
             <div class="flex-1">
               <h4 class="text-sm font-bold text-blue-900 mb-1">Informasi Penting</h4>
               <p class="text-sm text-blue-800 leading-relaxed">
-                Perubahan pada option ini akan mempengaruhi informasi dasar yang
+                Perubahan pada pengaturan ini akan mempengaruhi informasi dasar yang
                 ditampilkan pada halaman publik <span class="font-bold">{{ options?.name }}</span>. 
                 Pastikan data yang dimasukkan akurat dan sesuai dengan kebijakan institusi.
               </p>
@@ -666,6 +799,131 @@ const handleSubmit = async () => {
               </div>
             </div>
 
+            <!-- Secondary Info Section -->
+            <div class="pt-6 border-t-2 border-gray-100">
+              <h3 class="text-base font-bold text-gray-900 mb-1 flex items-center gap-2">
+                <div class="w-1 h-5 bg-cyan-600 rounded-full"></div>
+                Informasi Tambahan
+              </h3>
+              <p class="text-xs text-gray-500 mb-5 ml-3">Data tambahan platform dan unit pengelola</p>
+              
+              <div class="grid gap-6 sm:grid-cols-2">
+              <div class="space-y-2">
+                <label
+                  class="block text-xs font-bold text-gray-700 uppercase tracking-wider"
+                  >Keterangan Nama</label
+                >
+                <div class="relative group">
+                  <div
+                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                  >
+                    <svg
+                      class="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    v-model="formState.nameKet"
+                    type="text"
+                    maxlength="70"
+                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400"
+                    placeholder="Contoh: Booking Lapangan Olahraga Universitas Diponegoro"
+                    required
+                    :disabled="submitting"
+                  >
+                </div>
+                <div class="flex justify-between text-xs text-gray-500">
+                  <span>Teks di bawah nama venue di TopBar</span>
+                  <span :class="formState.nameKet.length > 60 ? 'text-amber-600 font-medium' : ''">{{ formState.nameKet.length }}/70</span>
+                </div>
+              </div>
+              <div class="space-y-2">
+                <label
+                  class="block text-xs font-bold text-gray-700 uppercase tracking-wider"
+                  >Nama Unit</label
+                >
+                <div class="relative group">
+                  <div
+                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                  >
+                    <svg
+                      class="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    v-model="formState.unitName"
+                    type="text"
+                    maxlength="70"
+                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400"
+                    placeholder="Contoh: UPT Layanan Seni, Budaya dan Olahraga"
+                    required
+                    :disabled="submitting"
+                  >
+                </div>
+                <div class="flex justify-between text-xs text-gray-500">
+                  <span>Nama unit pengelola di halaman utama</span>
+                  <span :class="formState.unitName.length > 60 ? 'text-amber-600 font-medium' : ''">{{ formState.unitName.length }}/70</span>
+                </div>
+              </div>
+              <div class="space-y-2 sm:col-span-2">
+                <label
+                  class="block text-xs font-bold text-gray-700 uppercase tracking-wider"
+                  >Deskripsi Unit</label
+                >
+                <div class="relative group">
+                  <div
+                    class="absolute top-3 left-0 pl-3 flex items-start pointer-events-none"
+                  >
+                    <svg
+                      class="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 6h16M4 12h16M4 18h7"
+                      />
+                    </svg>
+                  </div>
+                  <textarea
+                    v-model="formState.unitDesc"
+                    rows="3"
+                    maxlength="300"
+                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400 resize-none"
+                    placeholder="Deskripsi tentang unit pengelola..."
+                    required
+                    :disabled="submitting"
+                  ></textarea>
+                </div>
+                <div class="flex justify-between text-xs text-gray-500">
+                  <span>Keterangan unit pengelola</span>
+                  <span :class="formState.unitDesc.length > 280 ? 'text-amber-600 font-medium' : ''">{{ formState.unitDesc.length }}/300</span>
+                </div>
+                </div>
+              </div>
+            </div>
             <!-- Contact Section -->
             <div class="pt-6 border-t-2 border-gray-100">
               <h3 class="text-base font-bold text-gray-900 mb-1 flex items-center gap-2">

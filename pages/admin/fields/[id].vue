@@ -8,7 +8,11 @@ import { parseBackendError } from '~/utils/errorParser'
 definePageMeta({
   middleware: 'auth-admin',
   layout: 'admin',
+  key: (route) => route.fullPath
 })
+
+const { options } = useAppOptions()
+const appName = computed(() => options.value.data?.name || 'VENUE UNDIP')
 
 useHead({
   title: 'Edit Lapangan - VENUE UNDIP',
@@ -363,7 +367,7 @@ async function handleDelete() {
               <textarea 
                 v-model="form.description" 
                 rows="4" 
-                maxlength="191" 
+                maxlength="400" 
                 placeholder="Jelaskan spesifikasi lapangan: jenis lantai, ukuran, pencahayaan, fasilitas penunjang, dll..."
                 class="block w-full rounded-xl border border-gray-300 pl-4 pr-4 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all resize-none"
               ></textarea>
@@ -374,8 +378,8 @@ async function handleDelete() {
                   </svg>
                   Detail spesifikasi membantu pengguna memahami kondisi dan fasilitas lapangan
                 </p>
-                <span class="font-semibold" :class="form.description.length >= 191 ? 'text-red-500' : 'text-gray-400'">
-                  {{ form.description.length }}/191
+                <span class="font-semibold" :class="form.description.length >= 400 ? 'text-red-500' : 'text-gray-400'">
+                  {{ form.description.length }}/400
                 </span>
               </div>
             </div>

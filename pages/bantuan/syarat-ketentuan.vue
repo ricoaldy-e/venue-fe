@@ -1,4 +1,26 @@
 <script setup lang="ts">
+type OptionRecord = {
+  id: number;
+  name: string;
+  nameKet: string;
+  description: string;
+  unitName: string;
+  unitDesc: string;
+  email: string;
+  nohp: string;
+  address: string;
+};
+
+const FALLBACK_EMAIL = "helpdesk@live.undip.ac.id";
+const FALLBACK_WHATSAPP = "+62 851 6566 0339";
+
+const { options: appOptions } = useAppOptions();
+const options = computed(() => appOptions.value.data);
+
+const contactEmail = computed(() => options.value?.email || FALLBACK_EMAIL);
+const contactWhatsApp = computed(() => options.value?.nohp || FALLBACK_WHATSAPP);
+const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
+
 useHead({
   title: 'Syarat & Ketentuan - VENUE UNDIP',
   meta: [
@@ -41,10 +63,10 @@ useHead({
             <div class="flex-1">
               <h2 class="text-xl font-bold text-gray-900 mb-3">1. Penerimaan Syarat</h2>
               <p class="text-gray-600 leading-relaxed mb-3">
-                Dengan mengakses dan menggunakan platform VENUE UNDIP, Anda setuju untuk terikat dengan syarat dan ketentuan berikut. Jika Anda tidak setuju dengan syarat dan ketentuan ini, harap tidak menggunakan layanan kami.
+                Dengan mengakses dan menggunakan platform {{ venueName }}, Anda setuju untuk terikat dengan syarat dan ketentuan berikut. Jika Anda tidak setuju dengan syarat dan ketentuan ini, harap tidak menggunakan layanan kami.
               </p>
               <p class="text-gray-600 leading-relaxed mb-3">
-                VENUE UNDIP adalah platform booking lapangan olahraga yang dikelola oleh Universitas Diponegoro dan disediakan untuk memfasilitasi pemesanan fasilitas olahraga <span class="font-semibold text-[#1f2a56]">khusus bagi Sivitas Akademika UNDIP</span>.
+                {{ venueName }} adalah platform booking lapangan olahraga yang dikelola oleh Universitas Diponegoro dan disediakan untuk memfasilitasi pemesanan fasilitas olahraga <span class="font-semibold text-[#1f2a56]">khusus bagi Sivitas Akademika UNDIP</span>.
               </p>
               <div class="bg-blue-50 border-l-4 border-blue-500 p-3 rounded-r-lg">
                 <p class="text-sm text-blue-900"><span class="font-bold">ℹ️ Catatan:</span> Platform ini untuk <span class="font-semibold">melihat ketersediaan</span> sisa booking. Booking dilakukan <span class="font-semibold">langsung di venue</span> oleh admin/operator.</p>
@@ -496,7 +518,7 @@ useHead({
             <div class="flex-1">
               <h2 class="text-xl font-bold text-gray-900 mb-3">7. Batasan Tanggung Jawab</h2>
               <p class="text-gray-600 leading-relaxed mb-4">
-                VENUE UNDIP tidak bertanggung jawab atas:
+                {{ venueName }} tidak bertanggung jawab atas:
               </p>
               <ul class="space-y-2 text-gray-600">
                 <li class="flex items-start gap-2">
@@ -536,7 +558,7 @@ useHead({
             <div class="flex-1">
               <h2 class="text-xl font-bold text-gray-900 mb-3">8. Hak Kekayaan Intelektual</h2>
               <p class="text-gray-600 leading-relaxed mb-3">
-                Seluruh konten, desain, logo, dan materi yang ada di platform VENUE UNDIP adalah milik Universitas Diponegoro dan dilindungi oleh hukum hak cipta.
+                Seluruh konten, desain, logo, dan materi yang ada di platform {{ venueName }} adalah milik Universitas Diponegoro dan dilindungi oleh hukum hak cipta.
               </p>
               <p class="text-gray-600 leading-relaxed">
                 Pengguna tidak diperkenankan untuk menyalin, memodifikasi, mendistribusikan, atau menggunakan konten untuk tujuan komersial tanpa izin tertulis dari Universitas Diponegoro.
@@ -556,7 +578,7 @@ useHead({
             <div class="flex-1">
               <h2 class="text-xl font-bold text-gray-900 mb-3">9. Perubahan Syarat & Ketentuan</h2>
               <p class="text-gray-600 leading-relaxed mb-3">
-                VENUE UNDIP berhak untuk mengubah, memodifikasi, atau memperbarui syarat dan ketentuan ini sewaktu-waktu tanpa pemberitahuan sebelumnya.
+                {{ venueName }} berhak untuk mengubah, memodifikasi, atau memperbarui syarat dan ketentuan ini sewaktu-waktu tanpa pemberitahuan sebelumnya.
               </p>
               <p class="text-gray-600 leading-relaxed mb-3">
                 Perubahan akan berlaku segera setelah dipublikasikan di platform. Penggunaan berkelanjutan layanan kami setelah perubahan dianggap sebagai penerimaan terhadap syarat dan ketentuan yang baru.
@@ -599,12 +621,19 @@ useHead({
         <h2 class="text-2xl lg:text-3xl font-bold text-white mb-4">Butuh Bantuan atau Klarifikasi?</h2>
         <p class="text-blue-100 mb-6 max-w-xl mx-auto">Jika Anda memiliki pertanyaan tentang syarat dan ketentuan ini, silakan hubungi tim kami.</p>
         <div class="flex flex-col items-center justify-center gap-4">
-          <p class="text-white text-lg">
-            <span class="text-blue-200">Email:</span> 
-            <a href="mailto:helpdesk@live.undip.ac.id" class="text-white font-semibold hover:text-blue-200 transition-colors underline decoration-2 underline-offset-4">
-              helpdesk@live.undip.ac.id
-            </a>
-          </p>
+          <div class="flex flex-col sm:flex-row items-center gap-4">
+            <p class="text-white text-lg">
+              <span class="text-blue-200">Email:</span> 
+              <a :href="`mailto:${contactEmail}`" class="text-white font-semibold hover:text-blue-200 transition-colors underline decoration-2 underline-offset-4">
+                {{ contactEmail }}
+              </a>
+            </p>
+            <span class="hidden sm:block text-white/40">|</span>
+            <p class="text-white text-lg">
+              <span class="text-blue-200">WhatsApp:</span> 
+              <span class="text-white font-semibold">{{ contactWhatsApp }}</span>
+            </p>
+          </div>
           <NuxtLink
             to="/"
             class="inline-flex items-center gap-2 rounded-xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-8 py-4 text-base font-bold text-white transition-all duration-300 hover:bg-white/20 hover:border-white/50"

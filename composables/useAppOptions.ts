@@ -1,10 +1,22 @@
 import type { AppOption, AppOptionsState } from '~/types/app-options'
 
 /**
- * Global state untuk app options
- * Akan digunakan di seluruh aplikasi tanpa perlu re-fetch
+ * Global state for app options
+ * Used throughout the application without needing constant re-fetching
  */
 export const useAppOptions = () => {
+  // Define default values to prevent hydration mismatches and ensure types
+  const defaults: AppOption = {
+    name: 'VENUE UNDIP',
+    nameKet: 'Booking Lapangan Olahraga Universitas Diponegoro',
+    description: 'Platform booking lapangan olahraga terpercaya untuk Sivitas Akademika Universitas Diponegoro.',
+    unitName: 'UPT Layanan Seni, Budaya dan Olahraga',
+    unitDesc: 'Unit Pelaksana Teknis untuk mengelola fasilitas olahraga di lingkungan Universitas Diponegoro',
+    email: 'contact@venueundip.id',
+    nohp: '+62 851 6566 0339',
+    address: 'Jl. Prof. Soedarto, Tembalang, Kec. Tembalang, Kota Semarang, Jawa Tengah'
+  }
+
   const options = useState<AppOptionsState>('app-options', () => ({
     data: null,
     pending: false,
@@ -12,30 +24,38 @@ export const useAppOptions = () => {
   }))
 
   /**
-   * Fetch options dari API
-   * Hanya akan fetch jika data belum tersedia
+   * Fetch options from API
+   * Only fetches if data is missing or force is true
    */
   const fetchOptions = async (force = false) => {
-    // Skip jika sudah ada data dan tidak force
+    // If we already have data and aren't forcing a refresh, return current data
     if (options.value.data && !force) {
       return options.value.data
     }
 
-    // Skip jika sedang loading
-    if (options.value.pending) {
-      return options.value.data
+    // If a request is already compatible and pending, we could technically wait for it
+    // But for simplicity in this pattern, we'll just check if we are already loading
+    if (options.value.pending && !force) {
+      return
     }
 
     options.value.pending = true
     options.value.error = null
 
     try {
-      const data = await $fetch('/api/options') as AppOption
-      options.value.data = data
-      return data
+      const data = await $fetch<AppOption>('/api/options')
+
+      // Ensure we have all fields by merging with defaults if necessary
+      // This helps if the API returns partial data
+      options.value.data = { ...defaults, ...data }
+      return options.value.data
     } catch (err) {
+      console.error('[useAppOptions] Failed to fetch:', err)
       options.value.error = err as Error
-      console.error('Failed to fetch app options:', err)
+      // On error, if we have no data, set defaults so app doesn't break
+      if (!options.value.data) {
+        options.value.data = defaults
+      }
       return null
     } finally {
       options.value.pending = false
@@ -52,7 +72,7 @@ export const useAppOptions = () => {
    */
   const reset = () => {
     options.value = {
-      data: null,
+      data: null, // or defaults
       pending: false,
       error: null,
     }

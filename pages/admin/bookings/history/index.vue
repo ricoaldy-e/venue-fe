@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
 
 definePageMeta({
@@ -7,10 +7,13 @@ definePageMeta({
   layout: 'admin'
 })
 
+const { options } = useAppOptions()
+const appName = computed(() => options.value.data?.name || 'VENUE UNDIP')
+
 useHead({
-  title: 'Riwayat & Kelola Booking - VENUE UNDIP',
+  title: 'Riwayat Booking - VENUE UNDIP',
   meta: [
-    { name: 'description', content: 'Riwayat & kelola semua booking lapangan di VENUE UNDIP' }
+    { name: 'description', content: 'Lihat seluruh riwayat booking lapangan di VENUE UNDIP' }
   ]
 })
 
@@ -19,6 +22,20 @@ interface BookingDetail {
   bookingDate: string
   startHour: number
   subtotal: number
+  Field?: {
+    id: number
+    name: string
+    stadionId: number
+    Stadion?: {
+      id: number
+      name: string
+    }
+  }
+}
+
+interface Stadion {
+  id: number
+  name: string
 }
 
 interface BookingHistory {
@@ -67,7 +84,51 @@ const itemsPerPage = ref(10)
 const searchQuery = ref('')
 const statusFilter = ref<'' | 'PENDING' | 'APPROVED' | 'CANCELLED'>('')
 const paymentFilter = ref<'' | 'PAID' | 'UNPAID'>('')
+const selectedStadionId = ref<string>('')
 const sortOrder = ref<'desc' | 'asc'>('desc')
+
+// Auto-refresh state
+const autoRefreshInterval = ref<ReturnType<typeof setInterval> | null>(null)
+const lastRefreshTime = ref<string>('')
+const isRefreshing = ref(false)
+
+// Format last refresh time
+const updateLastRefreshTime = () => {
+  const now = new Date()
+  lastRefreshTime.value = now.toLocaleTimeString('id-ID', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  })
+}
+
+// Manual refresh handler
+const handleManualRefresh = async () => {
+  if (isRefreshing.value) return
+  isRefreshing.value = true
+  try {
+    await refresh()
+    updateLastRefreshTime()
+  } finally {
+    isRefreshing.value = false
+  }
+}
+
+// Setup auto-refresh (1 minute interval)
+onMounted(() => {
+  updateLastRefreshTime()
+  autoRefreshInterval.value = setInterval(async () => {
+    await refresh()
+    updateLastRefreshTime()
+  }, 60000) // 60 seconds = 1 minute
+})
+
+// Cleanup on unmount
+onUnmounted(() => {
+  if (autoRefreshInterval.value) {
+    clearInterval(autoRefreshInterval.value)
+  }
+})
 
 // Build query params for API
 const queryParams = computed(() => ({
@@ -76,6 +137,7 @@ const queryParams = computed(() => ({
   search: searchQuery.value || undefined,
   status: statusFilter.value || undefined,
   paymentStatus: paymentFilter.value || undefined,
+  stadionId: selectedStadionId.value || undefined,
   sortOrder: sortOrder.value,
 }))
 
@@ -106,6 +168,15 @@ const { data: response, pending, error, refresh } = await useFetch<BookingRespon
   }
 )
 
+// Fetch stadions
+const { data: stadionsData } = await useFetch('/api/stadions', {
+  server: false,
+  lazy: true,
+  default: () => []
+})
+
+const stadions = computed(() => (stadionsData.value as any) || [])
+
 // Extracted data from response
 const bookings = computed(() => response.value?.data || [])
 const pagination = computed(() => response.value?.pagination || { page: 1, limit: 10, total: 0, totalPages: 0, hasNextPage: false, hasPrevPage: false })
@@ -118,7 +189,7 @@ const debouncedRefresh = useDebounceFn(() => {
 }, 300)
 
 // Watch for filter changes (except page changes)
-watch([searchQuery, statusFilter, paymentFilter, sortOrder], () => {
+watch([searchQuery, statusFilter, paymentFilter, selectedStadionId, sortOrder], () => {
   debouncedRefresh()
 })
 
@@ -158,24 +229,64 @@ const formatDate = (dateString: string) => {
 const formatSlotDate = (booking: BookingHistory) => {
   if (!booking.details || booking.details.length === 0) return '-'
   
-  // Get all unique dates from booking details
-  const dates = [...new Set(booking.details.map(d => d.bookingDate))]
-    .sort()
-    .map(dateStr => {
-      const date = new Date(dateStr)
-      return date.toLocaleDateString('id-ID', { 
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-      })
-    })
+  // Get all unique dates from booking details sorted
+  const uniqueDates = [...new Set(booking.details.map(d => d.bookingDate))].sort()
   
-  // If single date, return it
-  if (dates.length === 1) return dates[0]
+  if (uniqueDates.length === 0) return '-'
+  if (uniqueDates.length === 1) {
+    const date = new Date(uniqueDates[0]!)
+    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+  }
   
-  // If multiple dates, show range or count
-  if (dates.length === 2) return `${dates[0]} - ${dates[1]}`
-  return `${dates[0]} (+${dates.length - 1} hari)`
+  // Check if dates are consecutive
+  const isConsecutive = (dates: string[]) => {
+    for (let i = 1; i < dates.length; i++) {
+      const prev = new Date(dates[i - 1]!)
+      const curr = new Date(dates[i]!)
+      const diffDays = (curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24)
+      if (diffDays !== 1) return false
+    }
+    return true
+  }
+  
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr)
+    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+  }
+  
+  // If all dates are consecutive, show range with '-'
+  if (isConsecutive(uniqueDates)) {
+    return `${formatDate(uniqueDates[0]!)} - ${formatDate(uniqueDates[uniqueDates.length - 1]!)}`
+  }
+  
+  // Non-consecutive: group consecutive ranges
+  const groups: string[][] = []
+  let currentGroup: string[] = [uniqueDates[0]!]
+  
+  for (let i = 1; i < uniqueDates.length; i++) {
+    const prev = new Date(uniqueDates[i - 1]!)
+    const curr = new Date(uniqueDates[i]!)
+    const diffDays = (curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24)
+    
+    if (diffDays === 1) {
+      currentGroup.push(uniqueDates[i]!)
+    } else {
+      groups.push([...currentGroup])
+      currentGroup = [uniqueDates[i]!]
+    }
+  }
+  groups.push(currentGroup)
+  
+  // Format groups
+  const formattedGroups = groups.map(group => {
+    if (group.length === 1) {
+      return formatDate(group[0]!)
+    } else {
+      return `${formatDate(group[0]!)} - ${formatDate(group[group.length - 1]!)}`
+    }
+  })
+  
+  return formattedGroups.join(', ')
 }
 
 const formatCurrency = (amount: number) => {
@@ -214,6 +325,42 @@ const getPaymentText = (status: string) => {
   return status === 'PAID' ? 'Lunas' : 'Belum Bayar'
 }
 
+// Reactive stadium name mapping
+const stadiumNameMap = computed(() => {
+  const map = new Map<number, string>()
+  if (stadions.value && stadions.value.length > 0) {
+    stadions.value.forEach((s: Stadion) => {
+      map.set(Number(s.id), s.name)
+    })
+  }
+  return map
+})
+
+// Reactive stadium name getter
+const getStadiumName = (booking: BookingHistory) => {
+  if (!booking.details || booking.details.length === 0) return '-'
+
+  const stadiumNames = [...new Set(booking.details
+    .map(d => {
+      if (d.Field?.stadionId) {
+        const mappedName = stadiumNameMap.value.get(Number(d.Field.stadionId))
+        if (mappedName) {
+          return mappedName
+        }
+      }
+      if (d.Field?.Stadion?.name) {
+        return d.Field.Stadion.name
+      }
+      return null
+    })
+    .filter(name => name !== null && name !== '-' && name !== undefined)
+  )]
+
+  if (stadiumNames.length === 0) return '-'
+  if (stadiumNames.length === 1) return stadiumNames[0]
+  return `${stadiumNames[0]} (+${stadiumNames.length - 1})`
+}
+
 const navigateToDetail = (bookingCode: string) => {
   navigateTo(`/admin/bookings/detail/${bookingCode}`)
 }
@@ -235,10 +382,33 @@ const navigateToDetail = (bookingCode: string) => {
           <p class="text-sm text-gray-500 mt-1">
             Kelola dan pantau seluruh riwayat reservasi lapangan olahraga.
           </p>
+          <!-- Auto Refresh Info -->
+          <div class="flex items-center gap-3 mt-2">
+            <button
+              @click="handleManualRefresh"
+              :disabled="isRefreshing"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-all active:scale-95 disabled:opacity-50"
+              title="Refresh data"
+            >
+              <svg 
+                :class="['h-3.5 w-3.5', isRefreshing ? 'animate-spin' : '']"
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span>Refresh</span>
+            </button>
+            <span v-if="lastRefreshTime" class="text-xs text-gray-400">
+              <span class="hidden sm:inline">Update terakhir:</span> {{ lastRefreshTime }}
+            </span>
+            <span class="text-xs text-gray-400 hidden sm:inline">• Auto-refresh: 1 menit</span>
+          </div>
         </div>
       </div>
       
-      <div class="flex gap-2">
+      <div class="flex items-center gap-2">
         <NuxtLink 
           to="/admin/bookings" 
           class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:text-[#1f2a56] hover:border-[#1f2a56] hover:shadow-md active:scale-95"
@@ -260,13 +430,12 @@ const navigateToDetail = (bookingCode: string) => {
       </div>
     </header>
 
-    <!-- Stats Cards -->
+    <!-- Stats Cards (Non-clickable, highlight based on filter) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <!-- Total Booking Card -->
-      <button
-        @click="statusFilter = ''"
+      <div
         :class="[
-          'bg-white rounded-xl border p-5 shadow-sm text-left transition-all duration-200 hover:shadow-lg hover:scale-105 hover:border-blue-400 cursor-pointer',
+          'bg-white rounded-xl border p-5 shadow-sm text-left transition-all duration-200',
           statusFilter === '' ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200'
         ]"
       >
@@ -284,13 +453,12 @@ const navigateToDetail = (bookingCode: string) => {
             </svg>
           </div>
         </div>
-      </button>
+      </div>
 
       <!-- Disetujui Card -->
-      <button
-        @click="statusFilter = 'APPROVED'"
+      <div
         :class="[
-          'bg-white rounded-xl border p-5 shadow-sm text-left transition-all duration-200 hover:shadow-lg hover:scale-105 hover:border-green-400 cursor-pointer',
+          'bg-white rounded-xl border p-5 shadow-sm text-left transition-all duration-200',
           statusFilter === 'APPROVED' ? 'border-green-500 ring-2 ring-green-200' : 'border-gray-200'
         ]"
       >
@@ -308,13 +476,12 @@ const navigateToDetail = (bookingCode: string) => {
             </svg>
           </div>
         </div>
-      </button>
+      </div>
 
       <!-- Dibatalkan Card -->
-      <button
-        @click="statusFilter = 'CANCELLED'"
+      <div
         :class="[
-          'bg-white rounded-xl border p-5 shadow-sm text-left transition-all duration-200 hover:shadow-lg hover:scale-105 hover:border-red-400 cursor-pointer',
+          'bg-white rounded-xl border p-5 shadow-sm text-left transition-all duration-200',
           statusFilter === 'CANCELLED' ? 'border-red-500 ring-2 ring-red-200' : 'border-gray-200'
         ]"
       >
@@ -332,7 +499,7 @@ const navigateToDetail = (bookingCode: string) => {
             </svg>
           </div>
         </div>
-      </button>
+      </div>
 
       <!-- Pending Card (hidden as per request) -->
       <!-- <button
@@ -378,84 +545,109 @@ const navigateToDetail = (bookingCode: string) => {
             />
           </div>
 
-          <!-- Filters Row -->
-          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <!-- Payment Status Filter -->
-            <div class="flex items-center gap-2 flex-wrap">
-              <span class="text-xs font-semibold text-gray-600 mr-1">Status Pembayaran:</span>
-              <button
-                @click="paymentFilter = ''"
-                :class="[
-                  'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all',
-                  paymentFilter === ''
-                    ? 'bg-blue-600 text-white shadow-md'
-                    : 'bg-white text-gray-600 border border-gray-300 hover:bg-gray-50'
-                ]"
-              >
-                Semua
-              </button>
-              <button
-                @click="paymentFilter = 'PAID'"
-                :class="[
-                  'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all',
-                  paymentFilter === 'PAID'
-                    ? 'bg-green-600 text-white shadow-md'
-                    : 'bg-white text-gray-600 border border-gray-300 hover:bg-gray-50'
-                ]"
-              >
-                Lunas
-              </button>
-              <button
-                @click="paymentFilter = 'UNPAID'"
-                :class="[
-                  'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all',
-                  paymentFilter === 'UNPAID'
-                    ? 'bg-orange-600 text-white shadow-md'
-                    : 'bg-white text-gray-600 border border-gray-300 hover:bg-gray-50'
-                ]"
-              >
-                Belum Bayar
-              </button>
+          <!-- Dropdown Filters -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Stadium Filter -->
+            <div>
+              <label class="block text-xs font-semibold text-gray-600 mb-2">Stadion</label>
+              <div class="relative">
+                <select 
+                  v-model="selectedStadionId"
+                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
+                >
+                  <option value="">Semua Stadion</option>
+                  <option v-for="stadion in stadions" :key="stadion.id" :value="stadion.id">
+                    {{ stadion.name }}
+                  </option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <!-- Status Booking Filter -->
+            <div>
+              <label class="block text-xs font-semibold text-gray-600 mb-2">Status Booking</label>
+              <div class="relative">
+                <select 
+                  v-model="statusFilter"
+                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
+                >
+                  <option value="">Semua Status</option>
+                  <option value="APPROVED">Disetujui</option>
+                  <option value="CANCELLED">Dibatalkan</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
             </div>
 
-            <!-- Sort Filter -->
-            <div class="flex items-center gap-2">
-              <span class="text-xs font-semibold text-gray-600 mr-1">Urutkan:</span>
-              <button
-                @click="sortOrder = 'desc'"
-                :class="[
-                  'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1',
-                  sortOrder === 'desc'
-                    ? 'bg-blue-600 text-white shadow-md'
-                    : 'bg-white text-gray-600 border border-gray-300 hover:bg-gray-50'
-                ]"
-              >
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-                Terbaru
-              </button>
-              <button
-                @click="sortOrder = 'asc'"
-                :class="[
-                  'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1',
-                  sortOrder === 'asc'
-                    ? 'bg-blue-600 text-white shadow-md'
-                    : 'bg-white text-gray-600 border border-gray-300 hover:bg-gray-50'
-                ]"
-              >
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
-                </svg>
-                Terlama
-              </button>
+            <!-- Status Pembayaran Filter -->
+            <div>
+              <label class="block text-xs font-semibold text-gray-600 mb-2">Status Pembayaran</label>
+              <div class="relative">
+                <select 
+                  v-model="paymentFilter"
+                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
+                >
+                  <option value="">Semua Status</option>
+                  <option value="PAID">Lunas</option>
+                  <option value="UNPAID">Belum Bayar</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
             </div>
+
+            <!-- Urutkan Filter -->
+            <div>
+              <label class="block text-xs font-semibold text-gray-600 mb-2">Urutkan</label>
+              <div class="relative">
+                <select 
+                  v-model="sortOrder"
+                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
+                >
+                  <option value="desc">Terbaru</option>
+                  <option value="asc">Terlama</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- OLD Filters Row (REMOVE THIS SECTION) -->
+          <!--
+          -->
+        </div>
+      </div>
+    </div>
+
+    <!-- DATA TABLE CARD (Separate from filter) -->
+    <div class="bg-white rounded-2xl border border-gray-300 shadow-sm overflow-hidden">
+      <!-- Table Header -->
+      <div class="p-5 border-b border-gray-200 bg-gray-50/30">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wider">Data Booking</h3>
+          <div class="text-sm text-gray-600">
+            <span class="font-bold text-blue-600">{{ pagination.total }}</span> transaksi
           </div>
         </div>
       </div>
 
       <!-- Error State -->
-      <div v-if="error" class="p-8 text-center">
+      <div v-if="error" class="p-12 text-center">
         <div class="inline-flex items-center justify-center w-16 h-16 bg-red-50 rounded-full mb-4">
           <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -468,10 +660,9 @@ const navigateToDetail = (bookingCode: string) => {
       </div>
 
       <!-- Loading State -->
-      <div v-else-if="pending" class="p-8">
-        <div class="animate-pulse space-y-4">
-          <div v-for="i in 5" :key="i" class="h-16 bg-gray-100 rounded-lg"></div>
-        </div>
+      <div v-else-if="pending" class="p-12 text-center">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-200 border-t-blue-600"></div>
+        <p class="mt-4 text-sm text-gray-500">Memuat data...</p>
       </div>
 
       <!-- Empty State -->
@@ -481,69 +672,78 @@ const navigateToDetail = (bookingCode: string) => {
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
         </div>
-        <h3 class="text-base font-bold text-gray-900 mb-1">Tidak ada data booking</h3>
-        <p class="text-sm text-gray-500">
+        <p class="text-sm font-semibold text-gray-900 mb-1">Tidak ada data booking</p>
+        <p class="text-xs text-gray-500 mt-1">
           {{ searchQuery ? 'Tidak ditemukan booking dengan kata kunci tersebut.' : 'Belum ada riwayat booking.' }}
         </p>
       </div>
 
       <!-- Table -->
       <div v-else class="overflow-x-auto">
-        <table class="w-full">
-          <thead class="bg-gray-50 border-b border-gray-200">
-            <tr>
-              <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider w-48">
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="bg-gray-50 border-b-2 border-gray-200">
+              <th class="px-5 py-3.5 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                 Info Booking
               </th>
-              <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+              <th class="px-5 py-3.5 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                 Client
               </th>
-              <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+              <th class="px-5 py-3.5 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Stadion
+              </th>
+              <th class="px-5 py-3.5 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">
                 Total Harga
               </th>
-              <th class="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wider w-32">
+              <th class="px-5 py-3.5 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
                 Status
               </th>
-              <th class="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wider w-32">
+              <th class="px-5 py-3.5 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
                 Pembayaran
               </th>
-              <th class="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wider w-24">
+              <th class="px-5 py-3.5 text-center text-xs font-bold text-gray-700 uppercase tracking-wider w-28">
                 Aksi
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody class="bg-white divide-y divide-gray-100">
             <tr 
               v-for="booking in bookings" 
               :key="booking.id"
-              class="hover:bg-gray-50 transition-colors"
+              class="hover:bg-blue-50/30 transition-colors duration-150"
             >
               <!-- Info Booking Column -->
-              <td class="px-6 py-4">
-                <div class="flex flex-col gap-1">
-                  <span class="text-sm font-bold text-blue-600">{{ booking.bookingCode }}</span>
-                  <div class="flex items-center gap-1.5 text-xs text-gray-500">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <td class="px-5 py-4">
+                <div class="flex flex-col gap-1.5">
+                  <span class="text-sm font-bold text-blue-600 tracking-tight">{{ booking.bookingCode }}</span>
+                  <div class="flex items-center gap-1.5 text-[11px] text-gray-500">
+                    <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    {{ formatDate(booking.createdAt) }}
+                    <span class="font-medium">{{ formatDate(booking.createdAt) }}</span>
                   </div>
-                  <div class="flex items-center gap-1.5 text-xs font-semibold text-gray-700 mt-0.5">
-                    <svg class="w-3 h-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div class="flex items-center gap-1.5 text-[11px] font-semibold text-gray-700">
+                    <svg class="w-3 h-3 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    {{ formatSlotDate(booking) }}
+                    <span>{{ formatSlotDate(booking) }}</span>
                   </div>
                 </div>
               </td>
               
               <!-- Client Column -->
-              <td class="px-6 py-4">
-                <div class="flex flex-col gap-1">
-                  <span class="text-sm font-semibold text-gray-900">{{ booking.name }}</span>
+              <td class="px-5 py-4">
+                <div class="flex flex-col gap-1.5 max-w-xs">
+                  <span class="text-sm font-bold text-gray-900 truncate">{{ booking.name }}</span>
                   <div class="flex items-center gap-2 flex-wrap">
-                    <span class="text-xs text-gray-600">{{ booking.contact }}</span>
-                    <span v-if="booking.renterType === 'AKADEMIK'" class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 border border-blue-200 rounded-md text-[10px] font-bold text-blue-700">
+                    <span class="text-[11px] text-gray-600 font-medium">{{ booking.contact }}</span>
+                    <span v-if="booking.renterType === 'UMUM'" class="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 border border-gray-300 rounded-md text-[10px] font-bold text-gray-700">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      Umum
+                    </span>
+                    <span v-else-if="booking.renterType === 'AKADEMIK'" class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 border border-blue-200 rounded-md text-[10px] font-bold text-blue-700">
                       <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                       </svg>
@@ -556,54 +756,69 @@ const navigateToDetail = (bookingCode: string) => {
                       Tendik
                     </span>
                   </div>
-                  <span class="text-xs text-gray-500">{{ booking.email }}</span>
+                  <span class="text-[11px] text-gray-500 truncate">{{ booking.email }}</span>
                 </div>
               </td>
               
+              <!-- Stadium Column -->
+              <td class="px-5 py-4">
+                <div class="flex justify-center">
+                  <span class="text-sm font-semibold text-gray-700 bg-gray-50 px-3 py-1 rounded-md border border-gray-200">
+                    {{ getStadiumName(booking) }}
+                  </span>
+                </div>
+              </td>
+
               <!-- Total Harga Column -->
-              <td class="px-6 py-4">
-                <div class="flex flex-col gap-0.5">
-                  <span class="text-sm font-bold text-gray-900">{{ formatCurrency(booking.totalPrice) }}</span>
-                  <span class="text-xs text-gray-500">{{ booking.details.length }} slot booking</span>
+              <td class="px-5 py-4">
+                <div class="flex flex-col gap-0.5 items-end">
+                  <span class="text-sm font-bold text-gray-900 tabular-nums">{{ formatCurrency(booking.totalPrice) }}</span>
+                  <span class="text-[10px] text-gray-500 font-medium">{{ booking.details.length }} slot</span>
                 </div>
               </td>
               
               <!-- Status Column -->
-              <td class="px-6 py-4 text-center">
-                <span 
-                  :class="[
-                    'inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold border shadow-sm',
-                    getStatusClasses(booking.status)
-                  ]"
-                >
-                  {{ getStatusText(booking.status) }}
-                </span>
+              <td class="px-5 py-4">
+                <div class="flex justify-center">
+                  <span 
+                    :class="[
+                      'inline-flex items-center px-3 py-1.5 rounded-lg text-[11px] font-bold border whitespace-nowrap',
+                      getStatusClasses(booking.status)
+                    ]"
+                  >
+                    {{ getStatusText(booking.status) }}
+                  </span>
+                </div>
               </td>
               
               <!-- Payment Status Column -->
-              <td class="px-6 py-4 text-center">
-                <span 
-                  :class="[
-                    'inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold border shadow-sm',
-                    getPaymentStatusClasses(booking.paymentStatus)
-                  ]"
-                >
-                  {{ getPaymentText(booking.paymentStatus) }}
-                </span>
+              <td class="px-5 py-4">
+                <div class="flex justify-center">
+                  <span 
+                    :class="[
+                      'inline-flex items-center px-3 py-1.5 rounded-lg text-[11px] font-bold border whitespace-nowrap',
+                      getPaymentStatusClasses(booking.paymentStatus)
+                    ]"
+                  >
+                    {{ getPaymentText(booking.paymentStatus) }}
+                  </span>
+                </div>
               </td>
               
               <!-- Action Column -->
-              <td class="px-6 py-4 text-center">
-                <button
-                  @click="navigateToDetail(booking.bookingCode)"
-                  class="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition-all shadow-sm hover:shadow-md active:scale-95"
-                >
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                  Detail
-                </button>
+              <td class="px-5 py-4">
+                <div class="flex justify-center">
+                  <button
+                    @click="navigateToDetail(booking.bookingCode)"
+                    class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold rounded-lg transition-all shadow-sm hover:shadow-md active:scale-95"
+                  >
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    Detail
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>

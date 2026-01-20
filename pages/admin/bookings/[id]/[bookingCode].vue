@@ -1,8 +1,12 @@
 <script setup lang="ts">
 definePageMeta({
   middleware: 'auth-admin',
-  layout: 'admin'
+  layout: 'admin',
+  key: (route) => route.fullPath
 })
+
+const { options } = useAppOptions()
+const appName = computed(() => options.value.data?.name || 'VENUE UNDIP')
 
 useHead({
   title: 'Detail Booking - VENUE UNDIP',

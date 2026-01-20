@@ -20,12 +20,12 @@ const FALLBACK_CONTACT = {
   nohp: "+62 851 6566 0339",
 };
 
-const { data: options } = await useAsyncData<OptionRecord | null>("options", () =>
-  $fetch<OptionRecord | null>("/api/options")
-);
+const { options: appOptions } = useAppOptions();
+const options = computed(() => appOptions.value.data);
 
 const contactEmail = computed(() => options.value?.email || FALLBACK_CONTACT.email);
 const contactWhatsApp = computed(() => options.value?.nohp || FALLBACK_CONTACT.nohp);
+const venueName = computed(() => options.value?.name || 'VENUE UNDIP');
 </script>
 
 <template>
@@ -61,7 +61,7 @@ const contactWhatsApp = computed(() => options.value?.nohp || FALLBACK_CONTACT.n
             </div>
             <div class="flex-1">
               <h3 class="text-xl font-bold text-gray-900 mb-3">Cek Ketersediaan Lapangan Online</h3>
-              <p class="text-gray-600 mb-4 leading-relaxed">Buka platform VENUE UNDIP dan lihat daftar stadion yang tersedia kemudian lihat daftar lapangan. Platform ini menampilkan <span class="font-semibold text-blue-700">sisa booking mulai dari hari besok.</span></p>
+              <p class="text-gray-600 mb-4 leading-relaxed">Buka platform {{ venueName }} dan lihat daftar stadion yang tersedia kemudian lihat daftar lapangan. Platform ini menampilkan <span class="font-semibold text-blue-700">sisa booking mulai dari hari besok.</span></p>
               <ul class="space-y-2 mb-4">
                 <li class="flex items-start gap-2 text-gray-700">
                   <svg class="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">

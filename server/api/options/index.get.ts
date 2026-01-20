@@ -3,11 +3,14 @@ import type { FetchError } from "ofetch"
 import { QUERY_GET_OPTION } from "~/graphql/queries/get_option"
 
 type Option = {
-    name: string,
-    description: string,
-    email: string,
-    nohp: string,
-    address: string,
+  name: string,
+  nameKet: string,
+  description: string,
+  unitName: string,
+  unitDesc: string,
+  email: string,
+  nohp: string,
+  address: string,
 }
 
 export default defineEventHandler(async () => {

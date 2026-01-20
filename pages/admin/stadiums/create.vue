@@ -9,6 +9,9 @@ definePageMeta({
   layout: 'admin',
 })
 
+const { options } = useAppOptions()
+const appName = computed(() => options.value.data?.name || 'VENUE UNDIP')
+
 useHead({
   title: 'Tambah Stadion - VENUE UNDIP',
   meta: [
@@ -212,8 +215,8 @@ async function handleSubmit() {
               </label>
               <textarea 
                 v-model="form.description" 
-                rows="4" 
-                maxlength="191" 
+                rows="5" 
+                maxlength="1000" 
                 placeholder="Jelaskan fasilitas unggulan, lokasi strategis, atau keunggulan stadion ini..."
                 class="block w-full rounded-xl border border-gray-300 pl-4 pr-4 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all resize-none"
               ></textarea>
@@ -224,8 +227,8 @@ async function handleSubmit() {
                   </svg>
                   Tambahkan deskripsi untuk memberikan informasi lengkap kepada pengunjung
                 </p>
-                <span class="font-semibold" :class="form.description.length >= 191 ? 'text-red-500' : 'text-gray-400'">
-                  {{ form.description.length }}/191
+                <span class="font-semibold" :class="form.description.length >= 1000 ? 'text-red-500' : 'text-gray-400'">
+                  {{ form.description.length }}/1000
                 </span>
               </div>
             </div>

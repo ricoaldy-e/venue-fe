@@ -38,13 +38,27 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'description', content: 'Platform sewa venue dan lapangan olahraga Universitas Diponegoro - VENUE UNDIP' },
         { name: 'author', content: 'VENUE UNDIP - Universitas Diponegoro' },
+        { name: 'theme-color', content: '#1f2a56' },
+        // Open Graph Tags
         { property: 'og:title', content: 'VENUE UNDIP - Sewa Venue & Lapangan Olahraga' },
-        { property: 'og:description', content: 'Platform sewa venue dan lapangan olahraga Universitas Diponegoro' },
+        { property: 'og:description', content: 'Platform sewa venue dan lapangan olahraga Universitas Diponegoro. Booking mudah, cepat, dan terpercaya.' },
         { property: 'og:type', content: 'website' },
         { property: 'og:site_name', content: 'VENUE UNDIP' },
-        { property: 'og:image', content: '/favicon.png' }
+        { property: 'og:url', content: 'https://venue.undip.id' },
+        { property: 'og:image', content: 'https://venue.undip.id/og-image.png' },
+        { property: 'og:image:width', content: '1200' },
+        { property: 'og:image:height', content: '630' },
+        { property: 'og:image:alt', content: 'VENUE UNDIP - Platform Sewa Venue & Lapangan Olahraga Universitas Diponegoro' },
+        { property: 'og:locale', content: 'id_ID' },
+        // Twitter Card Tags
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: 'VENUE UNDIP - Sewa Venue & Lapangan Olahraga' },
+        { name: 'twitter:description', content: 'Platform sewa venue dan lapangan olahraga Universitas Diponegoro. Booking mudah, cepat, dan terpercaya.' },
+        { name: 'twitter:image', content: 'https://venue.undip.id/og-image.png' },
+        { name: 'twitter:image:alt', content: 'VENUE UNDIP - Platform Sewa Venue & Lapangan Olahraga' }
       ],
       link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon.png' },
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon.png' },
         { rel: 'apple-touch-icon', sizes: '180x180', href: '/favicon.png' },

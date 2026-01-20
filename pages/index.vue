@@ -9,6 +9,11 @@ useHead({
   ]
 })
 
+const { options } = useAppOptions()
+const venueName = computed(() => options.value.data?.name || 'VENUE UNDIP')
+const unitName = computed(() => options.value.data?.unitName || 'UPT Layanan Seni, Budaya dan Olahraga')
+const unitDesc = computed(() => options.value.data?.unitDesc || 'Temukan stadion pilihan Anda. Lihat lapangan yang tersedia dan siap untuk dijadwalkan kapan saja Anda butuhkan.')
+
 type StadiumCard = {
   id: number
   name: string
@@ -205,12 +210,12 @@ const goToDetail = (stadionId: number) => {
             <div class="space-y-2">
               <p class="text-xs uppercase tracking-[0.2em] text-blue-200/70 font-semibold">Ringkasan Lapangan</p>
               <h2 class="uppercase text-3xl lg:text-4xl font-bold leading-[1.4] pb-1 bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
-                UPT Layanan Seni, Budaya dan Olahraga
+                {{ unitName }}
               </h2>
             </div>
             
             <p class="text-sm leading-relaxed text-blue-100/90 max-w-md">
-              Temukan stadion pilihan Anda. Lihat lapangan yang tersedia dan siap untuk dijadwalkan kapan saja Anda butuhkan.
+              {{ unitDesc }}
             </p>
           </div>
           
@@ -507,6 +512,8 @@ const goToDetail = (stadionId: number) => {
       </section>
     </div>
 
+    <!-- WhatsApp Floating Button -->
+    <ClientWhatsAppFloatingButton />
   </div>
 </template>
 

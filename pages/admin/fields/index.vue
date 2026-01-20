@@ -7,6 +7,9 @@ definePageMeta({
   layout: 'admin',
 })
 
+const { options } = useAppOptions()
+const appName = computed(() => options.value.data?.name || 'VENUE UNDIP')
+
 useHead({
   title: 'Kelola Lapangan - VENUE UNDIP',
   meta: [

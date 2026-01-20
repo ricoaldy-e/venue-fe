@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
 import dayjs from 'dayjs'
 import 'dayjs/locale/id'
@@ -9,10 +9,13 @@ definePageMeta({
   layout: 'admin'
 })
 
+const { options } = useAppOptions()
+const appName = computed(() => options.value.data?.name || 'VENUE UNDIP')
+
 useHead({
   title: 'Laporan Pembayaran - VENUE UNDIP',
   meta: [
-    { name: 'description', content: 'Laporan pembayaran booking lapangan olahraga VENUE UNDIP' }
+    { name: 'description', content: 'Laporan pembayaran dan pendapatan sewa lapangan di VENUE UNDIP' }
   ]
 })
 
@@ -68,6 +71,8 @@ interface BookingSummary {
   totalCount: number
   paidCount: number
   unpaidCount: number
+  umumCount: number
+  tendikCount: number
   academicCount: number
   nonAcademicCount: number
   academicRevenue: number
@@ -92,12 +97,61 @@ const printTimestamp = ref('')
 // Stadium filter
 const selectedStadionId = ref<string>('')
 
+// Renter type filter (TIPE)
+const renterTypeFilter = ref<'' | 'UMUM' | 'TENDIK' | 'AKADEMIK'>('')
+
+// Booking status filter (STATUS BOOKING)
+const bookingStatusFilter = ref<'' | 'APPROVED' | 'CANCELLED'>('')
+
 // Payment status filter
 const paymentStatusFilter = ref<'' | 'PAID' | 'UNPAID'>('')
 
 // Pagination
 const currentPage = ref(1)
 const itemsPerPage = ref(10)
+
+// Auto-refresh state
+const autoRefreshInterval = ref<ReturnType<typeof setInterval> | null>(null)
+const lastRefreshTime = ref<string>('')
+const isRefreshing = ref(false)
+
+// Format last refresh time
+const updateLastRefreshTime = () => {
+  const now = new Date()
+  lastRefreshTime.value = now.toLocaleTimeString('id-ID', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  })
+}
+
+// Manual refresh handler
+const handleManualRefresh = async () => {
+  if (isRefreshing.value) return
+  isRefreshing.value = true
+  try {
+    await refresh()
+    updateLastRefreshTime()
+  } finally {
+    isRefreshing.value = false
+  }
+}
+
+// Setup auto-refresh (1 minute interval)
+onMounted(() => {
+  updateLastRefreshTime()
+  autoRefreshInterval.value = setInterval(async () => {
+    await refresh()
+    updateLastRefreshTime()
+  }, 60000) // 60 seconds = 1 minute
+})
+
+// Cleanup on unmount
+onUnmounted(() => {
+  if (autoRefreshInterval.value) {
+    clearInterval(autoRefreshInterval.value)
+  }
+})
 
 // Build query params for API
 const queryParams = computed(() => {
@@ -125,6 +179,16 @@ const queryParams = computed(() => {
     params.paymentStatus = paymentStatusFilter.value
   }
 
+  // Renter type filter
+  if (renterTypeFilter.value) {
+    params.renterType = renterTypeFilter.value
+  }
+
+  // Booking status filter
+  if (bookingStatusFilter.value) {
+    params.status = bookingStatusFilter.value
+  }
+
   return params
 })
 
@@ -134,6 +198,8 @@ const defaultSummary: BookingSummary = {
   totalCount: 0,
   paidCount: 0,
   unpaidCount: 0,
+  umumCount: 0,
+  tendikCount: 0,
   academicCount: 0,
   nonAcademicCount: 0,
   academicRevenue: 0,
@@ -180,7 +246,7 @@ const debouncedRefresh = useDebounceFn(() => {
 }, 300)
 
 // Watch for filter changes
-watch([filterMode, selectedDate, startDate, endDate, selectedStadionId, paymentStatusFilter], () => {
+watch([filterMode, selectedDate, startDate, endDate, selectedStadionId, paymentStatusFilter, renterTypeFilter, bookingStatusFilter], () => {
   debouncedRefresh()
 })
 
@@ -249,6 +315,8 @@ const paymentSummary = computed(() => {
     totalBookings: summary.totalCount,
     paidBookings: summary.paidCount,
     unpaidBookings: summary.unpaidCount,
+    umumBookings: summary.umumCount || 0,
+    tendikBookings: summary.tendikCount || 0,
     academicBookings: summary.academicCount,
     nonAcademicBookings: summary.nonAcademicCount,
     academicRevenue: summary.academicRevenue,
@@ -270,26 +338,73 @@ const formatDate = (dateString: string) => {
   return date.toLocaleDateString('id-ID', { 
     day: 'numeric',
     month: 'short',
-    year: 'numeric'
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
   })
 }
 
 const formatSlotDate = (booking: BookingHistory) => {
   if (!booking.details || booking.details.length === 0) return '-'
   
-  const dates = [...new Set(booking.details.map(d => d.bookingDate))]
-    .sort()
-    .map(dateStr => {
-      const date = new Date(dateStr)
-      return date.toLocaleDateString('id-ID', { 
-        day: 'numeric',
-        month: 'short'
-      })
-    })
+  // Get all unique dates from booking details sorted
+  const uniqueDates = [...new Set(booking.details.map(d => d.bookingDate))].sort()
   
-  if (dates.length === 1) return dates[0]
-  if (dates.length === 2) return `${dates[0]} - ${dates[1]}`
-  return `${dates[0]} (+${dates.length - 1})`
+  if (uniqueDates.length === 0) return '-'
+  if (uniqueDates.length === 1) {
+    const date = new Date(uniqueDates[0]!)
+    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+  }
+  
+  // Check if dates are consecutive
+  const isConsecutive = (dates: string[]) => {
+    for (let i = 1; i < dates.length; i++) {
+      const prev = new Date(dates[i - 1]!)
+      const curr = new Date(dates[i]!)
+      const diffDays = (curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24)
+      if (diffDays !== 1) return false
+    }
+    return true
+  }
+  
+  const formatDateItem = (dateStr: string) => {
+    const date = new Date(dateStr)
+    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+  }
+  
+  // If all dates are consecutive, show range with '-'
+  if (isConsecutive(uniqueDates)) {
+    return `${formatDateItem(uniqueDates[0]!)} - ${formatDateItem(uniqueDates[uniqueDates.length - 1]!)}`
+  }
+  
+  // Non-consecutive: group consecutive ranges
+  const groups: string[][] = []
+  let currentGroup: string[] = [uniqueDates[0]!]
+  
+  for (let i = 1; i < uniqueDates.length; i++) {
+    const prev = new Date(uniqueDates[i - 1]!)
+    const curr = new Date(uniqueDates[i]!)
+    const diffDays = (curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24)
+    
+    if (diffDays === 1) {
+      currentGroup.push(uniqueDates[i]!)
+    } else {
+      groups.push([...currentGroup])
+      currentGroup = [uniqueDates[i]!]
+    }
+  }
+  groups.push(currentGroup)
+  
+  // Format groups
+  const formattedGroups = groups.map(group => {
+    if (group.length === 1) {
+      return formatDateItem(group[0]!)
+    } else {
+      return `${formatDateItem(group[0]!)} - ${formatDateItem(group[group.length - 1]!)}`
+    }
+  })
+  
+  return formattedGroups.join(', ')
 }
 
 const formatCurrency = (amount: number) => {
@@ -424,8 +539,8 @@ const printAllData = async () => {
         
         <div class="flex-1">
           <h1 class="text-xl font-bold text-gray-900 uppercase tracking-tight leading-tight">Laporan Pembayaran Booking</h1>
-          <h2 class="text-base font-semibold text-gray-700 mt-0.5">UPT Layanan Seni, Budaya dan Olahraga</h2>
-          <p class="text-[10px] text-gray-600 mt-1 leading-tight">Jl. Prof. Soedarto, Tembalang, Kec. Tembalang, Kota Semarang, Jawa Tengah</p>
+          <h2 class="text-base font-semibold text-gray-700 mt-0.5">{{ options.data?.unitName || 'UPT Layanan Seni, Budaya dan Olahraga' }}</h2>
+          <p class="text-[10px] text-gray-600 mt-1 leading-tight">{{ options.data?.address || 'Jl. Prof. Soedarto, Tembalang, Kec. Tembalang, Kota Semarang, Jawa Tengah' }}</p>
         </div>
 
         <div class="text-right shrink-0">
@@ -453,10 +568,33 @@ const printAllData = async () => {
           <p class="text-sm text-gray-500 mt-1">
             Analisis pendapatan dan laporan pembayaran booking lapangan.
           </p>
+          <!-- Auto Refresh Info -->
+          <div class="flex items-center gap-3 mt-2">
+            <button
+              @click="handleManualRefresh"
+              :disabled="isRefreshing"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-all active:scale-95 disabled:opacity-50"
+              title="Refresh data"
+            >
+              <svg 
+                :class="['h-3.5 w-3.5', isRefreshing ? 'animate-spin' : '']"
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span>Refresh</span>
+            </button>
+            <span v-if="lastRefreshTime" class="text-xs text-gray-400">
+              <span class="hidden sm:inline">Update terakhir:</span> {{ lastRefreshTime }}
+            </span>
+            <span class="text-xs text-gray-400 hidden sm:inline">• Auto-refresh: 1 menit</span>
+          </div>
         </div>
       </div>
       
-      <div class="flex gap-2">
+      <div class="flex items-center gap-2">
         <NuxtLink 
           to="/admin/bookings/history" 
           class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:text-[#1f2a56] hover:border-[#1f2a56] hover:shadow-md active:scale-95"
@@ -515,22 +653,26 @@ const printAllData = async () => {
         <p class="text-xs text-gray-500 mt-2">{{ paymentSummary.paidBookings }}/{{ paymentSummary.totalBookings }} booking</p>
       </div>
       
-      <!-- Breakdown Akademik -->
+      <!-- Breakdown Tipe Penyewa -->
       <div class="bg-white border-2 border-purple-200 rounded-xl p-6 shadow-sm min-h-[120px] flex flex-col">
         <div class="flex items-center justify-between mb-2">
-          <span class="text-xs font-bold uppercase tracking-wide text-gray-600">Tipe Booking</span>
+          <span class="text-xs font-bold uppercase tracking-wide text-gray-600">Tipe Penyewa</span>
           <svg class="w-8 h-8 text-purple-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
             <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
           </svg>
         </div>
         <div class="space-y-1 flex-grow overflow-y-auto">
           <div class="flex justify-between text-sm">
-            <span class="text-gray-600 font-medium">Akademik:</span>
-            <span class="font-bold text-gray-900">{{ paymentSummary.academicBookings }}</span>
+            <span class="text-gray-600 font-medium">Umum:</span>
+            <span class="font-bold text-gray-900">{{ paymentSummary.umumBookings }}</span>
           </div>
           <div class="flex justify-between text-sm">
-            <span class="text-gray-600 font-medium">Non-Akademik:</span>
-            <span class="font-bold text-gray-900">{{ paymentSummary.nonAcademicBookings }}</span>
+            <span class="text-gray-600 font-medium">Tendik:</span>
+            <span class="font-bold text-purple-600">{{ paymentSummary.tendikBookings }}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600 font-medium">Akademik:</span>
+            <span class="font-bold text-blue-600">{{ paymentSummary.academicBookings }}</span>
           </div>
         </div>
       </div>
@@ -543,18 +685,32 @@ const printAllData = async () => {
         <div class="bg-transparent p-3 rounded border border-gray-900">
           <p class="text-[9px] font-bold text-black uppercase mb-1">Total Pendapatan</p>
           <p class="text-base font-black text-black">{{ formatCurrency(paymentSummary.totalRevenue) }}</p>
+          <p class="text-[8px] text-gray-700">{{ paymentSummary.paidBookings }} transaksi lunas</p>
         </div>
         <div class="bg-transparent p-3 rounded border border-gray-900">
-          <p class="text-[9px] font-bold text-black uppercase mb-1">Lunas / Belum</p>
-          <p class="text-base font-black text-black">{{ paymentSummary.paidBookings }} / {{ paymentSummary.unpaidBookings }}</p>
-        </div>
-        <div class="bg-transparent p-3 rounded border border-gray-900">
-          <p class="text-[9px] font-bold text-black uppercase mb-1">Akademik / Non</p>
-          <p class="text-base font-black text-black">{{ paymentSummary.academicBookings }} / {{ paymentSummary.nonAcademicBookings }}</p>
-        </div>
-        <div class="bg-transparent p-3 rounded border border-gray-900">
-          <p class="text-[9px] font-bold text-black uppercase mb-1">Rata-rata</p>
+          <p class="text-[9px] font-bold text-black uppercase mb-1">Rata-rata / Booking</p>
           <p class="text-base font-black text-black">{{ formatCurrency(paymentSummary.avgPerBooking) }}</p>
+          <p class="text-[8px] text-gray-700">Per transaksi lunas</p>
+        </div>
+        <div class="bg-transparent p-3 rounded border border-gray-900">
+          <p class="text-[9px] font-bold text-black uppercase mb-1">Lunas / Belum Bayar</p>
+          <p class="text-base font-black text-black">{{ paymentSummary.paidBookings }} / {{ paymentSummary.unpaidBookings }}</p>
+          <p class="text-[8px] text-gray-700">{{ Math.round(paymentSummary.paidPercentage) }}% tingkat lunas</p>
+        </div>
+        <div class="bg-transparent p-3 rounded border border-gray-900">
+          <p class="text-[9px] font-bold text-black uppercase mb-1">Tipe Penyewa</p>
+          <div class="flex justify-between text-[9px]">
+            <span>Umum:</span>
+            <span class="font-bold">{{ paymentSummary.umumBookings }}</span>
+          </div>
+          <div class="flex justify-between text-[9px]">
+            <span>Tendik:</span>
+            <span class="font-bold">{{ paymentSummary.tendikBookings }}</span>
+          </div>
+          <div class="flex justify-between text-[9px]">
+            <span>Akademik:</span>
+            <span class="font-bold">{{ paymentSummary.academicBookings }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -647,7 +803,7 @@ const printAllData = async () => {
             </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <!-- Stadium Filter -->
             <div>
               <label class="block text-xs font-semibold text-gray-600 mb-2">Stadion</label>
@@ -660,6 +816,47 @@ const printAllData = async () => {
                   <option v-for="stadion in stadions" :key="stadion.id" :value="stadion.id">
                     {{ stadion.name }}
                   </option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Renter Type Filter -->
+            <div>
+              <label class="block text-xs font-semibold text-gray-600 mb-2">Tipe Penyewa</label>
+              <div class="relative">
+                <select 
+                  v-model="renterTypeFilter"
+                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
+                >
+                  <option value="">Semua Tipe</option>
+                  <option value="UMUM">Umum</option>
+                  <option value="TENDIK">Tendik</option>
+                  <option value="AKADEMIK">Akademik</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Booking Status Filter -->
+            <div>
+              <label class="block text-xs font-semibold text-gray-600 mb-2">Status Booking</label>
+              <div class="relative">
+                <select 
+                  v-model="bookingStatusFilter"
+                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
+                >
+                  <option value="">Semua Status</option>
+                  <option value="APPROVED">Disetujui</option>
+                  <option value="CANCELLED">Dibatalkan</option>
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
                   <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -700,27 +897,27 @@ const printAllData = async () => {
           <!-- Header with light gray bg like dashboard context -->
           <tr class="bg-gray-100"> 
             <th class="border border-gray-900 px-2 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide" style="width: 5%;">No</th>
-            <th class="border border-gray-900 px-2 py-1.5 text-left font-bold text-gray-900 uppercase tracking-wide">Kode</th>
-            <th class="border border-gray-900 px-2 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide">Tanggal</th>
+            <th class="border border-gray-900 px-2 py-1.5 text-left font-bold text-gray-900 uppercase tracking-wide">Info Booking</th>
             <th class="border border-gray-900 px-2 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide">Client</th>
             <th class="border border-gray-900 px-2 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide">Stadion</th>
-            <th class="border border-gray-900 px-2 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide">Total</th>
-            <th class="border border-gray-900 px-2 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide">Pembayaran</th>
+            <th class="border border-gray-900 px-2 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide">Total Harga</th>
             <th class="border border-gray-900 px-2 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide">Status</th>
+            <th class="border border-gray-900 px-2 py-1.5 text-center font-bold text-gray-900 uppercase tracking-wide">Pembayaran</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(booking, index) in bookings" :key="'print-'+booking.id">
             <td class="border border-gray-900 px-2 py-1.5 text-center font-medium text-gray-900 align-middle">{{ index + 1 }}</td>
-            <td class="border border-gray-900 px-2 py-1.5 font-medium text-gray-900 align-middle">{{ booking.bookingCode }}</td>
             <td class="border border-gray-900 px-2 py-1.5 text-gray-900 align-middle">
-              <span class="block font-medium">{{ formatDate(booking.createdAt) }}</span>
+              <span class="block font-bold">{{ booking.bookingCode }}</span>
+              <span class="block text-[8px]">{{ formatDate(booking.createdAt) }}</span>
               <span class="block text-[8px]">{{ formatSlotDate(booking) }}</span>
             </td>
             <td class="border border-gray-900 px-2 py-1.5 text-gray-900 align-middle">
                <span class="font-medium">{{ booking.name }}</span>
-               <span v-if="booking.renterType === 'AKADEMIK'" class="block text-[8px] italic">(Akademik)</span>
+               <span v-if="booking.renterType === 'UMUM'" class="block text-[8px] italic">(Umum)</span>
                <span v-else-if="booking.renterType === 'TENDIK'" class="block text-[8px] italic">(Tendik)</span>
+               <span v-else-if="booking.renterType === 'AKADEMIK'" class="block text-[8px] italic">(Akademik)</span>
             </td>
             <td class="border border-gray-900 px-2 py-1.5 text-gray-900 align-middle">{{ getStadiumName(booking) }}</td>
             <td class="border border-gray-900 px-2 py-1.5 text-right font-medium text-gray-900 align-middle">
@@ -728,10 +925,10 @@ const printAllData = async () => {
               <span class="block text-[8px] font-normal">{{ booking.details.length }} slot</span>
             </td>
             <td class="border border-gray-900 px-2 py-1.5 text-center font-medium text-gray-900 align-middle uppercase text-[8px]">
-              {{ getPaymentText(booking.paymentStatus) }}
+              {{ getStatusText(booking.status) }}
             </td>
             <td class="border border-gray-900 px-2 py-1.5 text-center font-medium text-gray-900 align-middle uppercase text-[8px]">
-              {{ getStatusText(booking.status) }}
+              {{ getPaymentText(booking.paymentStatus) }}
             </td>
           </tr>
         </tbody>
@@ -782,91 +979,124 @@ const printAllData = async () => {
 
       <!-- Table Content -->
       <div v-else class="overflow-x-auto">
-        <table class="w-full">
-          <thead class="bg-gray-50 border-b border-gray-200">
-            <tr>
-              <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Kode</th>
-              <th class="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">Tanggal</th>
-              <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Client</th>
-              <th class="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">Stadion</th>
-              <th class="px-6 py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider">Total</th>
-              <th class="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">Pembayaran</th>
-              <th class="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">Status</th>
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="bg-gray-50 border-b-2 border-gray-200">
+              <th class="px-5 py-3.5 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Info Booking
+              </th>
+              <th class="px-5 py-3.5 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Client
+              </th>
+              <th class="px-5 py-3.5 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Stadion
+              </th>
+              <th class="px-5 py-3.5 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Total Harga
+              </th>
+              <th class="px-5 py-3.5 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Status
+              </th>
+              <th class="px-5 py-3.5 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Pembayaran
+              </th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody class="bg-white divide-y divide-gray-100">
             <tr 
               v-for="booking in bookings" 
               :key="booking.id"
-              class="hover:bg-gray-50 transition-colors print:hover:bg-transparent"
+              class="hover:bg-blue-50/30 transition-colors duration-150 print:hover:bg-transparent"
             >
-              <!-- Kode Booking -->
-              <td class="px-6 py-4">
-                <span class="text-sm font-bold text-blue-600 print:text-gray-900">{{ booking.bookingCode }}</span>
-              </td>
-
-              <!-- Tanggal -->
-              <td class="px-6 py-4 text-center">
-                <div class="flex flex-col">
-                  <span class="text-xs text-gray-700 font-medium">{{ formatDate(booking.createdAt) }}</span>
-                  <span class="text-[10px] text-gray-500">Slot: {{ formatSlotDate(booking) }}</span>
-                </div>
-              </td>
-
-              <!-- Client -->
-              <td class="px-6 py-4">
-                <div class="flex flex-col">
-                  <span class="text-sm font-semibold text-gray-900">{{ booking.name }}</span>
-                  <span v-if="booking.renterType === 'AKADEMIK'" class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-blue-50 border border-blue-200 rounded text-[10px] font-bold text-blue-700 w-fit print:bg-gray-100 print:text-gray-800 print:border-gray-400">
-                    <svg class="w-3 h-3 print:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              <!-- Info Booking Column -->
+              <td class="px-5 py-4">
+                <div class="flex flex-col gap-1.5">
+                  <span class="text-sm font-bold text-blue-600 tracking-tight">{{ booking.bookingCode }}</span>
+                  <div class="flex items-center gap-1.5 text-[11px] text-gray-500">
+                    <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Akademik
-                  </span>
-                  <span v-else-if="booking.renterType === 'TENDIK'" class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-purple-50 border border-purple-200 rounded text-[10px] font-bold text-purple-700 w-fit print:bg-gray-100 print:text-gray-800 print:border-gray-400">
-                    <svg class="w-3 h-3 print:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    <span class="font-medium">{{ formatDate(booking.createdAt) }}</span>
+                  </div>
+                  <div class="flex items-center gap-1.5 text-[11px] font-semibold text-gray-700">
+                    <svg class="w-3 h-3 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    Tendik
-                  </span>
+                    <span>{{ formatSlotDate(booking) }}</span>
+                  </div>
+                </div>
+              </td>
+              
+              <!-- Client Column -->
+              <td class="px-5 py-4">
+                <div class="flex flex-col gap-1.5 max-w-xs">
+                  <span class="text-sm font-bold text-gray-900 truncate">{{ booking.name }}</span>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span v-if="booking.renterType === 'UMUM'" class="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 border border-gray-300 rounded-md text-[10px] font-bold text-gray-700">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      Umum
+                    </span>
+                    <span v-else-if="booking.renterType === 'AKADEMIK'" class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 border border-blue-200 rounded-md text-[10px] font-bold text-blue-700 print:bg-gray-100 print:text-gray-800 print:border-gray-400">
+                      <svg class="w-3 h-3 print:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                      </svg>
+                      Akademik
+                    </span>
+                    <span v-else-if="booking.renterType === 'TENDIK'" class="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-50 border border-purple-200 rounded-md text-[10px] font-bold text-purple-700 print:bg-gray-100 print:text-gray-800 print:border-gray-400">
+                      <svg class="w-3 h-3 print:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      Tendik
+                    </span>
+                  </div>
                 </div>
               </td>
 
-              <!-- Stadion -->
-              <td class="px-6 py-4 text-center">
-                <span class="text-xs font-semibold text-gray-900">
-                  {{ getStadiumName(booking) }}
-                </span>
-              </td>
-
-              <!-- Total Harga -->
-              <td class="px-6 py-4 text-right">
-                <div class="flex flex-col items-end">
-                  <span class="text-sm font-bold text-gray-900">
-                    {{ formatCurrency(booking.totalPrice) }}
-                  </span>
-                  <span class="text-[10px] text-gray-500">
-                    {{ booking.details.length }} slot
+              <!-- Stadion Column -->
+              <td class="px-5 py-4">
+                <div class="flex justify-center">
+                  <span class="text-sm font-semibold text-gray-700 bg-gray-50 px-3 py-1 rounded-md border border-gray-200">
+                    {{ getStadiumName(booking) }}
                   </span>
                 </div>
               </td>
-
-              <!-- Payment Status -->
-              <td class="px-6 py-4 text-center">
-                <span 
-                  :class="['inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold border shadow-sm print:shadow-none print:border-none print:text-black print:bg-transparent print:p-0', getPaymentStatusClasses(booking.paymentStatus)]"
-                >
-                  {{ getPaymentText(booking.paymentStatus) }}
-                </span>
+              
+              <!-- Total Harga Column -->
+              <td class="px-5 py-4">
+                <div class="flex flex-col gap-0.5 items-end">
+                  <span class="text-sm font-bold text-gray-900 tabular-nums">{{ formatCurrency(booking.totalPrice) }}</span>
+                  <span class="text-[10px] text-gray-500 font-medium">{{ booking.details.length }} slot</span>
+                </div>
               </td>
-
-              <!-- Booking Status -->
-              <td class="px-6 py-4 text-center">
-                <span 
-                  :class="['inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold border shadow-sm print:shadow-none print:border-none print:text-black print:bg-transparent print:p-0', getStatusClasses(booking.status)]"
-                >
-                  {{ getStatusText(booking.status) }}
-                </span>
+              
+              <!-- Status Column -->
+              <td class="px-5 py-4">
+                <div class="flex justify-center">
+                  <span 
+                    :class="[
+                      'inline-flex items-center px-3 py-1.5 rounded-lg text-[11px] font-bold border whitespace-nowrap print:shadow-none print:border-none print:text-black print:bg-transparent print:p-0',
+                      getStatusClasses(booking.status)
+                    ]"
+                  >
+                    {{ getStatusText(booking.status) }}
+                  </span>
+                </div>
+              </td>
+              
+              <!-- Payment Status Column -->
+              <td class="px-5 py-4">
+                <div class="flex justify-center">
+                  <span 
+                    :class="[
+                      'inline-flex items-center px-3 py-1.5 rounded-lg text-[11px] font-bold border whitespace-nowrap print:shadow-none print:border-none print:text-black print:bg-transparent print:p-0',
+                      getPaymentStatusClasses(booking.paymentStatus)
+                    ]"
+                  >
+                    {{ getPaymentText(booking.paymentStatus) }}
+                  </span>
+                </div>
               </td>
             </tr>
           </tbody>
