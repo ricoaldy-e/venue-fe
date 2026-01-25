@@ -528,7 +528,7 @@ const printAllData = async () => {
 </script>
 
 <template>
-  <section class="flex w-full flex-col gap-6 sm:gap-8 pb-16 print:pb-8">
+  <section class="flex w-full flex-col gap-6 sm:gap-8 pb-16 print:pb-8 max-w-7xl mx-auto">
     
     <!-- PRINT HEADER -->
     <div class="hidden print:block pb-4 border-b-2 border-gray-900">

@@ -21,6 +21,7 @@ useHead({
 const route = useRoute()
 const stadionId = Number(route.params.id)
 const selectedSlots = ref<any[]>([])
+
 try {
   const raw = route.query.selections as string
   if (raw) selectedSlots.value = JSON.parse(decodeURIComponent(raw))
@@ -39,6 +40,7 @@ const bookingForm = reactive({
 })
 
 const errorMsg = ref<string | null>(null)
+const errorRef = ref<HTMLElement | null>(null)
 const uploadProgress = ref<number | null>(null)
 const submitting = ref(false)
 const checkingAvailability = ref(false)
@@ -62,6 +64,7 @@ const fieldErrors = ref({
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 const phoneRegex = /^(\+62|62|0)[0-9]{9,13}$/
 const nameRegex = /^[a-zA-Z\s.]+$/
+const isUploadingFiles = ref(false)
 
 const validateName = () => {
   const trimmed = bookingForm.name.trim()
@@ -196,16 +199,30 @@ async function checkSlotAvailability(): Promise<boolean> {
       
       if (!response.available) {
         errorMsg.value = response.message
-        window.scrollTo({ top: 0, behavior: 'smooth' })
+
+        nextTick(() => {
+          errorRef.value?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+          })
+        })
+
         return false
-      }
+}
     }
     
     return true
   } catch (error: any) {
     const parsed = parseBackendError(error)
-    errorMsg.value = parsed.title ? `${parsed.title}: ${parsed.message}` : parsed.message
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    errorMsg.value = parsed.message || 'Terjadi kesalahan'
+
+    nextTick(() => {
+      errorRef.value?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      })
+    })
+
     return false
   } finally {
     checkingAvailability.value = false
@@ -223,13 +240,27 @@ async function handleSubmit(){
 
   if (!isNameValid || !isContactValid || !isEmailValid || !isInstitutionValid) {
     errorMsg.value = 'Mohon perbaiki data yang tidak valid'
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+
+    nextTick(() => {
+      errorRef.value?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      })
+    })
+
     return
   }
 
   if (selectedSlots.value.length === 0) {
     errorMsg.value = 'Pilih minimal satu slot booking.'
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+
+    nextTick(() => {
+      errorRef.value?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      })
+    })
+
     return
   }
 
@@ -281,6 +312,8 @@ async function handleSubmit(){
 
   try {
     if (bookingForm.suratFile || bookingForm.sptjmFile) {
+      isUploadingFiles.value = true
+      uploadProgress.value = null
       const fd = new FormData()
       fd.append('operations', JSON.stringify(operations))
       
@@ -370,7 +403,16 @@ async function handleSubmit(){
     }
   } catch (e) {
     const parsed = parseBackendError(e)
-    errorMsg.value = parsed.title ? `${parsed.title}: ${parsed.message}` : parsed.message
+    errorMsg.value = parsed.title
+      ? `${parsed.title}: ${parsed.message}`
+      : parsed.message
+
+    nextTick(() => {
+      errorRef.value?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      })
+    })
   } finally {
     uploadProgress.value = null
     submitting.value = false
@@ -386,7 +428,7 @@ watch(() => bookingForm.renterType, (val) => {
 </script>
 
 <template>
-  <section class="flex w-full flex-col gap-6 sm:gap-8 pb-12 relative">
+  <section class="flex w-full flex-col gap-6 sm:gap-8 pb-12 relative max-w-7xl mx-auto">
     
     <!-- HEADER -->
     <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
@@ -405,7 +447,7 @@ watch(() => bookingForm.renterType, (val) => {
       </div>
     </header>
 
-    <form id="booking-form" @submit.prevent="handleSubmit" class="flex flex-col gap-8 max-w-5xl mx-auto w-full">
+    <form id="booking-form" @submit.prevent="handleSubmit" class="flex flex-col gap-8 w-full">
       
       <div class="w-full">
         <div class="bg-white rounded-2xl border border-gray-300 shadow-sm overflow-hidden">
@@ -591,7 +633,6 @@ watch(() => bookingForm.renterType, (val) => {
                 💡 Surat Pernyataan Tanggung Jawab Mutlak (Wajib), format PDF max 5MB.
               </p>
             </div>
-
             <div v-if="bookingForm.renterType !== 'UMUM'" class="space-y-4 pt-4 border-t border-gray-100">
               <div class="space-y-1.5">
                 <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Nama Institusi <span class="text-red-500">*</span></label>
@@ -629,21 +670,20 @@ watch(() => bookingForm.renterType, (val) => {
                 <p class="text-xs text-gray-500 mt-1">
                   💡 Surat pengantar dari institusi/fakultas (Wajib untuk Akademik/Tendik).
                 </p>
-                
-                <div v-if="uploadProgress !== null" class="mt-3 space-y-2">
-                  <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                    <div 
-                      :style="{ width: uploadProgress + '%' }" 
-                      class="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-300 ease-out"
-                    ></div>
-                  </div>
-                  <div class="flex items-center justify-between text-xs">
-                    <span class="text-gray-600 font-medium">Mengunggah file...</span>
-                    <span class="text-blue-600 font-bold">{{ uploadProgress }}%</span>
-                  </div>
-                </div>
               </div>
             </div>
+            <div v-if="uploadProgress !== null" class="mt-3 space-y-2">
+            <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+              <div 
+                :style="{ width: uploadProgress + '%' }" 
+                class="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-300 ease-out"
+              ></div>
+            </div>
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-gray-600 font-medium">Mengunggah file...</span>
+              <span class="text-blue-600 font-bold">{{ uploadProgress }}%</span>
+            </div>
+          </div>
           </div>
         </div>
       </div>
@@ -680,7 +720,7 @@ watch(() => bookingForm.renterType, (val) => {
         </div>
       </div>
 
-      <div v-if="errorMsg" class="p-4 rounded-xl border border-red-200 bg-red-50 text-red-700 flex items-start gap-3 shadow-sm animate-shake">
+      <div v-if="errorMsg" ref="errorRef" class="p-4 rounded-xl border border-red-200 bg-red-50 text-red-700 flex items-start gap-3 shadow-sm animate-shake">
         <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
         <div class="flex-1">
           <p class="font-bold text-sm">Terjadi Kesalahan</p>
@@ -703,26 +743,46 @@ watch(() => bookingForm.renterType, (val) => {
         <button
           type="button"
           @click="$router.back()"
-          class="flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition-all active:scale-95"
+          class="flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 shadow-sm transition-all active:scale-95 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
         >
           Batal
         </button>
 
         <button
           type="submit"
-          :disabled="uploadProgress !== null || checkingAvailability || submitting"
-          class="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-sm hover:bg-blue-700 hover:shadow-md transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+          :disabled="checkingAvailability || submitting || isUploadingFiles"
+          class="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-blue-700 hover:shadow-md transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
         >
-          <svg v-if="uploadProgress !== null || checkingAvailability || submitting" class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+          <svg
+            v-if="checkingAvailability || submitting || isUploadingFiles"
+            class="animate-spin h-4 w-4 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            />
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            />
+          </svg>
+
           <span>
-            {{ checkingAvailability ? 'Memeriksa Ketersediaan...' : (uploadProgress !== null || submitting) ? 'Menyimpan...' : 'Buat Booking' }}
+            {{ submitting || isUploadingFiles ? 'Menyimpan...' : 'Buat Booking' }}
           </span>
         </button>
+
       </div>
 
     </form>
 
-    <!-- Confirmation Modal -->
     <ConfirmationModal ref="confirmationModal" />
   </section>
 </template>

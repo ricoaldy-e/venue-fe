@@ -1,46 +1,46 @@
-import { print } from "graphql"
-import type { FetchError } from "ofetch"
-import { QUERY_GET_OPTION } from "~/graphql/queries/get_option"
+import { defineEventHandler, createError, getCookie } from 'h3'
+import { $fetch } from 'ofetch'
+import { QUERY_GET_OPTION } from '~/graphql/queries/get_option'
 
 type Option = {
-  name: string,
-  nameKet: string,
-  description: string,
-  unitName: string,
-  unitDesc: string,
-  email: string,
-  nohp: string,
-  address: string,
+  name: string
+  nameKet: string
+  description: string
+  unitName: string
+  unitDesc: string
+  email: string
+  nohp: string
+  address: string
 }
 
-export default defineEventHandler(async () => {
+export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   const endpoint = config.public.gqlHttpEndpoint
   if (!endpoint) {
     throw createError({ statusCode: 500, statusMessage: 'Missing GQL_HTTP_ENDPOINT' })
   }
 
+  const token = getCookie(event, 'admin_token')
+
   try {
-    const response = await $fetch(endpoint, {
-      method: 'POST',
-      body: {
-        query: print(QUERY_GET_OPTION),
-      },
-    }) as {
-      data?: { options?: Option }
-      errors?: Array<{
-        message?: string
-        extensions?: {
-          code?: string
-        }
-      }>
+    const headers: Record<string, any> = { 'Content-Type': 'application/json' }
+    if (token) {
+      headers.Authorization = `Bearer ${token}`
     }
+
+    const response: any = await $fetch(endpoint, {
+      method: 'POST',
+      headers,
+      body: {
+        query: QUERY_GET_OPTION,
+      },
+    })
 
     if (response?.errors?.length) {
       const firstError = response.errors[0]
       const errorCode = firstError?.extensions?.code || 'UNKNOWN'
 
-      console.error('GraphQL error fetching operating hours:', {
+      console.error('GraphQL error fetching options:', {
         code: firstError?.extensions?.code,
         message: firstError?.message,
         fullError: firstError,
@@ -57,14 +57,13 @@ export default defineEventHandler(async () => {
 
       throw createError({
         statusCode,
-        statusMessage: 'Failed to fetch operating hours',
+        statusMessage: 'Failed to fetch options',
       })
     }
 
     return response?.data?.options ?? null
-  } catch (e) {
-    const err = e as FetchError
-    if (err.statusCode) throw err
-    throw createError({ statusCode: 502, statusMessage: 'Operating hour service unreachable' })
+  } catch (error: any) {
+    if (error?.statusCode) throw error
+    throw createError({ statusCode: 502, statusMessage: 'Option service unreachable' })
   }
 })

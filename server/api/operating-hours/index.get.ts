@@ -10,11 +10,13 @@ export default defineEventHandler(async (event) => {
   }
 
   const token = getCookie(event, 'admin_token')
-  if (!token) {
-    throw createError({ statusCode: 401, statusMessage: 'Not authenticated' })
-  }
 
   try {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+    if (token) {
+      headers.Authorization = `Bearer ${token}`
+    }
+
     const response = await $fetch<{
       data?: { operatingHours?: any }
       errors?: Array<{
@@ -25,10 +27,7 @@ export default defineEventHandler(async (event) => {
       }>
     }>(endpoint, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+      headers,
       body: {
         query: QUERY_GET_OPERATING_HOURS,
       },

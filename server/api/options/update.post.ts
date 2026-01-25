@@ -58,7 +58,7 @@ export default defineEventHandler(async (event) => {
         if (res.errors && res.errors.length) {
             throw createError({
                 statusCode: 400,
-                statusMessage: res.errors[0]?.message || 'Failed to update operating hour',
+                statusMessage: res.errors[0]?.message || 'Failed to update options',
             })
         }
 

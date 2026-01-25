@@ -210,7 +210,7 @@ const switchMode = (mode: 'daily' | 'range') => {
 </script>
 
 <template>
-  <div class="w-full pb-16 print:p-0 print:pb-16">
+  <div class="w-full pb-16 print:p-0 print:pb-16 max-w-7xl mx-auto">
     
     <!-- HEADER PRINT -->
     <div class="hidden print:block mb-6 pb-4 border-b-2 border-gray-900">

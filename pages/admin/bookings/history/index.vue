@@ -367,7 +367,7 @@ const navigateToDetail = (bookingCode: string) => {
 </script>
 
 <template>
-  <section class="flex w-full flex-col gap-6 sm:gap-8 pb-16">
+  <section class="flex w-full flex-col gap-6 sm:gap-8 pb-16 max-w-7xl mx-auto">
     
     <!-- Header -->
     <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">

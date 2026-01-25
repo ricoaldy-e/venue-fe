@@ -369,7 +369,7 @@ const createBooking = async () => {
 
 <template>
   <main class="min-h-screen bg-[#f5f7fb] pb-16">
-    <div class="mx-auto grid max-w-6xl gap-6 px-4 lg:grid-cols-[minmax(0,1.3fr)_minmax(320px,1fr)]">
+    <div class="mx-auto grid max-w-7xl gap-6 px-4 lg:grid-cols-[minmax(0,1.3fr)_minmax(320px,1fr)]">
       <section class="space-y-6">
         <div class="rounded-3xl bg-white p-6 shadow-sm">
           <header class="mb-6">

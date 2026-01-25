@@ -102,7 +102,11 @@ const selectedStadion = computed(() => {
 })
 
 const activeImageCount = computed(() => {
-  return existingImages.value.length + selectedImages.value.length
+  return (existingImages.value.length - removedImageIds.value.length) + selectedImages.value.length
+})
+
+const activeExistingImages = computed(() => {
+  return existingImages.value.filter(img => !removedImageIds.value.includes(img.id))
 })
 
 function onStadionChange() {
@@ -156,11 +160,13 @@ function removeNewImage(idx: number) {
   imagePreviews.value.splice(idx, 1)
 }
 
-function markRemoveExisting(idx: number) {
-  const item = existingImages.value[idx]
-  if (!item) return
-  removedImageIds.value.push(item.id)
-  existingImages.value.splice(idx, 1)
+function markRemoveExisting(id: number) {
+  removedImageIds.value.push(id)
+}
+
+function undoRemoveExisting(id: number) {
+  const idx = removedImageIds.value.indexOf(id)
+  if (idx > -1) removedImageIds.value.splice(idx, 1)
 }
 
 async function handleSubmit() {
@@ -253,7 +259,7 @@ async function handleDelete() {
 </script>
 
 <template>
-  <section class="flex w-full flex-col gap-6 sm:gap-8 pb-12 relative">
+  <section class="flex w-full flex-col gap-6 sm:gap-8 pb-12 relative max-w-7xl mx-auto">
     
     <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
       <div class="flex items-start gap-4">
@@ -271,13 +277,6 @@ async function handleDelete() {
       </div>
 
       <div class="hidden sm:flex items-center gap-3">
-        <NuxtLink
-          to="/admin/fields"
-          class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 shadow-sm transition-all active:scale-95 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
-        >
-          Batal
-        </NuxtLink>
-
         <button
           type="button"
           @click="handleDelete"
@@ -287,6 +286,13 @@ async function handleDelete() {
           <svg v-if="loadingDelete" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
           <span>{{ loadingDelete ? 'Menghapus...' : 'Hapus' }}</span>
         </button>
+
+        <NuxtLink
+          to="/admin/fields"
+          class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 shadow-sm transition-all active:scale-95 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
+        >
+          Batal
+        </NuxtLink>
 
         <button
           type="submit"
@@ -504,9 +510,9 @@ async function handleDelete() {
 
             <div v-if="activeImageCount > 0" class="flex flex-col gap-3">
               
-              <div v-if="existingImages.length > 0" class="flex flex-col gap-3">
+              <div v-if="activeExistingImages.length > 0" class="flex flex-col gap-3">
                 <div class="relative w-full aspect-video rounded-xl overflow-hidden border border-gray-200 shadow-sm group">
-                  <img :src="existingImages[0]?.imageUrl" class="w-full h-full object-cover" />
+                  <img :src="activeExistingImages[0]?.imageUrl" class="w-full h-full object-cover" />
                   <div class="absolute top-0 left-0 right-0 p-2 bg-gradient-to-b from-black/60 to-transparent">
                     <div class="flex items-center gap-1.5">
                       <Icon icon="solar:star-bold" class="text-amber-400 w-3.5 h-3.5" />
@@ -515,7 +521,7 @@ async function handleDelete() {
                   </div>
                   <button 
                     type="button" 
-                    @click="markRemoveExisting(0)" 
+                    @click="activeExistingImages[0] && markRemoveExisting(activeExistingImages[0].id)" 
                     class="absolute top-2 right-2 p-1.5 bg-white/90 backdrop-blur-sm rounded-lg text-red-500 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-50 shadow-sm"
                     title="Hapus"
                   >
@@ -523,16 +529,16 @@ async function handleDelete() {
                   </button>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3" v-if="existingImages.length > 1">
+                <div class="grid grid-cols-2 gap-3" v-if="activeExistingImages.length > 1">
                   <div 
-                    v-for="(img, idx) in existingImages.slice(1)" 
+                    v-for="(img, idx) in activeExistingImages.slice(1)" 
                     :key="img.id" 
                     class="relative aspect-square rounded-lg overflow-hidden border border-gray-200 group bg-gray-100"
                   >
                     <img :src="img.imageUrl" class="w-full h-full object-cover" />
                     <button 
                       type="button" 
-                      @click="markRemoveExisting(idx + 1)" 
+                      @click="markRemoveExisting(img.id)" 
                       class="absolute top-1.5 right-1.5 p-1 bg-white/90 rounded-md text-red-500 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-50 shadow-sm"
                     >
                       <Icon icon="solar:trash-bin-trash-bold" class="w-3.5 h-3.5" />
@@ -545,7 +551,7 @@ async function handleDelete() {
                 <div v-for="(src, idx) in imagePreviews" :key="idx" class="relative group aspect-square rounded-lg overflow-hidden border border-gray-200 shadow-sm">
                   <img :src="src" class="w-full h-full object-cover" />
                   <div class="absolute top-1.5 left-1.5 bg-blue-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm">BARU</div>
-                  <div v-if="existingImages.length === 0 && idx === 0" class="absolute top-0 left-0 right-0 p-2 bg-gradient-to-b from-black/60 to-transparent">
+                  <div v-if="activeExistingImages.length === 0 && idx === 0" class="absolute top-0 left-0 right-0 p-2 bg-gradient-to-b from-black/60 to-transparent">
                      <div class="flex items-center gap-1.5">
                       <Icon icon="solar:star-bold" class="text-amber-400 w-3.5 h-3.5" />
                       <span class="text-[10px] font-bold text-white tracking-wide uppercase">Cover</span>
@@ -564,7 +570,26 @@ async function handleDelete() {
 
             </div>
 
-            <!-- Inline Error untuk Upload Images -->
+            <div v-if="removedImageIds.length > 0" class="mt-4 p-3 bg-red-50 rounded-xl border border-red-100">
+              <div class="flex items-center gap-2 mb-2 text-red-800">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                <span class="text-xs font-bold">{{ removedImageIds.length }} foto ditandai hapus</span>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <button 
+                  v-for="id in removedImageIds" 
+                  :key="id" 
+                  @click="undoRemoveExisting(id)" 
+                  type="button" 
+                  class="inline-flex items-center gap-1 text-[10px] font-semibold bg-white border border-red-200 text-red-600 px-2 py-1 rounded-md shadow-sm hover:bg-red-50 hover:border-red-300 transition-all"
+                >
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
+                  <span>Batal Hapus #{{ id }}</span>
+                </button>
+              </div>
+            </div>
+
+            
             <p v-if="errorMsg && (errorMsg.includes('gambar') || errorMsg.includes('foto') || errorMsg.includes('5'))" class="mt-3 text-xs text-red-600 font-medium flex items-start gap-1.5 p-3 bg-red-50 rounded-lg border border-red-100">
               <svg class="w-4 h-4 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
               <span>{{ errorMsg }}</span>
@@ -586,12 +611,6 @@ async function handleDelete() {
         </button>
 
         <div class="grid grid-cols-2 gap-3">
-          <NuxtLink
-            to="/admin/fields"
-            class="flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-3.5 text-sm font-bold text-gray-700 active:bg-gray-50"
-          >
-            Batal
-          </NuxtLink>
           <button
             type="button"
             @click="handleDelete"
@@ -600,6 +619,12 @@ async function handleDelete() {
           >
             {{ loadingDelete ? '...' : 'Hapus' }}
           </button>
+          <NuxtLink
+            to="/admin/fields"
+            class="flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-3.5 text-sm font-bold text-gray-700 active:bg-gray-50"
+          >
+            Batal
+          </NuxtLink>
         </div>
       </div>
 

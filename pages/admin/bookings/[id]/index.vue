@@ -435,7 +435,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
 
 <template>
   <div class="w-full pb-16">
-    <header class="mx-auto flex max-w-6xl items-center justify-between pt-2 pb-4 sm:pt-1 sm:pb-6">
+    <header class="mx-auto flex max-w-7xl items-center justify-between pt-2 pb-4 sm:pt-1 sm:pb-6">
         <NuxtLink 
           to="/admin/bookings" 
           class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:text-[#1f2a56] hover:border-[#1f2a56] hover:shadow-md active:scale-95"
@@ -466,7 +466,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
         </div>
       </section>
 
-      <section v-else class="mx-auto max-w-6xl space-y-4 sm:space-y-6 overflow-hidden">
+      <section v-else class="mx-auto max-w-7xl space-y-4 sm:space-y-6 overflow-hidden">
         
         <div class="grid gap-3 lg:grid-cols-[minmax(0,2.3fr)_minmax(320px,1fr)]">
           <div

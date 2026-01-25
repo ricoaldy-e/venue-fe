@@ -20,7 +20,7 @@
           </div>
         </button>
         
-        <div class="hidden lg:flex items-center gap-3 xl:gap-16 flex-1 justify-center px-6">
+        <div class="hidden lg:flex items-center gap-14 md:gap-18 xl:gap-20 flex-1 justify-end px-6">
           <div class="relative group">
             <img 
               src="~/assets/images/icon/icon-badminton.png"
@@ -82,15 +82,6 @@
               class="h-7 w-7 xl:h-8 xl:w-8 object-contain opacity-40 -scale-x-100 grayscale group-hover:opacity-70 group-hover:grayscale-0 group-hover:-translate-y-1 transition-all duration-300 cursor-pointer"
             />
             <span class="absolute -bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] font-bold text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300">Shaah!</span>
-          </div>
-
-          <div class="relative group">
-            <img 
-              src="~/assets/images/icon/icon-panahan.png"
-              alt="Archery"
-              class="h-7 w-7 xl:h-8 xl:w-8 object-contain opacity-40 -scale-x-100 grayscale group-hover:opacity-70 group-hover:grayscale-0 group-hover:-translate-y-1 transition-all duration-300 cursor-pointer"
-            />
-            <span class="absolute -bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] font-bold text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300">Arrow!</span>
           </div>
         </div>
       </div>

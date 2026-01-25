@@ -129,7 +129,7 @@ async function handleDelete() {
 </script>
 
 <template>
-  <section class="flex w-full flex-col gap-6 sm:gap-8 pb-12 relative">
+  <section class="flex w-full flex-col gap-6 sm:gap-8 pb-12 relative max-w-7xl mx-auto">
     
     <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
       <div class="flex items-start gap-4">
@@ -147,13 +147,6 @@ async function handleDelete() {
       </div>
 
       <div class="hidden sm:flex items-center gap-3">
-        <NuxtLink
-          to="/admin/facilities"
-          class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 shadow-sm transition-all active:scale-95 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
-        >
-          Batal
-        </NuxtLink>
-
         <button
           type="button"
           @click="handleDelete"
@@ -163,6 +156,13 @@ async function handleDelete() {
           <svg v-if="loadingDelete" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
           <span>{{ loadingDelete ? 'Menghapus...' : 'Hapus' }}</span>
         </button>
+
+        <NuxtLink
+          to="/admin/facilities"
+          class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 shadow-sm transition-all active:scale-95 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
+        >
+          Batal
+        </NuxtLink>
 
         <button
           type="submit"
@@ -187,7 +187,7 @@ async function handleDelete() {
       <NuxtLink to="/admin/facilities" class="mt-4 inline-block underline hover:no-underline">Kembali ke daftar</NuxtLink>
     </div>
 
-    <form v-else id="edit-facility-form" @submit.prevent="handleSubmit" class="flex flex-col gap-8 max-w-5xl mx-auto w-full">
+    <form v-else id="edit-facility-form" @submit.prevent="handleSubmit" class="flex flex-col gap-8">
       
       <div class="w-full">
         <div class="bg-white rounded-2xl border border-gray-300 shadow-sm overflow-hidden">
@@ -297,12 +297,6 @@ async function handleDelete() {
         </button>
 
         <div class="grid grid-cols-2 gap-3">
-          <NuxtLink
-            to="/admin/facilities"
-            class="flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-3.5 text-sm font-bold text-gray-700 active:bg-gray-50"
-          >
-            Batal
-          </NuxtLink>
           <button
             type="button"
             @click="handleDelete"
@@ -311,6 +305,12 @@ async function handleDelete() {
           >
             {{ loadingDelete ? '...' : 'Hapus' }}
           </button>
+          <NuxtLink
+            to="/admin/facilities"
+            class="flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-4 py-3.5 text-sm font-bold text-gray-700 active:bg-gray-50"
+          >
+            Batal
+          </NuxtLink>
         </div>
       </div>
     </form>
