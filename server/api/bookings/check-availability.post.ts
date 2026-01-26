@@ -86,31 +86,32 @@ export default defineEventHandler(async (event): Promise<CheckAvailabilityRespon
       })
     }
 
-    // Extract bookings from paginated response
     const allBookings = response.data?.bookings?.data || []
 
-    // Filter bookings that match the field and are not cancelled
     const relevantBookings = allBookings.filter(booking => {
       if (booking.status === 'CANCELLED') return false
       if (body.excludeBookingId && booking.id === body.excludeBookingId) return false
       return true
     })
 
-    // Get all booked slots for the specific field
     const bookedSlots = new Set<string>()
 
     for (const booking of relevantBookings) {
       if (booking.details) {
         for (const detail of booking.details) {
-          // Check if this detail matches the field and date we're checking
           if (String(detail.fieldId) === String(body.fieldId)) {
-            // Parse the booking date to compare with the requested date
             const detailDate = new Date(detail.bookingDate)
             const requestDate = new Date(body.date)
 
-            // Compare dates (ignoring time)
-            const detailDateStr = detailDate.toISOString().split('T')[0]
-            const requestDateStr = requestDate.toISOString().split('T')[0]
+            const getLocalDateKey = (date: Date) => {
+              const year = date.getFullYear()
+              const month = String(date.getMonth() + 1).padStart(2, '0')
+              const day = String(date.getDate()).padStart(2, '0')
+              return `${year}-${month}-${day}`
+            }
+
+            const detailDateStr = getLocalDateKey(detailDate)
+            const requestDateStr = getLocalDateKey(requestDate)
 
             if (detailDateStr === requestDateStr) {
               bookedSlots.add(String(detail.startHour))
@@ -120,7 +121,6 @@ export default defineEventHandler(async (event): Promise<CheckAvailabilityRespon
       }
     }
 
-    // Find conflicting slots
     const conflictingSlots = body.timeSlots.filter(slot => bookedSlots.has(slot))
 
     if (conflictingSlots.length > 0) {

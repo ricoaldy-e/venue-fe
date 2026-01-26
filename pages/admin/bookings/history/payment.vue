@@ -65,7 +65,6 @@ interface PaginationInfo {
   hasPrevPage: boolean
 }
 
-// Summary dari server (dihitung dari SEMUA data sesuai filter, bukan hanya halaman ini)
 interface BookingSummary {
   totalRevenue: number
   totalCount: number
@@ -87,26 +86,20 @@ interface BookingResponse {
   summary: BookingSummary
 }
 
-// Filter Mode: daily or range
 const filterMode = ref<'daily' | 'range'>('daily')
-const selectedDate = ref(dayjs().format('YYYY-MM-DD')) // Default: Today
+const selectedDate = ref(dayjs().format('YYYY-MM-DD'))
 const startDate = ref(dayjs().subtract(30, 'day').format('YYYY-MM-DD'))
 const endDate = ref(dayjs().format('YYYY-MM-DD'))
 const printTimestamp = ref('')
 
-// Stadium filter
 const selectedStadionId = ref<string>('')
 
-// Renter type filter (TIPE)
 const renterTypeFilter = ref<'' | 'UMUM' | 'TENDIK' | 'AKADEMIK'>('')
 
-// Booking status filter (STATUS BOOKING)
 const bookingStatusFilter = ref<'' | 'APPROVED' | 'CANCELLED'>('')
 
-// Payment status filter
 const paymentStatusFilter = ref<'' | 'PAID' | 'UNPAID'>('')
 
-// Pagination
 const currentPage = ref(1)
 const itemsPerPage = ref(10)
 
@@ -115,7 +108,6 @@ const autoRefreshInterval = ref<ReturnType<typeof setInterval> | null>(null)
 const lastRefreshTime = ref<string>('')
 const isRefreshing = ref(false)
 
-// Format last refresh time
 const updateLastRefreshTime = () => {
   const now = new Date()
   lastRefreshTime.value = now.toLocaleTimeString('id-ID', {
@@ -125,7 +117,6 @@ const updateLastRefreshTime = () => {
   })
 }
 
-// Manual refresh handler
 const handleManualRefresh = async () => {
   if (isRefreshing.value) return
   isRefreshing.value = true
@@ -137,7 +128,6 @@ const handleManualRefresh = async () => {
   }
 }
 
-// Setup auto-refresh (1 minute interval)
 onMounted(() => {
   updateLastRefreshTime()
   autoRefreshInterval.value = setInterval(async () => {
@@ -146,14 +136,12 @@ onMounted(() => {
   }, 60000) // 60 seconds = 1 minute
 })
 
-// Cleanup on unmount
 onUnmounted(() => {
   if (autoRefreshInterval.value) {
     clearInterval(autoRefreshInterval.value)
   }
 })
 
-// Build query params for API
 const queryParams = computed(() => {
   const params: any = {
     page: currentPage.value,
@@ -161,30 +149,27 @@ const queryParams = computed(() => {
     sortOrder: 'desc',
   }
 
-  // Date filters
+
   if (filterMode.value === 'daily') {
-    params.date = selectedDate.value
+    params.startDate = selectedDate.value
+    params.endDate = selectedDate.value
   } else {
     params.startDate = startDate.value
     params.endDate = endDate.value
   }
 
-  // Stadium filter
   if (selectedStadionId.value) {
     params.stadionId = selectedStadionId.value
   }
 
-  // Payment status filter
   if (paymentStatusFilter.value) {
     params.paymentStatus = paymentStatusFilter.value
   }
 
-  // Renter type filter
   if (renterTypeFilter.value) {
     params.renterType = renterTypeFilter.value
   }
 
-  // Booking status filter
   if (bookingStatusFilter.value) {
     params.status = bookingStatusFilter.value
   }
@@ -192,7 +177,6 @@ const queryParams = computed(() => {
   return params
 })
 
-// Default summary values
 const defaultSummary: BookingSummary = {
   totalRevenue: 0,
   totalCount: 0,
@@ -208,7 +192,6 @@ const defaultSummary: BookingSummary = {
   averagePerBooking: 0
 }
 
-// Fetch bookings with server-side pagination and summary
 const { data: response, pending, error, refresh } = await useFetch<BookingResponse>(
   '/api/bookings/history',
   {
@@ -223,7 +206,6 @@ const { data: response, pending, error, refresh } = await useFetch<BookingRespon
   }
 )
 
-// Fetch stadions
 const { data: stadionsData } = await useFetch('/api/stadions', {
   server: false,
   lazy: true,
@@ -232,27 +214,22 @@ const { data: stadionsData } = await useFetch('/api/stadions', {
 
 const stadions = computed(() => (stadionsData.value as any) || [])
 
-// Extracted data from response
 const bookings = computed(() => response.value?.data || [])
 const pagination = computed(() => response.value?.pagination || { page: 1, limit: 10, total: 0, totalPages: 0, hasNextPage: false, hasPrevPage: false })
 
-// Summary dari server (AKURAT - dihitung dari SEMUA data sesuai filter)
 const serverSummary = computed(() => response.value?.summary || defaultSummary)
 
-// Debounced refresh
 const debouncedRefresh = useDebounceFn(() => {
   currentPage.value = 1
   refresh()
 }, 300)
 
-// Watch for filter changes
 watch([filterMode, selectedDate, startDate, endDate, selectedStadionId, paymentStatusFilter, renterTypeFilter, bookingStatusFilter], () => {
   debouncedRefresh()
 })
 
-// Set date range shortcuts
 const setDateRange = (days: number) => {
-  if (days === 0) { // This month
+  if (days === 0) {
     startDate.value = dayjs().startOf('month').format('YYYY-MM-DD')
     endDate.value = dayjs().endOf('month').format('YYYY-MM-DD')
   } else {
@@ -270,7 +247,6 @@ const isRangeActive = (days: number) => {
          endDate.value === dayjs().format('YYYY-MM-DD')
 }
 
-// Formatted date with day info
 const formattedDateRange = computed(() => {
   if (filterMode.value === 'daily') {
     return dayjs(selectedDate.value).format('dddd, DD MMMM YYYY')
@@ -282,7 +258,6 @@ const selectedDayName = computed(() => {
   return dayjs(selectedDate.value).format('dddd')
 })
 
-// Pagination handlers
 const nextPage = () => {
   if (pagination.value.hasNextPage) {
     currentPage.value++
@@ -295,7 +270,6 @@ const prevPage = () => {
   }
 }
 
-// Pagination summary
 const paginationSummary = computed(() => {
   const p = pagination.value
   if (p.total === 0) return 'Tidak ada data'
@@ -310,7 +284,6 @@ const paymentSummary = computed(() => {
   const summary = serverSummary.value
   
   return {
-    // Data dari server (AKURAT - dihitung dari semua data)
     totalRevenue: summary.totalRevenue,
     totalBookings: summary.totalCount,
     paidBookings: summary.paidCount,
@@ -340,7 +313,8 @@ const formatDate = (dateString: string) => {
     month: 'short',
     year: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
+    timeZone: 'Asia/Jakarta'
   })
 }
 
@@ -353,7 +327,7 @@ const formatSlotDate = (booking: BookingHistory) => {
   if (uniqueDates.length === 0) return '-'
   if (uniqueDates.length === 1) {
     const date = new Date(uniqueDates[0]!)
-    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' })
   }
   
   // Check if dates are consecutive
@@ -369,7 +343,7 @@ const formatSlotDate = (booking: BookingHistory) => {
   
   const formatDateItem = (dateStr: string) => {
     const date = new Date(dateStr)
-    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' })
   }
   
   // If all dates are consecutive, show range with '-'
@@ -741,7 +715,7 @@ const printAllData = async () => {
           </div>
 
           <div v-if="filterMode === 'daily'">
-            <label class="block text-xs font-semibold text-gray-600 mb-2">Pilih Tanggal</label>
+            <label class="block text-xs font-semibold text-gray-600 mb-2">Tanggal Booking Dibuat</label>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <input 
                 type="date" 
@@ -763,7 +737,7 @@ const printAllData = async () => {
           <!-- Range Mode -->
           <div v-if="filterMode === 'range'" class="space-y-3">
             <div>
-              <label class="block text-xs font-semibold text-gray-600 mb-2">Periode Tanggal</label>
+              <label class="block text-xs font-semibold text-gray-600 mb-2">Periode Tanggal Booking Dibuat</label>
               <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                 <div class="flex items-center gap-2 flex-1 w-full">
                   <input 
@@ -1246,8 +1220,5 @@ const printAllData = async () => {
     background-color: white !important;
     font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
-
-  /* Grayscale everything except specific overrides */
-  /* REMOVED global print-color-adjust to allow clean white background */
 }
 </style>

@@ -33,14 +33,13 @@ const FALLBACK_OPTIONS = {
   description: "Platform booking lapangan olahraga terpercaya untuk Sivitas Akademika Universitas Diponegoro.",
   unitName: "UPT Layanan Seni, Budaya dan Olahraga",
   unitDesc: "Unit Pelaksana Teknis untuk mengelola fasilitas olahraga di lingkungan Universitas Diponegoro",
-  email: "contact@venueundip.id",
+  email: "helpdesk@undip.ac.id",
   nohp: "+62 851 6566 0339",
   address: "Jl. Prof. Soedarto, Tembalang, Kec. Tembalang, Kota Semarang, Jawa Tengah",
 };
 
 const { options: appOptions, refresh } = useAppOptions();
 
-// Create computed wrappers to match existing template usage
 const options = computed(() => appOptions.value.data);
 const pending = computed(() => appOptions.value.pending);
 const error = computed(() => appOptions.value.error);
@@ -88,6 +87,41 @@ watch(editing, (isEditing) => {
   }
 });
 
+// Auto-format WhatsApp number with specific pattern: +62 8XX XXXX XXXX
+watch(() => formState.nohp, (newVal) => {
+  if (!newVal) return;
+  
+  let digits = newVal.replace(/\D/g, '');
+  
+  if (digits.startsWith('08')) {
+    digits = '62' + digits.slice(1);
+  }
+
+  if (digits.startsWith('62')) {
+    let rest = digits.slice(2);
+    let formatted = '+62';
+    
+    if (rest.length > 0) {
+      const part1 = rest.slice(0, 3);
+      formatted += ' ' + part1;
+      
+      if (rest.length > 3) {
+        const part2 = rest.slice(3, 7);
+        formatted += ' ' + part2;
+        
+        if (rest.length > 7) {
+          const part3 = rest.slice(7, 15); 
+          formatted += ' ' + part3;
+        }
+      }
+    }
+    
+    if (formatted !== newVal) {
+      formState.nohp = formatted;
+    }
+  }
+});
+
 const startEditing = () => {
   editing.value = true;
   submitError.value = null;
@@ -123,6 +157,15 @@ const handleSubmit = async () => {
     submitError.value = "Semua field wajib diisi.";
     return;
   }
+  const nohp = formState.nohp;
+  const phoneRegex = /^(\+62|62)/;
+  
+  const cleanForValidation = nohp.replace(/\s+/g, '');
+  
+  if (!phoneRegex.test(cleanForValidation)) {
+    submitError.value = "Nomor WhatsApp harus diawali dengan 62 atau +62.";
+    return;
+  }
 
   submitting.value = true;
   submitError.value = null;
@@ -141,7 +184,7 @@ const handleSubmit = async () => {
         address: formState.address,
       },
     });
-    await refresh(); // Refresh global state to reflect changes
+    await refresh();
     editing.value = false;
   } catch (err) {
     const parsed = parseBackendError(err);
@@ -224,7 +267,7 @@ const handleSubmit = async () => {
           class="rounded-xl border border-red-200 bg-red-50 p-4 text-red-700"
         >
           <p class="font-semibold text-sm">
-            Gagal memuat data: {{ error.message }}
+            Gagal memuat data: {{ error }}
           </p>
           <button
             class="mt-2 text-sm font-bold underline hover:text-red-800"
@@ -942,7 +985,7 @@ const handleSubmit = async () => {
                     v-model="formState.email"
                     type="email"
                     class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400"
-                    placeholder="contact@venueundip.id"
+                    placeholder="helpdesk@undip.ac.id"
                     required
                     :disabled="submitting"
                   >

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { generateTimeSlots, type Slot } from '~/utils/generateTimeSlots'
-import { toDateKey, getNextNDays, toUtcMidnightIso } from '~/utils/dateHelpers'
+import { toDateKey, getNextNDays, toUtcMidnightIso, getTodayInWib } from '~/utils/dateHelpers'
 import { Icon } from '@iconify/vue'
 import { parseBackendError } from '~/utils/errorParser'
 
@@ -412,8 +412,8 @@ function makeBooking() {
 
 function isDatePast(date: Date | null) {
   if (!date) return false
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  // Use WIB timezone for consistent "today" comparison across all Indonesian timezones
+  const today = getTodayInWib()
   return date <= today
 }
 
@@ -421,8 +421,8 @@ function isSelectedDatePastOrToday() {
   if (!selectedDate.value) return false
   const selected = new Date(selectedDate.value)
   selected.setHours(0, 0, 0, 0)
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  // Use WIB timezone for consistent "today" comparison across all Indonesian timezones
+  const today = getTodayInWib()
   return selected <= today
 }
 
@@ -685,7 +685,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
                 <div class="flex-1 min-w-0">
                   <p class="text-xs text-gray-500 font-medium">Tanggal Dipilih</p>
                   <p class="text-sm sm:text-base font-bold text-gray-900 truncate">
-                    {{ new Date(selectedDate).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) }}
+                    {{ new Date(selectedDate).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' }) }}
                   </p>
                 </div>
               </div>

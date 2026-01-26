@@ -45,7 +45,6 @@ const printTimestamp = ref('')
 const lastRefreshTime = ref<string>('')
 const isRefreshing = ref(false)
 
-// Format last refresh time
 const updateLastRefreshTime = () => {
   const now = new Date()
   lastRefreshTime.value = now.toLocaleTimeString('id-ID', {
@@ -55,7 +54,6 @@ const updateLastRefreshTime = () => {
   })
 }
 
-// Manual refresh handler
 const handleManualRefresh = async () => {
   if (isRefreshing.value) return
   isRefreshing.value = true

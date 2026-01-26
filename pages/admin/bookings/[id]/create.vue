@@ -164,9 +164,9 @@ async function checkSlotAvailability(): Promise<boolean> {
     
     for (const slot of selectedSlots.value) {
       const normalizedDate = new Date(slot.date)
-      const year = normalizedDate.getUTCFullYear()
-      const month = String(normalizedDate.getUTCMonth() + 1).padStart(2, '0')
-      const day = String(normalizedDate.getUTCDate()).padStart(2, '0')
+      const year = normalizedDate.getFullYear()
+      const month = String(normalizedDate.getMonth() + 1).padStart(2, '0')
+      const day = String(normalizedDate.getDate()).padStart(2, '0')
       const dateStr = `${year}-${month}-${day}`
       
       const key = `${slot.fieldId}-${dateStr}`

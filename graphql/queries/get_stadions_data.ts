@@ -10,6 +10,7 @@ export const QUERY_STADIONS_DATA = `
         openHour
         closeHour
       }
+      bookingCount
       facilities {
         Facility {
           id
@@ -25,6 +26,7 @@ export const QUERY_STADIONS_DATA = `
         name
         pricePerHour
         priceTendik
+        status
         images {
           id
           imageUrl

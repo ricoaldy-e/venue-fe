@@ -17,10 +17,7 @@ export const OPERATING_HOURS = {
 } as const
 
 export const BOOKING = {
-  MAX_SLOTS_PER_BOOKING: 10,
-  CART_EXPIRY_MINUTES: 15,
-  MIN_ADVANCE_BOOKING_HOURS: 2,
-  MAX_ADVANCE_BOOKING_DAYS: 30,
+  CART_EXPIRY_MINUTES: 20,
 } as const
 
 export const SEARCH = {
@@ -72,7 +69,7 @@ export const STATUS = {
   PAYMENT: {
     UNPAID: 'UNPAID',
     PAID: 'PAID',
-    REFUNDED: 'REFUNDED',
+    // REFUNDED: 'REFUNDED',
   },
   ENTITY: {
     ACTIVE: 'ACTIVE',
@@ -90,7 +87,6 @@ export const UI = {
   SKELETON_LINES: 5,
   SWIPE_THRESHOLD: 40,
   POLLING_INTERVAL: 15000,
-  GALLERY_AUTO_PLAY_DELAY: 5000,
 } as const
 
 export const API = {

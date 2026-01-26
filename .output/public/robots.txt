@@ -1,0 +1,4 @@
+User-Agent: *
+Disallow:
+
+Sitemap: https://venue.undip.id/sitemap.xml

@@ -222,7 +222,8 @@ const formatDate = (dateString: string) => {
     month: 'short',
     year: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
+    timeZone: 'Asia/Jakarta'
   })
 }
 
@@ -235,7 +236,7 @@ const formatSlotDate = (booking: BookingHistory) => {
   if (uniqueDates.length === 0) return '-'
   if (uniqueDates.length === 1) {
     const date = new Date(uniqueDates[0]!)
-    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' })
   }
   
   // Check if dates are consecutive
@@ -251,7 +252,7 @@ const formatSlotDate = (booking: BookingHistory) => {
   
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr)
-    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' })
   }
   
   // If all dates are consecutive, show range with '-'

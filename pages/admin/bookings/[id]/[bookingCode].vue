@@ -24,7 +24,7 @@ const formatDate = (dateString: string) => {
     year: 'numeric', 
     month: 'long', 
     day: 'numeric',
-    timeZone: 'UTC'
+    timeZone: 'Asia/Jakarta'
   })
 }
 
