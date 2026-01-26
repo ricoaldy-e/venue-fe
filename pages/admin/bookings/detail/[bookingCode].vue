@@ -233,7 +233,7 @@ const groupedDetails = computed(() => {
       
       <NuxtLink 
         to="/admin/bookings/history"
-        class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:text-[#1f2a56] hover:border-[#1f2a56] hover:shadow-md active:scale-95"
+        class="inline-flex w-fit items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:text-[#1f2a56] hover:border-[#1f2a56] hover:shadow-md active:scale-95"
       >
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -463,7 +463,7 @@ const groupedDetails = computed(() => {
             <div class="pt-3 border-t border-gray-200">
               <div class="flex justify-between items-center">
                 <span class="text-sm font-bold text-gray-900">Total Harga</span>
-                <span class="text-lg font-bold text-blue-600">{{ formatCurrency(booking.totalPrice) }}</span>
+                <span class="text-lg font-bold text-blue-600">{{ formatCurrency(booking?.totalPrice) }}</span>
               </div>
             </div>
 
