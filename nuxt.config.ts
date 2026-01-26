@@ -15,7 +15,6 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
   ],
 
-  // Iconify configuration untuk offline icon loading
   vite: {
     optimizeDeps: {
       include: [
@@ -41,7 +40,7 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#1f2a56' },
         // Open Graph Tags
         { property: 'og:title', content: 'VENUE UNDIP - Sewa Venue & Lapangan Olahraga' },
-        { property: 'og:description', content: 'Platform sewa venue dan lapangan olahraga Universitas Diponegoro. Booking mudah, cepat, dan terpercaya.' },
+        { property: 'og:description', content: 'Platform booking lapangan olahraga terpercaya untuk Sivitas Akademika Universitas Diponegoro. Menyediakan berbagai fasilitas olahraga berkualitas dengan proses reservasi yang mudah dan cepat.' },
         { property: 'og:type', content: 'website' },
         { property: 'og:site_name', content: 'VENUE UNDIP' },
         { property: 'og:url', content: 'https://venue.undip.id' },
@@ -53,7 +52,7 @@ export default defineNuxtConfig({
         // Twitter Card Tags
         { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'twitter:title', content: 'VENUE UNDIP - Sewa Venue & Lapangan Olahraga' },
-        { name: 'twitter:description', content: 'Platform sewa venue dan lapangan olahraga Universitas Diponegoro. Booking mudah, cepat, dan terpercaya.' },
+        { name: 'twitter:description', content: 'Platform booking lapangan olahraga terpercaya untuk Sivitas Akademika Universitas Diponegoro. Menyediakan berbagai fasilitas olahraga berkualitas dengan proses reservasi yang mudah dan cepat.' },
         { name: 'twitter:image', content: 'https://venue.undip.id/og-image.png' },
         { name: 'twitter:image:alt', content: 'VENUE UNDIP - Platform Sewa Venue & Lapangan Olahraga' }
       ],

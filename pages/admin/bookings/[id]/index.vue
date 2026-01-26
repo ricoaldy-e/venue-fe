@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { generateTimeSlots, type Slot } from '~/utils/generateTimeSlots'
-import { toDateKey, getNextNDays, toUtcMidnightIso } from '~/utils/dateHelpers'
+import { toDateKey, getNextNDays, toUtcMidnightIso, getTodayInWib } from '~/utils/dateHelpers'
 import { Icon } from '@iconify/vue'
 import { parseBackendError } from '~/utils/errorParser'
 
@@ -412,8 +412,8 @@ function makeBooking() {
 
 function isDatePast(date: Date | null) {
   if (!date) return false
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  // Use WIB timezone for consistent "today" comparison across all Indonesian timezones
+  const today = getTodayInWib()
   return date <= today
 }
 
@@ -421,8 +421,8 @@ function isSelectedDatePastOrToday() {
   if (!selectedDate.value) return false
   const selected = new Date(selectedDate.value)
   selected.setHours(0, 0, 0, 0)
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  // Use WIB timezone for consistent "today" comparison across all Indonesian timezones
+  const today = getTodayInWib()
   return selected <= today
 }
 
@@ -435,7 +435,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
 
 <template>
   <div class="w-full pb-16">
-    <header class="mx-auto flex max-w-6xl items-center justify-between pt-2 pb-4 sm:pt-1 sm:pb-6">
+    <header class="mx-auto flex max-w-7xl items-center justify-between pt-2 pb-4 sm:pt-1 sm:pb-6">
         <NuxtLink 
           to="/admin/bookings" 
           class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:text-[#1f2a56] hover:border-[#1f2a56] hover:shadow-md active:scale-95"
@@ -466,7 +466,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
         </div>
       </section>
 
-      <section v-else class="mx-auto max-w-6xl space-y-4 sm:space-y-6 overflow-hidden">
+      <section v-else class="mx-auto max-w-7xl space-y-4 sm:space-y-6 overflow-hidden">
         
         <div class="grid gap-3 lg:grid-cols-[minmax(0,2.3fr)_minmax(320px,1fr)]">
           <div
@@ -685,7 +685,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
                 <div class="flex-1 min-w-0">
                   <p class="text-xs text-gray-500 font-medium">Tanggal Dipilih</p>
                   <p class="text-sm sm:text-base font-bold text-gray-900 truncate">
-                    {{ new Date(selectedDate).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) }}
+                    {{ new Date(selectedDate).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' }) }}
                   </p>
                 </div>
               </div>

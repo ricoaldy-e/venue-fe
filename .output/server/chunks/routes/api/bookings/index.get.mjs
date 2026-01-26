@@ -1,14 +1,14 @@
-import { d as defineEventHandler, a as getRouterParams, u as useRuntimeConfig, c as createError } from '../../../nitro/nitro.mjs';
+import { c as defineEventHandler, h as getRouterParams, u as useRuntimeConfig, e as createError } from '../../../_/nitro.mjs';
 import 'node:http';
 import 'node:https';
 import 'node:events';
 import 'node:buffer';
 import 'node:fs';
-import 'node:path';
-import 'node:crypto';
 import 'node:url';
+import 'node:path';
 import 'better-sqlite3';
 import 'ipx';
+import 'node:crypto';
 
 const QUERY_GET_BOOKING = `
   query Booking($bookingCode: String!) {
@@ -19,7 +19,8 @@ const QUERY_GET_BOOKING = `
       email,
       institution,
       suratUrl,
-      isAcademic,
+      sptjmUrl,
+      renterType,
       totalPrice,
       status,
       paymentStatus,

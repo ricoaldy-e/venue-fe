@@ -179,7 +179,6 @@ const removeSptjm = () => {
   sptjmFile.value = null
 }
 
-// Computed price based on renter type
 const displayPrice = computed(() => {
   if (renterType.value === 'AKADEMIK') return 0
   return totalPrice.value
@@ -197,6 +196,7 @@ const formatDateLong = (slotDate: string, label: string) => {
       day: '2-digit',
       month: 'long',
       year: 'numeric',
+      timeZone: 'Asia/Jakarta',
     }).format(d)
   } catch {
     return label
@@ -255,15 +255,12 @@ const createBooking = async () => {
     }
   })
   try {
-    // Verify file again to be sure
     if (sptjmFile.value && !sptjmFile.value.type.includes('pdf')) {
       throw new Error('File SPTJM harus PDF')
     }
 
-    // Use FormData to support file upload
     const formData = new FormData()
     
-    // 1. Prepare Operations JSON
     const operations = {
       query: `mutation CreateBooking(
         $name: String!
@@ -298,7 +295,7 @@ const createBooking = async () => {
         email: customerEmail.value,
         institution: needsInstitution.value ? customerInstitution.value : null,
         renterType: renterType.value,
-        sptjmFile: null, // Placeholder, will be mapped
+        sptjmFile: null,
         suratFile: null,
         details: details.map(d => ({
           fieldId: d.fieldId,
@@ -309,21 +306,16 @@ const createBooking = async () => {
       },
     }
 
-    // 2. Prepare Map JSON
-    // Strict order: operations -> map -> files
     const map: Record<string, string[]> = {}
     
     if (sptjmFile.value) {
       map['0'] = ['variables.sptjmFile']
     }
 
-    // Append operations FIRST
     formData.append('operations', JSON.stringify(operations))
     
-    // Append map SECOND
     formData.append('map', JSON.stringify(map))
     
-    // Append files LAST
     if (sptjmFile.value) {
       formData.append('0', sptjmFile.value)
     }
@@ -331,7 +323,6 @@ const createBooking = async () => {
     const response = await fetch('/api/bookings/create', {
       method: 'POST',
       body: formData,
-      // Do NOT set Content-Type header manually for FormData, let browser set it with boundary
     })
 
     if (!response.ok) {
@@ -347,7 +338,6 @@ const createBooking = async () => {
 
     const result = await response.json()
     
-    // Handle both response formats (direct or nested in data.createBooking)
     const bookingCode = (result as any)?.bookingCode || result?.data?.createBooking?.bookingCode || ''
     if (result?.errors?.length) {
       throw new Error(result.errors[0]?.message || 'Gagal membuat booking')
@@ -369,7 +359,7 @@ const createBooking = async () => {
 
 <template>
   <main class="min-h-screen bg-[#f5f7fb] pb-16">
-    <div class="mx-auto grid max-w-6xl gap-6 px-4 lg:grid-cols-[minmax(0,1.3fr)_minmax(320px,1fr)]">
+    <div class="mx-auto grid max-w-7xl gap-6 px-4 lg:grid-cols-[minmax(0,1.3fr)_minmax(320px,1fr)]">
       <section class="space-y-6">
         <div class="rounded-3xl bg-white p-6 shadow-sm">
           <header class="mb-6">
@@ -480,7 +470,6 @@ const createBooking = async () => {
                 {{ errors.email }}
               </p>
             </label>
-            <!-- Kategori Penyewa Dropdown -->
             <div class="block">
               <span class="text-gray-600">Kategori Penyewa <span class="text-red-500">*</span></span>
               <select
@@ -498,7 +487,6 @@ const createBooking = async () => {
               </p>
             </div>
 
-            <!-- Institution (untuk Tendik & Akademik) -->
             <label v-if="needsInstitution" class="block">
               <span class="text-gray-600">Instansi/Unit <span class="text-red-500">*</span></span>
               <input
@@ -509,7 +497,6 @@ const createBooking = async () => {
               />
             </label>
 
-            <!-- Upload SPTJM (wajib untuk semua) -->
             <div class="block">
               <span class="text-gray-600">Upload SPTJM <span class="text-red-500">*</span></span>
               <p class="text-xs text-gray-500 mb-2">Surat Pernyataan Tanggung Jawab Mutlak (format PDF)</p>
@@ -545,7 +532,6 @@ const createBooking = async () => {
               </p>
             </div>
 
-            <!-- Surat Pengantar (untuk Tendik & Akademik) -->
             <label v-if="needsSuratPengantar" class="block">
               <span class="text-gray-600">URL Surat Pengantar <span class="text-gray-400">(opsional)</span></span>
               <input

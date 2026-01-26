@@ -122,6 +122,7 @@ const formatDayLabel = (date: Date) => {
     weekday: 'short',
     day: '2-digit',
     month: 'short',
+    timeZone: 'Asia/Jakarta',
   }).format(date)
 }
 
@@ -370,7 +371,8 @@ const fullSelectedDateLabel = computed(() => {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
-    year: 'numeric'
+    year: 'numeric',
+    timeZone: 'Asia/Jakarta',
   }).format(date)
 })
 
@@ -756,7 +758,6 @@ watch(selectedDate, () => {
           <SmartDatePicker v-model="selectedDate" :allow-past-dates="false" />
         </div>
 
-        <!-- Informasi Tanggal Terpilih -->
         <div class="px-4 sm:px-6 py-3 sm:py-3.5 bg-white border-b border-gray-200">
           <div class="flex items-center gap-2.5 sm:gap-3">
             <div class="flex items-center gap-2 sm:gap-2.5 flex-1 min-w-0">
@@ -1063,7 +1064,6 @@ watch(selectedDate, () => {
       </section>
     </section>
 
-    <!-- Info Modal (moved to component) -->
     <InfoModal
       v-model="isInfoModalOpen"
       title="Informasi"
@@ -1132,7 +1132,6 @@ watch(selectedDate, () => {
     </transition>
   </Teleport>
 
-    <!-- WhatsApp Floating Button -->
     <ClientWhatsAppFloatingButton :stadium-name="venue.name" />
   </div>
 </template>

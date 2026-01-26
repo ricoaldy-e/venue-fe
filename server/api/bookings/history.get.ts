@@ -1,6 +1,5 @@
 import { QUERY_GET_BOOKINGS_PAGINATED } from "~/graphql/queries/get_bookings"
 
-// Interface untuk Summary dari Server
 interface BookingSummary {
   totalRevenue: number
   totalCount: number
@@ -47,16 +46,21 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event)
 
   // Helper to convert date string to ISO format for GraphQL DateTime
+  // Using UTC+7 (Asia/Jakarta timezone) to ensure correct date filtering
   const toIsoDate = (dateStr: string | undefined) => {
     if (!dateStr) return undefined
     if (dateStr.includes('T')) return dateStr
-    return `${dateStr}T00:00:00.000Z`
+    // Convert to start of day in Asia/Jakarta timezone (UTC+7)
+    // 00:00:00 WIB = 17:00:00 UTC (previous day)
+    return `${dateStr}T00:00:00.000+07:00`
   }
 
   const toIsoDateEnd = (dateStr: string | undefined) => {
     if (!dateStr) return undefined
     if (dateStr.includes('T')) return dateStr
-    return `${dateStr}T23:59:59.999Z`
+    // Convert to end of day in Asia/Jakarta timezone (UTC+7)  
+    // 23:59:59 WIB = 16:59:59 UTC (same day)
+    return `${dateStr}T23:59:59.999+07:00`
   }
 
   const variables = {

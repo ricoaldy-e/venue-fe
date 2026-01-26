@@ -45,7 +45,6 @@ const printTimestamp = ref('')
 const lastRefreshTime = ref<string>('')
 const isRefreshing = ref(false)
 
-// Format last refresh time
 const updateLastRefreshTime = () => {
   const now = new Date()
   lastRefreshTime.value = now.toLocaleTimeString('id-ID', {
@@ -55,7 +54,6 @@ const updateLastRefreshTime = () => {
   })
 }
 
-// Manual refresh handler
 const handleManualRefresh = async () => {
   if (isRefreshing.value) return
   isRefreshing.value = true
@@ -210,7 +208,7 @@ const switchMode = (mode: 'daily' | 'range') => {
 </script>
 
 <template>
-  <div class="w-full pb-16 print:p-0 print:pb-16">
+  <div class="w-full pb-16 print:p-0 print:pb-16 max-w-7xl mx-auto">
     
     <!-- HEADER PRINT -->
     <div class="hidden print:block mb-6 pb-4 border-b-2 border-gray-900">

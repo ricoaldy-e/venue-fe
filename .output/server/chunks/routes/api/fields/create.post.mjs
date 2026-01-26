@@ -1,14 +1,14 @@
-import { d as defineEventHandler, r as readBody, u as useRuntimeConfig, c as createError, g as getCookie, $ as $fetch } from '../../../nitro/nitro.mjs';
+import { c as defineEventHandler, r as readBody, u as useRuntimeConfig, e as createError, g as getCookie, $ as $fetch } from '../../../_/nitro.mjs';
 import 'node:http';
 import 'node:https';
 import 'node:events';
 import 'node:buffer';
 import 'node:fs';
-import 'node:path';
-import 'node:crypto';
 import 'node:url';
+import 'node:path';
 import 'better-sqlite3';
 import 'ipx';
+import 'node:crypto';
 
 const MUTATION_CREATE_FIELD = `
   mutation CreateField(
@@ -16,6 +16,7 @@ const MUTATION_CREATE_FIELD = `
     $name: String!
     $description: String
     $pricePerHour: Int!
+    $priceTendik: Int
     $images: [FieldImageInput!]
     $status: Status
   ) {
@@ -24,11 +25,14 @@ const MUTATION_CREATE_FIELD = `
       name: $name
       description: $description
       pricePerHour: $pricePerHour
+      priceTendik: $priceTendik
       images: $images
       status: $status
     ) {
       id
       name
+      pricePerHour
+      priceTendik
       status
     }
   }
@@ -46,9 +50,8 @@ const create_post = defineEventHandler(async (event) => {
       name: body.name,
       description: body.description,
       stadionId: Number(body.stadionId),
-      // HARGA DISEMBUNYIKAN: Terima dari body (default 0 dari FE)
-      // Tidak hardcode agar nanti bisa reactive kalau fitur diaktifkan
       pricePerHour: Number(body.pricePerHour || 0),
+      priceTendik: Number(body.priceTendik || 0),
       status: body.status,
       images: body.images
     };

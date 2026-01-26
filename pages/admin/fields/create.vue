@@ -166,7 +166,7 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <section class="flex w-full flex-col gap-6 sm:gap-8 pb-12 relative">
+  <section class="flex w-full flex-col gap-6 sm:gap-8 pb-12 relative max-w-7xl mx-auto">
     
     <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
       <div class="flex items-start gap-4">

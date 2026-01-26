@@ -46,27 +46,21 @@ const props = defineProps<{
   stadiumName?: string
 }>()
 
-// Track footer visibility
 const isFooterVisible = ref(false)
 let observer: IntersectionObserver | null = null
 
 onMounted(() => {
-  // Find the footer element
   const footer = document.querySelector('footer')
   
   if (footer) {
-    // Create Intersection Observer to detect when footer is visible
     observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          // Update visibility state based on footer intersection
           isFooterVisible.value = entry.isIntersecting
         })
       },
       {
-        // Trigger when any part of footer enters viewport
         threshold: 0,
-        // Start detecting a bit before the footer actually enters
         rootMargin: '0px 0px 50px 0px'
       }
     )
@@ -76,7 +70,6 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  // Cleanup observer when component is destroyed
   if (observer) {
     observer.disconnect()
   }
@@ -84,13 +77,10 @@ onUnmounted(() => {
 
 const { options } = useAppOptions()
 
-// Phone number from options, with fallback
 const phoneNumber = computed(() => options.value.data?.nohp || '+62 851 6566 0339')
 
-// Display format for tooltip
 const phoneDisplay = computed(() => phoneNumber.value)
 
-// Clean phone number for WhatsApp URL (remove spaces, dashes, and ensure correct format)
 const cleanPhoneNumber = computed(() => {
   let phone = phoneNumber.value.replace(/[\s\-\(\)]/g, '')
   // Convert 08xxx to 628xxx format

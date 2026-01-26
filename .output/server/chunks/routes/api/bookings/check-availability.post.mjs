@@ -1,32 +1,20 @@
-import { d as defineEventHandler, g as getCookie, c as createError, u as useRuntimeConfig, r as readBody } from '../../../nitro/nitro.mjs';
+import { c as defineEventHandler, u as useRuntimeConfig, g as getCookie, e as createError, r as readBody } from '../../../_/nitro.mjs';
 import jwt from 'jsonwebtoken';
 import { A as API, a as AUTH } from '../../../_/constants.mjs';
+import { Q as QUERY_GET_BOOKINGS } from '../../../_/get_bookings.mjs';
 import 'node:http';
 import 'node:https';
 import 'node:events';
 import 'node:buffer';
 import 'node:fs';
-import 'node:path';
-import 'node:crypto';
 import 'node:url';
+import 'node:path';
 import 'better-sqlite3';
 import 'ipx';
-
-const query = `
-    query CheckBookingAvailability($fieldId: ID!, $date: String!) {
-        bookings(where: {
-        fieldId: { equals: $fieldId }
-        bookDate: { equals: $date }
-        bookStatus: { notIn: ["CANCEL", "FAILED"] }
-        }) {
-        id
-        timeSlot
-        }
-    }
-`;
+import 'node:crypto';
 
 const checkAvailability_post = defineEventHandler(async (event) => {
-  var _a, _b;
+  var _a, _b, _c;
   const config = useRuntimeConfig();
   const token = getCookie(event, AUTH.TOKEN_COOKIE_NAME);
   if (!token) {
@@ -49,34 +37,62 @@ const checkAvailability_post = defineEventHandler(async (event) => {
     });
   }
   try {
-    const graphqlUrl = config.public.gqlHttpEndpoint || "http://localhost:3001/graphql";
+    const graphqlUrl = config.public.gqlHttpEndpoint || "http://localhost:4000/graphql";
     const response = await $fetch(graphqlUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
       body: JSON.stringify({
-        query,
+        query: QUERY_GET_BOOKINGS,
         variables: {
-          fieldId: body.fieldId,
           date: body.date
         }
       }),
       timeout: API.TIMEOUT
     });
     if (response.errors) {
+      console.error("[check-availability] GraphQL errors:", response.errors);
       throw createError({
         statusCode: 500,
         statusMessage: ((_a = response.errors[0]) == null ? void 0 : _a.message) || "GraphQL error"
       });
     }
-    const existingBookings = ((_b = response.data) == null ? void 0 : _b.bookings) || [];
-    const relevantBookings = body.excludeBookingId ? existingBookings.filter((b) => b.id !== body.excludeBookingId) : existingBookings;
-    const bookedSlots = new Set(relevantBookings.map((b) => b.timeSlot));
+    const allBookings = ((_c = (_b = response.data) == null ? void 0 : _b.bookings) == null ? void 0 : _c.data) || [];
+    const relevantBookings = allBookings.filter((booking) => {
+      if (booking.status === "CANCELLED") return false;
+      if (body.excludeBookingId && booking.id === body.excludeBookingId) return false;
+      return true;
+    });
+    const bookedSlots = /* @__PURE__ */ new Set();
+    for (const booking of relevantBookings) {
+      if (booking.details) {
+        for (const detail of booking.details) {
+          if (String(detail.fieldId) === String(body.fieldId)) {
+            const detailDate = new Date(detail.bookingDate);
+            const requestDate = new Date(body.date);
+            const getLocalDateKey = (date) => {
+              const year = date.getFullYear();
+              const month = String(date.getMonth() + 1).padStart(2, "0");
+              const day = String(date.getDate()).padStart(2, "0");
+              return `${year}-${month}-${day}`;
+            };
+            const detailDateStr = getLocalDateKey(detailDate);
+            const requestDateStr = getLocalDateKey(requestDate);
+            if (detailDateStr === requestDateStr) {
+              bookedSlots.add(String(detail.startHour));
+            }
+          }
+        }
+      }
+    }
     const conflictingSlots = body.timeSlots.filter((slot) => bookedSlots.has(slot));
     if (conflictingSlots.length > 0) {
       return {
         available: false,
         conflictingSlots,
-        message: `Slot waktu ${conflictingSlots.join(", ")} sudah dibooking. Silakan pilih slot lain.`
+        message: `Slot Tidak Tersedia: Slot waktu yang dipilih sudah dibooking oleh pengguna lain. Silakan pilih slot yang berbeda atau coba lagi.`
       };
     }
     return {
@@ -85,6 +101,7 @@ const checkAvailability_post = defineEventHandler(async (event) => {
       message: "Semua slot waktu tersedia"
     };
   } catch (error) {
+    console.error("[check-availability] Error:", (error == null ? void 0 : error.message) || error);
     throw createError({
       statusCode: error.statusCode || 500,
       statusMessage: error.message || "Failed to check availability"

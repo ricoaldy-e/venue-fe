@@ -1,14 +1,14 @@
-import { d as defineEventHandler, u as useRuntimeConfig, c as createError, g as getCookie, $ as $fetch } from '../../nitro/nitro.mjs';
+import { c as defineEventHandler, u as useRuntimeConfig, e as createError, g as getCookie, $ as $fetch } from '../../_/nitro.mjs';
 import 'node:http';
 import 'node:https';
 import 'node:events';
 import 'node:buffer';
 import 'node:fs';
-import 'node:path';
-import 'node:crypto';
 import 'node:url';
+import 'node:path';
 import 'better-sqlite3';
 import 'ipx';
+import 'node:crypto';
 
 const QUERY_GET_OPERATING_HOURS = `
   query GetOperatingHours {
@@ -28,16 +28,14 @@ const index_get = defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: "Missing GQL_HTTP_ENDPOINT" });
   }
   const token = getCookie(event, "admin_token");
-  if (!token) {
-    throw createError({ statusCode: 401, statusMessage: "Not authenticated" });
-  }
   try {
+    const headers = { "Content-Type": "application/json" };
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
     const response = await $fetch(endpoint, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
+      headers,
       body: {
         query: QUERY_GET_OPERATING_HOURS
       }

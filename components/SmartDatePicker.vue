@@ -88,6 +88,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
+import { getTodayInWib } from '~/utils/dateHelpers'
 
 interface Props {
   modelValue: string
@@ -114,7 +115,7 @@ const popoverStyles = ref({
 
 const currentMonth = computed(() => {
   const date = datePickerDate.value
-  return date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })
+  return date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' })
 })
 
 const calendarDays = computed(() => {
@@ -154,15 +155,15 @@ function toLocalDateKey(value?: string | Date | null) {
 function isDatePast(date: Date | null) {
   if (!date) return false
   if (props.allowPastDates) return false
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  // Use WIB timezone for consistent "today" comparison across all Indonesian timezones
+  const today = getTodayInWib()
   return date <= today
 }
 
 function isDatePastOrToday(date: Date | null) {
   if (!date) return false
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  // Use WIB timezone for consistent "today" comparison across all Indonesian timezones
+  const today = getTodayInWib()
   return date <= today
 }
 
@@ -187,14 +188,17 @@ function selectDate(date: Date | null) {
   if (!date) return
   
   if (!props.allowPastDates) {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
+    // Use WIB timezone for consistent "today" comparison across all Indonesian timezones
+    const today = getTodayInWib()
     if (date <= today) return
   }
   
-  const safeDate = new Date(date)
-  safeDate.setHours(12, 0, 0, 0)
-  emit('update:modelValue', safeDate.toISOString())
+  // Format date with WIB timezone (UTC+7) for consistency with Indonesia/Semarang timezone
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const wibDateString = `${year}-${month}-${day}T12:00:00.000+07:00`
+  emit('update:modelValue', wibDateString)
   closePicker()
 }
 

@@ -1,20 +1,21 @@
-import process from 'node:process';globalThis._importMeta_=globalThis._importMeta_||{url:"file:///_entry.js",env:process.env};import { defineComponent, shallowRef, h, resolveComponent, hasInjectionContext, inject, computed, getCurrentInstance, defineAsyncComponent, unref, provide, shallowReactive, ref, Suspense, Fragment, useSSRContext, createApp, withCtx, createVNode, mergeProps, createTextVNode, toRef, onErrorCaptured, onServerPrefetch, resolveDynamicComponent, reactive, effectScope, isReadonly, isRef, isShallow, isReactive, toRaw, nextTick, getCurrentScope } from 'vue';
-import { m as parseQuery, c as createError$1, n as hasProtocol, o as isScriptProtocol, q as joinURL, w as withQuery, t as sanitizeStatusCode, v as withTrailingSlash, x as withoutTrailingSlash, y as getContext, $ as $fetch, z as baseURL, A as createHooks, B as executeAsync, C as toRouteMatcher, D as createRouter$1, E as defu } from '../nitro/nitro.mjs';
-import { useRoute as useRoute$1, RouterView, useRouter as useRouter$1, createMemoryHistory, createRouter, START_LOCATION } from 'vue-router';
-import { ssrRenderAttrs, ssrRenderComponent, ssrInterpolate, ssrRenderSuspense, ssrRenderVNode } from 'vue/server-renderer';
+import process from 'node:process';globalThis._importMeta_=globalThis._importMeta_||{url:"file:///_entry.js",env:process.env};import { hasInjectionContext, inject, toRef, isRef, readonly, getCurrentInstance, defineAsyncComponent, defineComponent, h as h$2, computed, unref, shallowRef, provide, shallowReactive, ref, Suspense, Fragment, useSSRContext, createApp, withAsyncContext, withCtx, createVNode, mergeProps, onErrorCaptured, onServerPrefetch, resolveDynamicComponent, reactive, effectScope, isReadonly, isShallow, isReactive, toRaw, nextTick, getCurrentScope } from 'vue';
+import { e as createError$1, q as hasProtocol, v as isScriptProtocol, w as joinURL, x as withQuery, y as sanitizeStatusCode, z as getContext, $ as $fetch$1, A as baseURL, B as createHooks, C as executeAsync, D as toRouteMatcher, E as createRouter$1, F as defu } from '../_/nitro.mjs';
+import { useRoute as useRoute$1, RouterView, createMemoryHistory, createRouter, START_LOCATION } from 'vue-router';
+import { ssrRenderAttrs, ssrRenderComponent, ssrInterpolate, ssrRenderClass, ssrRenderSuspense, ssrRenderVNode } from 'vue/server-renderer';
+import { Vue3Lottie } from 'vue3-lottie';
 import 'node:http';
 import 'node:https';
 import 'node:events';
 import 'node:buffer';
 import 'node:fs';
-import 'node:path';
-import 'node:crypto';
 import 'node:url';
+import 'node:path';
 import 'better-sqlite3';
 import 'ipx';
+import 'node:crypto';
 
 if (!globalThis.$fetch) {
-  globalThis.$fetch = $fetch.create({
+  globalThis.$fetch = $fetch$1.create({
     baseURL: baseURL()
   });
 }
@@ -380,23 +381,29 @@ async function getRouteRules(arg) {
     return defu({}, ..._routeRulesMatcher2.matchAll(path).reverse());
   }
 }
-const __nuxt_page_meta$i = { layout: "admin" };
+const __nuxt_page_meta$k = { layout: "admin" };
+const __nuxt_page_meta$j = {
+  key: (route2) => route2.fullPath
+};
+const __nuxt_page_meta$i = {
+  layout: "admin",
+  key: (route2) => route2.fullPath
+};
 const __nuxt_page_meta$h = {
   layout: "auth"
 };
 const __nuxt_page_meta$g = {
-  layout: "admin",
-  ssr: false
+  layout: "admin"
 };
 const __nuxt_page_meta$f = {
-  layout: "admin",
-  ssr: false
+  layout: "admin"
 };
 const __nuxt_page_meta$e = {
   layout: "admin"
 };
 const __nuxt_page_meta$d = {
-  layout: "admin"
+  layout: "admin",
+  key: (route2) => route2.fullPath
 };
 const __nuxt_page_meta$c = {
   layout: "admin"
@@ -432,158 +439,167 @@ const __nuxt_page_meta$2 = {
   layout: "admin"
 };
 const __nuxt_page_meta$1 = {
-  layout: "admin"
+  layout: "admin",
+  key: (route2) => route2.fullPath
 };
 const __nuxt_page_meta = {
-  layout: "admin"
+  layout: "admin",
+  key: (route2) => route2.fullPath
 };
 const _routes = [
   {
     name: "index",
     path: "/",
-    component: () => import('./index-B8dEMF68.mjs')
+    component: () => import('./index-1WlK_IGd.mjs')
   },
   {
     name: "admin",
     path: "/admin",
+    meta: { ...__nuxt_page_meta$k || {}, ...{ "middleware": "auth-admin" } },
+    component: () => import('./index-DG4TwYtv.mjs')
+  },
+  {
+    name: "venues-id",
+    path: "/venues/:id()",
+    meta: __nuxt_page_meta$j || {},
+    component: () => import('./_id_-B8-If4lX.mjs')
+  },
+  {
+    name: "booking-order",
+    path: "/booking/order",
+    component: () => import('./order-5HDImEL-.mjs')
+  },
+  {
+    name: "admin-fields-id",
+    path: "/admin/fields/:id()",
     meta: { ...__nuxt_page_meta$i || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./index-CH6o_h_C.mjs')
+    component: () => import('./_id_-BAIbcT9t.mjs')
   },
   {
     name: "admin-login",
     path: "/admin/login",
     meta: __nuxt_page_meta$h || {},
-    component: () => import('./login-CLaVFq2d.mjs')
-  },
-  {
-    name: "venues-id",
-    path: "/venues/:id()",
-    component: () => import('./_id_-B_yeEFAk.mjs')
-  },
-  {
-    name: "admin-options",
-    path: "/admin/options",
-    meta: { ...__nuxt_page_meta$g || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./options-p7iFHWRW.mjs')
-  },
-  {
-    name: "booking-order",
-    path: "/booking/order",
-    component: () => import('./order-gpe5A7oD.mjs')
-  },
-  {
-    name: "admin-schedules",
-    path: "/admin/schedules",
-    meta: { ...__nuxt_page_meta$f || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./schedules-B_pkuqPx.mjs')
-  },
-  {
-    name: "admin-fields-id",
-    path: "/admin/fields/:id()",
-    meta: { ...__nuxt_page_meta$e || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./_id_-E-75JS0G.mjs')
+    component: () => import('./index-DSuFHVD-.mjs')
   },
   {
     name: "admin-fields",
     path: "/admin/fields",
-    meta: { ...__nuxt_page_meta$d || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./index-Ba5OtIqk.mjs')
+    meta: { ...__nuxt_page_meta$g || {}, ...{ "middleware": "auth-admin" } },
+    component: () => import('./index-CsjYpV-X.mjs')
   },
   {
     name: "admin-fields-create",
     path: "/admin/fields/create",
-    meta: { ...__nuxt_page_meta$c || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./create-DN29LEQX.mjs')
+    meta: { ...__nuxt_page_meta$f || {}, ...{ "middleware": "auth-admin" } },
+    component: () => import('./create-B16qQ42Y.mjs')
+  },
+  {
+    name: "admin-options",
+    path: "/admin/options",
+    meta: { ...__nuxt_page_meta$e || {}, ...{ "middleware": "auth-admin" } },
+    component: () => import('./index-BMIUBVW9.mjs')
   },
   {
     name: "admin-stadiums-id",
     path: "/admin/stadiums/:id()",
-    meta: { ...__nuxt_page_meta$b || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./_id_-BGqtzp50.mjs')
+    meta: { ...__nuxt_page_meta$d || {}, ...{ "middleware": "auth-admin" } },
+    component: () => import('./_id_-B2EewgLz.mjs')
   },
   {
     name: "admin-bookings",
     path: "/admin/bookings",
-    meta: { ...__nuxt_page_meta$a || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./index-Bn_Y-IIT.mjs')
+    meta: { ...__nuxt_page_meta$c || {}, ...{ "middleware": "auth-admin" } },
+    component: () => import('./index-CE1TTxmh.mjs')
   },
   {
     name: "admin-stadiums",
     path: "/admin/stadiums",
-    meta: { ...__nuxt_page_meta$9 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./index-Be4M8HFG.mjs')
+    meta: { ...__nuxt_page_meta$b || {}, ...{ "middleware": "auth-admin" } },
+    component: () => import('./index-CXPOn8PQ.mjs')
   },
   {
     name: "admin-facilities-id",
     path: "/admin/facilities/:id()",
-    meta: { ...__nuxt_page_meta$8 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./_id_-jvy75jjN.mjs')
+    meta: { ...__nuxt_page_meta$a || {}, ...{ "middleware": "auth-admin" } },
+    component: () => import('./_id_-CP1QAkbA.mjs')
+  },
+  {
+    name: "admin-schedules",
+    path: "/admin/schedules",
+    meta: { ...__nuxt_page_meta$9 || {}, ...{ "middleware": "auth-admin" } },
+    component: () => import('./index-ClbB-dvg.mjs')
   },
   {
     name: "admin-stadiums-create",
     path: "/admin/stadiums/create",
-    meta: { ...__nuxt_page_meta$7 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./create-B7NrCG3H.mjs')
-  },
-  {
-    name: "admin-bookings-history",
-    path: "/admin/bookings/history",
-    meta: { ...__nuxt_page_meta$6 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./history-C-9n1Ed4.mjs')
+    meta: { ...__nuxt_page_meta$8 || {}, ...{ "middleware": "auth-admin" } },
+    component: () => import('./create-D7RIuaFo.mjs')
   },
   {
     name: "admin-facilities",
     path: "/admin/facilities",
-    meta: { ...__nuxt_page_meta$5 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./index-DUUya6yP.mjs')
+    meta: { ...__nuxt_page_meta$7 || {}, ...{ "middleware": "auth-admin" } },
+    component: () => import('./index-DJ1DIEfj.mjs')
   },
   {
     name: "admin-facilities-create",
     path: "/admin/facilities/create",
-    meta: { ...__nuxt_page_meta$4 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./create-C2ghepY5.mjs')
+    meta: { ...__nuxt_page_meta$6 || {}, ...{ "middleware": "auth-admin" } },
+    component: () => import('./create-DljSycC4.mjs')
   },
   {
     name: "bantuan-panduan-booking",
     path: "/bantuan/panduan-booking",
-    component: () => import('./panduan-booking-Cizpfz95.mjs')
+    component: () => import('./panduan-booking-B4CVOAdx.mjs')
   },
   {
     name: "bantuan-syarat-ketentuan",
     path: "/bantuan/syarat-ketentuan",
-    component: () => import('./syarat-ketentuan-CRO_kTln.mjs')
+    component: () => import('./syarat-ketentuan-BcHxhaZE.mjs')
   },
   {
     name: "admin-bookings-id",
     path: "/admin/bookings/:id()",
-    meta: { ...__nuxt_page_meta$3 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./index-Cxt4rmkb.mjs')
+    meta: { ...__nuxt_page_meta$5 || {}, ...{ "middleware": "auth-admin" } },
+    component: () => import('./index-BrxXxAQf.mjs')
   },
   {
     name: "bantuan-kebijakan-privasi",
     path: "/bantuan/kebijakan-privasi",
-    component: () => import('./kebijakan-privasi-ZD-Nx3L6.mjs')
+    component: () => import('./kebijakan-privasi-DIjKwtIf.mjs')
   },
   {
     name: "admin-bookings-id-create",
     path: "/admin/bookings/:id()/create",
+    meta: { ...__nuxt_page_meta$4 || {}, ...{ "middleware": "auth-admin" } },
+    component: () => import('./create-BxSoqnhz.mjs')
+  },
+  {
+    name: "admin-bookings-history",
+    path: "/admin/bookings/history",
+    meta: { ...__nuxt_page_meta$3 || {}, ...{ "middleware": "auth-admin" } },
+    component: () => import('./index-qW9SCoLO.mjs')
+  },
+  {
+    name: "admin-bookings-history-payment",
+    path: "/admin/bookings/history/payment",
     meta: { ...__nuxt_page_meta$2 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./create-CDqmIgJc.mjs')
+    component: () => import('./payment-Bzw7w32U.mjs')
   },
   {
     name: "admin-bookings-id-bookingCode",
     path: "/admin/bookings/:id()/:bookingCode()",
     meta: { ...__nuxt_page_meta$1 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./_bookingCode_-DnGdgqfd.mjs')
+    component: () => import('./_bookingCode_-B14ukC87.mjs')
   },
   {
     name: "admin-bookings-detail-bookingCode",
     path: "/admin/bookings/detail/:bookingCode()",
     meta: { ...__nuxt_page_meta || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./_bookingCode_-mtTPAp2d.mjs')
+    component: () => import('./_bookingCode_-C_u85Z4n.mjs')
   }
 ];
-const _wrapInTransition = (props, children) => {
+const _wrapInTransition = (props2, children) => {
   return { default: () => children.default?.() };
 };
 const ROUTE_KEY_PARENTHESES_RE = /(:\w+)\([^)]+\)/g;
@@ -701,7 +717,7 @@ const globalMiddleware = [
   manifest_45route_45rule
 ];
 const namedMiddleware = {
-  "auth-admin": () => import('./auth-admin-CTbXmSTG.mjs')
+  "auth-admin": () => import('./auth-admin-C6v4zBBd.mjs')
 };
 const plugin = /* @__PURE__ */ defineNuxtPlugin({
   name: "nuxt:router",
@@ -920,31 +936,31 @@ const revive_payload_server_MVtmlZaQpj6ApFmshWfUWl5PehCebzaBf2NuRMiIbms = /* @__
     }
   }
 });
-const LazyProseA = defineAsyncComponent(() => import('./ProseA-B9W8dvag.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseBlockquote = defineAsyncComponent(() => import('./ProseBlockquote-BkpxK8z-.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseCode = defineAsyncComponent(() => import('./ProseCode-C7VoUayb.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseEm = defineAsyncComponent(() => import('./ProseEm-VK330rxv.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseH1 = defineAsyncComponent(() => import('./ProseH1-C3M50AHR.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseH2 = defineAsyncComponent(() => import('./ProseH2-bJ64sRHS.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseH3 = defineAsyncComponent(() => import('./ProseH3-BO9EH6u7.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseH4 = defineAsyncComponent(() => import('./ProseH4-BwP9XL4u.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseH5 = defineAsyncComponent(() => import('./ProseH5-Bt-SzdVF.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseH6 = defineAsyncComponent(() => import('./ProseH6-CxhwTlPB.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseHr = defineAsyncComponent(() => import('./ProseHr-3bktmzoE.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseImg = defineAsyncComponent(() => import('./ProseImg-Hn3YjwT_.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseLi = defineAsyncComponent(() => import('./ProseLi-Da9gev7V.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseOl = defineAsyncComponent(() => import('./ProseOl-DF2wfbBq.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseP = defineAsyncComponent(() => import('./ProseP-Bsh96eLw.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseA = defineAsyncComponent(() => import('./ProseA-DmiesJje.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseBlockquote = defineAsyncComponent(() => import('./ProseBlockquote-78D-LIvY.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseCode = defineAsyncComponent(() => import('./ProseCode-Dv6WqE0x.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseEm = defineAsyncComponent(() => import('./ProseEm-CFud9aYK.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseH1 = defineAsyncComponent(() => import('./ProseH1-BQG8Dccr.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseH2 = defineAsyncComponent(() => import('./ProseH2-CDs_wiwU.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseH3 = defineAsyncComponent(() => import('./ProseH3-B0cOilEH.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseH4 = defineAsyncComponent(() => import('./ProseH4-BvE_cJCx.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseH5 = defineAsyncComponent(() => import('./ProseH5-BT_YPOLO.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseH6 = defineAsyncComponent(() => import('./ProseH6-BI2jF_bh.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseHr = defineAsyncComponent(() => import('./ProseHr-CCZCrWIn.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseImg = defineAsyncComponent(() => import('./ProseImg-CAGoReZZ.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseLi = defineAsyncComponent(() => import('./ProseLi-Cn8xzePt.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseOl = defineAsyncComponent(() => import('./ProseOl-BIorkS-g.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseP = defineAsyncComponent(() => import('./ProseP-CgAsgWV6.mjs').then((r) => r["default"] || r.default || r));
 const LazyProsePre = defineAsyncComponent(() => import('./ProsePre-ByG-rB1z.mjs').then((r) => r["default"] || r.default || r));
 const LazyProseScript = defineAsyncComponent(() => import('./ProseScript-DacBrTIN.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseStrong = defineAsyncComponent(() => import('./ProseStrong-CE9OH7vB.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseTable = defineAsyncComponent(() => import('./ProseTable-302S3YP5.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseTbody = defineAsyncComponent(() => import('./ProseTbody-CNb7vfsk.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseTd = defineAsyncComponent(() => import('./ProseTd-LCnB6-B2.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseTh = defineAsyncComponent(() => import('./ProseTh--HeWf-Zp.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseThead = defineAsyncComponent(() => import('./ProseThead-DMCUGZrE.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseTr = defineAsyncComponent(() => import('./ProseTr-Cs0lgGlv.mjs').then((r) => r["default"] || r.default || r));
-const LazyProseUl = defineAsyncComponent(() => import('./ProseUl-CusC3LTf.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseStrong = defineAsyncComponent(() => import('./ProseStrong-DQAaYfhv.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseTable = defineAsyncComponent(() => import('./ProseTable-ComgRSYn.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseTbody = defineAsyncComponent(() => import('./ProseTbody-CswsXe-V.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseTd = defineAsyncComponent(() => import('./ProseTd-DKx_Zfg3.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseTh = defineAsyncComponent(() => import('./ProseTh-FZZwFHk4.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseThead = defineAsyncComponent(() => import('./ProseThead-BpDB7KyV.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseTr = defineAsyncComponent(() => import('./ProseTr-Dz3FEHdr.mjs').then((r) => r["default"] || r.default || r));
+const LazyProseUl = defineAsyncComponent(() => import('./ProseUl-BqCrpEfi.mjs').then((r) => r["default"] || r.default || r));
 const lazyGlobalComponents = [
   ["ProseA", LazyProseA],
   ["ProseBlockquote", LazyProseBlockquote],
@@ -1001,9 +1017,9 @@ const plugins = [
   prerender_server_sqIxOBipVr4FbVMA9kqWL0wT8FPop6sKAXLVfifsJzk
 ];
 const layouts = {
-  admin: defineAsyncComponent(() => import('./admin-IFDc-MqT.mjs').then((m) => m.default || m)),
-  auth: defineAsyncComponent(() => import('./auth-B5JUiCVz.mjs').then((m) => m.default || m)),
-  default: defineAsyncComponent(() => import('./default-B7u7e8bn.mjs').then((m) => m.default || m))
+  admin: defineAsyncComponent(() => import('./admin-Gg9ozD3v.mjs').then((m) => m.default || m)),
+  auth: defineAsyncComponent(() => import('./auth-C5Tt_3g3.mjs').then((m) => m.default || m)),
+  default: defineAsyncComponent(() => import('./default-Hknn9Oj0.mjs').then((m) => m.default || m))
 };
 const LayoutLoader = defineComponent({
   name: "LayoutLoader",
@@ -1012,8 +1028,8 @@ const LayoutLoader = defineComponent({
     name: String,
     layoutProps: Object
   },
-  setup(props, context) {
-    return () => h(layouts[props.name], props.layoutProps, context.slots);
+  setup(props2, context) {
+    return () => h$2(layouts[props2.name], props2.layoutProps, context.slots);
   }
 });
 const nuxtLayoutProps = {
@@ -1026,20 +1042,20 @@ const nuxtLayoutProps = {
     default: null
   }
 };
-const __nuxt_component_0$1 = defineComponent({
+const __nuxt_component_0 = defineComponent({
   name: "NuxtLayout",
   inheritAttrs: false,
   props: nuxtLayoutProps,
-  setup(props, context) {
+  setup(props2, context) {
     const nuxtApp = useNuxtApp();
     const injectedRoute = inject(PageRouteSymbol);
     const shouldUseEagerRoute = !injectedRoute || injectedRoute === useRoute();
     const route = shouldUseEagerRoute ? useRoute$1() : injectedRoute;
     const layout = computed(() => {
-      let layout2 = unref(props.name) ?? route?.meta.layout ?? "default";
+      let layout2 = unref(props2.name) ?? route?.meta.layout ?? "default";
       if (layout2 && !(layout2 in layouts)) {
-        if (props.fallback) {
-          layout2 = unref(props.fallback);
+        if (props2.fallback) {
+          layout2 = unref(props2.fallback);
         }
       }
       return layout2;
@@ -1054,16 +1070,16 @@ const __nuxt_component_0$1 = defineComponent({
       const previouslyRenderedLayout = lastLayout;
       lastLayout = layout.value;
       return _wrapInTransition(hasLayout && transitionProps, {
-        default: () => h(Suspense, { suspensible: true, onResolve: () => {
+        default: () => h$2(Suspense, { suspensible: true, onResolve: () => {
           nextTick(done);
         } }, {
-          default: () => h(
+          default: () => h$2(
             LayoutProvider,
             {
               layoutProps: mergeProps(context.attrs, { ref: layoutRef }),
               key: layout.value || void 0,
               name: layout.value,
-              shouldProvide: !props.name,
+              shouldProvide: !props2.name,
               isRenderingNewLayout: (name) => {
                 return name !== previouslyRenderedLayout && name === layout.value;
               },
@@ -1097,9 +1113,9 @@ const LayoutProvider = defineComponent({
       required: true
     }
   },
-  setup(props, context) {
-    const name = props.name;
-    if (props.shouldProvide) {
+  setup(props2, context) {
+    const name = props2.name;
+    if (props2.shouldProvide) {
       provide(LayoutMetaSymbol, {
         isCurrent: (route) => name === (route.meta.layout ?? "default")
       });
@@ -1114,7 +1130,7 @@ const LayoutProvider = defineComponent({
         Object.defineProperty(reactiveChildRoute, key, {
           enumerable: true,
           get: () => {
-            return props.isRenderingNewLayout(props.name) ? vueRouterRoute[key] : injectedRoute[key];
+            return props2.isRenderingNewLayout(props2.name) ? vueRouterRoute[key] : injectedRoute[key];
           }
         });
       }
@@ -1124,9 +1140,9 @@ const LayoutProvider = defineComponent({
       if (!name || typeof name === "string" && !(name in layouts)) {
         return context.slots.default?.();
       }
-      return h(
+      return h$2(
         LayoutLoader,
-        { key: name, layoutProps: props.layoutProps, name },
+        { key: name, layoutProps: props2.layoutProps, name },
         context.slots
       );
     };
@@ -1144,22 +1160,22 @@ const defineRouteProvider = (name = "RouteProvider") => defineComponent({
     renderKey: String,
     trackRootNodes: Boolean
   },
-  setup(props) {
-    const previousKey = props.renderKey;
-    const previousRoute = props.route;
+  setup(props2) {
+    const previousKey = props2.renderKey;
+    const previousRoute = props2.route;
     const route = {};
-    for (const key in props.route) {
+    for (const key in props2.route) {
       Object.defineProperty(route, key, {
-        get: () => previousKey === props.renderKey ? props.route[key] : previousRoute[key],
+        get: () => previousKey === props2.renderKey ? props2.route[key] : previousRoute[key],
         enumerable: true
       });
     }
     provide(PageRouteSymbol, shallowReactive(route));
     return () => {
-      if (!props.vnode) {
-        return props.vnode;
+      if (!props2.vnode) {
+        return props2.vnode;
       }
-      return h(props.vnode, { ref: props.vnodeRef });
+      return h$2(props2.vnode, { ref: props2.vnodeRef });
     };
   }
 });
@@ -1187,7 +1203,7 @@ const __nuxt_component_1 = defineComponent({
       default: null
     }
   },
-  setup(props, { attrs, slots, expose }) {
+  setup(props2, { attrs, slots, expose }) {
     const nuxtApp = useNuxtApp();
     const pageRef = ref();
     inject(PageRouteSymbol, null);
@@ -1195,11 +1211,11 @@ const __nuxt_component_1 = defineComponent({
     inject(LayoutMetaSymbol, null);
     nuxtApp.deferHydration();
     return () => {
-      return h(RouterView, { name: props.name, route: props.route, ...attrs }, {
+      return h$2(RouterView, { name: props2.name, route: props2.route, ...attrs }, {
         default: (routeProps) => {
-          return h(Suspense, { suspensible: true }, {
+          return h$2(Suspense, { suspensible: true }, {
             default() {
-              return h(RouteProvider, {
+              return h$2(RouteProvider, {
                 vnode: slots.default ? normalizeSlot(slots.default, routeProps) : routeProps.Component,
                 route: routeProps.route,
                 vnodeRef: pageRef
@@ -1213,15 +1229,145 @@ const __nuxt_component_1 = defineComponent({
 });
 function normalizeSlot(slot, data) {
   const slotContent = slot(data);
-  return slotContent.length === 1 ? h(slotContent[0]) : h(Fragment, void 0, slotContent);
+  return slotContent.length === 1 ? h$2(slotContent[0]) : h$2(Fragment, void 0, slotContent);
 }
-const _sfc_main$2 = /* @__PURE__ */ defineComponent({
+const useStateKeyPrefix = "$s";
+function useState(...args) {
+  const autoKey = typeof args[args.length - 1] === "string" ? args.pop() : void 0;
+  if (typeof args[0] !== "string") {
+    args.unshift(autoKey);
+  }
+  const [_key, init] = args;
+  if (!_key || typeof _key !== "string") {
+    throw new TypeError("[nuxt] [useState] key must be a string: " + _key);
+  }
+  if (init !== void 0 && typeof init !== "function") {
+    throw new Error("[nuxt] [useState] init must be a function: " + init);
+  }
+  const key = useStateKeyPrefix + _key;
+  const nuxtApp = useNuxtApp();
+  const state = toRef(nuxtApp.payload.state, key);
+  if (state.value === void 0 && init) {
+    const initialValue = init();
+    if (isRef(initialValue)) {
+      nuxtApp.payload.state[key] = initialValue;
+      return initialValue;
+    }
+    state.value = initialValue;
+  }
+  return state;
+}
+const useAppOptions = () => {
+  const defaults = {
+    name: "VENUE UNDIP",
+    nameKet: "Booking Lapangan Olahraga Universitas Diponegoro",
+    description: "Platform booking lapangan olahraga terpercaya untuk Sivitas Akademika Universitas Diponegoro.",
+    unitName: "UPT Layanan Seni, Budaya dan Olahraga",
+    unitDesc: "Unit Pelaksana Teknis untuk mengelola fasilitas olahraga di lingkungan Universitas Diponegoro",
+    email: "helpdesk@undip.ac.id",
+    nohp: "+62 851 6566 0339",
+    address: "Jl. Prof. Soedarto, Tembalang, Kec. Tembalang, Kota Semarang, Jawa Tengah"
+  };
+  const options = useState("app-options", () => ({
+    data: null,
+    pending: false,
+    error: null
+  }));
+  const fetchOptions = async (force = false) => {
+    if (options.value.data && !force) {
+      return options.value.data;
+    }
+    if (options.value.pending && !force) {
+      return;
+    }
+    options.value.pending = true;
+    options.value.error = null;
+    try {
+      const data = await $fetch("/api/options");
+      options.value.data = { ...defaults, ...data };
+      return options.value.data;
+    } catch (err) {
+      console.error("[useAppOptions] Failed to fetch:", err);
+      const errorMessage = err instanceof Error ? err.message : "Unknown error fetching options";
+      options.value.error = errorMessage;
+      if (!options.value.data) {
+        options.value.data = defaults;
+      }
+      return null;
+    } finally {
+      options.value.pending = false;
+    }
+  };
+  const refresh = () => fetchOptions(true);
+  const reset = () => {
+    options.value = {
+      data: null,
+      // or defaults
+      pending: false,
+      error: null
+    };
+  };
+  return {
+    options: readonly(options),
+    fetchOptions,
+    refresh,
+    reset
+  };
+};
+async function callOnce(...args) {
+  const autoKey = typeof args[args.length - 1] === "string" ? args.pop() : void 0;
+  if (typeof args[0] !== "string") {
+    args.unshift(autoKey);
+  }
+  const [_key, fn, options] = args;
+  if (!_key || typeof _key !== "string") {
+    throw new TypeError("[nuxt] [callOnce] key must be a string: " + _key);
+  }
+  if (fn !== void 0 && typeof fn !== "function") {
+    throw new Error("[nuxt] [callOnce] fn must be a function: " + fn);
+  }
+  const nuxtApp = useNuxtApp();
+  if (options?.mode === "navigation") {
+    let callback = function() {
+      nuxtApp.payload.once.delete(_key);
+      for (const cleanup of cleanups) {
+        cleanup();
+      }
+    };
+    const cleanups = [];
+    cleanups.push(nuxtApp.hooks.hook("page:start", callback), useRouter().beforeResolve(callback));
+  }
+  if (nuxtApp.payload.once.has(_key)) {
+    {
+      return;
+    }
+  }
+  nuxtApp._once ||= {};
+  nuxtApp._once[_key] ||= fn() || true;
+  await nuxtApp._once[_key];
+  nuxtApp.payload.once.add(_key);
+  delete nuxtApp._once[_key];
+}
+const _sfc_main$3 = /* @__PURE__ */ defineComponent({
   __name: "app",
   __ssrInlineRender: true,
-  setup(__props) {
+  async setup(__props) {
+    let __temp, __restore;
     const isHydrated = ref(false);
+    const { fetchOptions, options } = useAppOptions();
+    const errorDismissed = useState("app-error-dismissed", () => false);
+    [__temp, __restore] = withAsyncContext(async () => callOnce(async () => {
+      await fetchOptions();
+    }, "$aTUEVnxcOx")), await __temp, __restore();
+    if (options.value.error && !errorDismissed.value) {
+      throw createError({
+        statusCode: 502,
+        statusMessage: "Layanan tidak tersedia. Silakan coba lagi nanti.",
+        fatal: true
+      });
+    }
     return (_ctx, _push, _parent, _attrs) => {
-      const _component_NuxtLayout = __nuxt_component_0$1;
+      const _component_NuxtLayout = __nuxt_component_0;
       const _component_NuxtPage = __nuxt_component_1;
       _push(`<div${ssrRenderAttrs(_attrs)}>`);
       if (!unref(isHydrated)) {
@@ -1245,291 +1391,132 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
     };
   }
 });
-const _sfc_setup$2 = _sfc_main$2.setup;
-_sfc_main$2.setup = (props, ctx) => {
+const _sfc_setup$3 = _sfc_main$3.setup;
+_sfc_main$3.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("app.vue");
-  return _sfc_setup$2 ? _sfc_setup$2(props, ctx) : void 0;
+  return _sfc_setup$3 ? _sfc_setup$3(props2, ctx) : void 0;
 };
-const firstNonUndefined = (...args) => args.find((arg) => arg !== void 0);
-// @__NO_SIDE_EFFECTS__
-function defineNuxtLink(options) {
-  const componentName = options.componentName || "NuxtLink";
-  function isHashLinkWithoutHashMode(link) {
-    return typeof link === "string" && link.startsWith("#");
-  }
-  function resolveTrailingSlashBehavior(to, resolve, trailingSlash) {
-    const effectiveTrailingSlash = trailingSlash ?? options.trailingSlash;
-    if (!to || effectiveTrailingSlash !== "append" && effectiveTrailingSlash !== "remove") {
-      return to;
-    }
-    if (typeof to === "string") {
-      return applyTrailingSlashBehavior(to, effectiveTrailingSlash);
-    }
-    const path = "path" in to && to.path !== void 0 ? to.path : resolve(to).path;
-    const resolvedPath = {
-      ...to,
-      name: void 0,
-      // named routes would otherwise always override trailing slash behavior
-      path: applyTrailingSlashBehavior(path, effectiveTrailingSlash)
+const v$1 = "5.7.1";
+const fr$1 = 25;
+const ip$1 = 0;
+const op$1 = 125;
+const w$1 = 700;
+const h$1 = 400;
+const nm$1 = "404-error";
+const ddd$1 = 0;
+const assets$1 = [];
+const layers$1 = /* @__PURE__ */ JSON.parse(`[{"ddd":0,"ind":1,"ty":4,"nm":"#ground","ln":"ground","parent":22,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[100.5,-93.5,0],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0],[-193,0]],"o":[[0,0],[0,0],[193,0]],"v":[[292,84],[-283,84],[-9,98]],"c":true},"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"fl","c":{"a":0,"k":[0,0,0,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fond 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":12,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Forme 2","np":2,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[69.5,115.5],[177.5,115.5]],"c":false},"ix":2},"nm":"TracÃ© 6","mn":"ADBE Vector Shape - Group","hd":false},{"ind":1,"ty":"sh","ix":2,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[252,102.5],[310,102.5]],"c":false},"ix":2},"nm":"TracÃ© 5","mn":"ADBE Vector Shape - Group","hd":false},{"ind":2,"ty":"sh","ix":3,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[-203.5,114.5],[-169,114.5]],"c":false},"ix":2},"nm":"TracÃ© 4","mn":"ADBE Vector Shape - Group","hd":false},{"ind":3,"ty":"sh","ix":4,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[157,102],[207,102]],"c":false},"ix":2},"nm":"TracÃ© 3","mn":"ADBE Vector Shape - Group","hd":false},{"ind":4,"ty":"sh","ix":5,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[-293.5,96.5],[-177,96.5]],"c":false},"ix":2},"nm":"TracÃ© 2","mn":"ADBE Vector Shape - Group","hd":false},{"ind":5,"ty":"sh","ix":6,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[-283,84],[292,84]],"c":false},"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.549019607843,0.549019607843,0.549019607843,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":3,"ix":5},"lc":2,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Forme 1","np":7,"cix":2,"bm":0,"ix":2,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":125,"st":0,"bm":0},{"ddd":0,"ind":2,"ty":4,"nm":"#dust3","ln":"dust3","parent":22,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[100.5,-223.5,0],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[-70,1],[-65,-2],[-11.591,41.402],[40.352,-34.064],[-28.61,-12.383],[-66,-72]],"o":[[0,0],[70,-1],[30.936,0.952],[12.763,-45.587],[-34.443,29.076],[35.349,15.3],[66,72]],"v":[[-293,-20],[-144,79],[21,48],[135.613,-25.388],[53,-93],[67.944,-12.87],[276,78]],"c":false},"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[1,1,1,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":1,"k":[{"i":{"x":[0],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":67,"s":[0]},{"i":{"x":[0.833],"y":[1]},"o":{"x":[0.467],"y":[0]},"t":76,"s":[8]},{"i":{"x":[0.833],"y":[1]},"o":{"x":[0.816],"y":[0]},"t":115,"s":[15]},{"t":123,"s":[0]}],"ix":5},"lc":2,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tm","s":{"a":0,"k":5.455,"ix":1,"x":"var $bm_rt;\\n$bm_rt = $bm_sub(content('Forme 1').content('R\\\\xe9duire les trac\\\\xe9s 1').end, 0.1);"},"e":{"a":1,"k":[{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"t":67,"s":[0]},{"t":123,"s":[100]}],"ix":2},"o":{"a":0,"k":0,"ix":3},"m":1,"ix":3,"nm":"RÃ©duire les tracÃ©s 1","mn":"ADBE Vector Filter - Trim","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Forme 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":67,"op":124,"st":67,"bm":0},{"ddd":0,"ind":3,"ty":4,"nm":"#dust2","ln":"dust2","parent":22,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[100.5,-143.5,0],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[-70,1],[-65,-2],[-11.591,41.402],[40.352,-34.064],[-28.61,-12.383],[-66,-72]],"o":[[0,0],[70,-1],[30.936,0.952],[12.763,-45.587],[-34.443,29.076],[35.349,15.3],[66,72]],"v":[[-293,-20],[-144,79],[21,48],[135.613,-25.388],[53,-93],[67.944,-12.87],[276,78]],"c":false},"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[1,1,1,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":1,"k":[{"i":{"x":[0],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":0,"s":[0]},{"i":{"x":[0.794],"y":[1]},"o":{"x":[0.372],"y":[0]},"t":9,"s":[7]},{"i":{"x":[0.833],"y":[1]},"o":{"x":[0.816],"y":[0]},"t":48,"s":[15]},{"t":56,"s":[0]}],"ix":5},"lc":2,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tm","s":{"a":0,"k":5.455,"ix":1,"x":"var $bm_rt;\\n$bm_rt = $bm_sub(content('Forme 1').content('R\\\\xe9duire les trac\\\\xe9s 1').end, 0.1);"},"e":{"a":1,"k":[{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"t":0,"s":[0]},{"t":56,"s":[100]}],"ix":2},"o":{"a":0,"k":0,"ix":3},"m":1,"ix":3,"nm":"RÃ©duire les tracÃ©s 1","mn":"ADBE Vector Filter - Trim","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Forme 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":57,"st":0,"bm":0},{"ddd":0,"ind":4,"ty":4,"nm":"#dust 2","ln":"dust","parent":22,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[130.5,-143.5,0],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[-40,65],[38,-20],[-65,-2],[-65,-12],[-69,-7],[0,0]],"o":[[0,0],[40,-65],[-38,20],[65,2],[65,12],[69,7],[0,0]],"v":[[-293,-20],[-128,-79],[-181,-151],[-116,-19],[53,-93],[194,-8],[311,-45]],"c":false},"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.313725490196,0.313725490196,0.313725490196,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":1,"k":[{"i":{"x":[0],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":40,"s":[0]},{"i":{"x":[0.833],"y":[1]},"o":{"x":[0.467],"y":[0]},"t":49,"s":[15]},{"i":{"x":[0.833],"y":[1]},"o":{"x":[0.816],"y":[0]},"t":88,"s":[11]},{"t":96,"s":[0]}],"ix":5},"lc":2,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tm","s":{"a":0,"k":5.455,"ix":1,"x":"var $bm_rt;\\n$bm_rt = $bm_sub(content('Forme 1').content('R\\\\xe9duire les trac\\\\xe9s 1').end, 0.1);"},"e":{"a":1,"k":[{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"t":40,"s":[0]},{"t":96,"s":[100]}],"ix":2},"o":{"a":0,"k":0,"ix":3},"m":1,"ix":3,"nm":"RÃ©duire les tracÃ©s 1","mn":"ADBE Vector Filter - Trim","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Forme 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":40,"op":97,"st":40,"bm":0},{"ddd":0,"ind":5,"ty":4,"nm":"#dust","ln":"dust","parent":22,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[100.5,-93.5,0],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[-40,65],[38,-20],[-65,-2],[-65,-12],[-69,-7],[0,0]],"o":[[0,0],[40,-65],[-38,20],[65,2],[65,12],[69,7],[0,0]],"v":[[-293,-20],[-128,-79],[-181,-151],[-116,-19],[53,-93],[194,-8],[311,-45]],"c":false},"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.313725490196,0.313725490196,0.313725490196,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":1,"k":[{"i":{"x":[0],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":12,"s":[0]},{"i":{"x":[0.833],"y":[1]},"o":{"x":[0.467],"y":[0]},"t":21,"s":[5]},{"i":{"x":[0.833],"y":[1]},"o":{"x":[0.816],"y":[0]},"t":60,"s":[15]},{"t":68,"s":[0]}],"ix":5},"lc":2,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tm","s":{"a":0,"k":5.455,"ix":1,"x":"var $bm_rt;\\n$bm_rt = $bm_sub(content('Forme 1').content('R\\\\xe9duire les trac\\\\xe9s 1').end, 0.1);"},"e":{"a":1,"k":[{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"t":12,"s":[0]},{"t":68,"s":[100]}],"ix":2},"o":{"a":0,"k":0,"ix":3},"m":1,"ix":3,"nm":"RÃ©duire les tracÃ©s 1","mn":"ADBE Vector Filter - Trim","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Forme 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":12,"op":69,"st":12,"bm":0},{"ddd":0,"ind":6,"ty":4,"nm":"#page","ln":"page","parent":22,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[100.5,-93.5,0],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"hasMask":true,"masksProperties":[{"inv":false,"mode":"s","pt":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0]],"v":[[402,85],[-336,85],[-336,247],[402,247]],"c":true},"ix":1},"o":{"a":0,"k":100,"ix":3},"x":{"a":0,"k":0,"ix":4},"nm":"Masque 1"}],"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0]],"v":[[16.25,-132],[13.383,-131.312],[11.905,-125.813],[12,157.5]],"c":false},"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"tm","s":{"a":1,"k":[{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.167],"y":[0]},"t":69,"s":[0]},{"i":{"x":[1],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":94,"s":[3]},{"t":106,"s":[100]}],"ix":1},"e":{"a":0,"k":100,"ix":2,"x":"var $bm_rt;\\n$bm_rt = $bm_sum(content('Forme 2').content('R\\\\xe9duire les trac\\\\xe9s 1').start, 0.1);"},"o":{"a":0,"k":0,"ix":3},"m":1,"ix":2,"nm":"RÃ©duire les tracÃ©s 1","mn":"ADBE Vector Filter - Trim","hd":false},{"ty":"st","c":{"a":0,"k":[0.414963456696,0.663659069585,0.874509803922,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":1,"k":[{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":69,"s":[0]},{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":90,"s":[5]},{"t":100,"s":[8]}],"ix":5},"lc":2,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Forme 2","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0]],"v":[[16.25,-132],[13.383,-131.312],[11.905,-125.813],[12,157.5]],"c":false},"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"tm","s":{"a":1,"k":[{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.167],"y":[0]},"t":13,"s":[0]},{"i":{"x":[1],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":38,"s":[3]},{"t":50,"s":[100]}],"ix":1},"e":{"a":0,"k":100,"ix":2,"x":"var $bm_rt;\\n$bm_rt = $bm_sum(content('Forme 1').content('R\\\\xe9duire les trac\\\\xe9s 1').start, 0.1);"},"o":{"a":0,"k":0,"ix":3},"m":1,"ix":2,"nm":"RÃ©duire les tracÃ©s 1","mn":"ADBE Vector Filter - Trim","hd":false},{"ty":"st","c":{"a":0,"k":[0.414963456696,0.663659069585,0.874509803922,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":1,"k":[{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":13,"s":[0]},{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":34,"s":[5]},{"t":44,"s":[8]}],"ix":5},"lc":2,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Forme 1","np":3,"cix":2,"bm":0,"ix":2,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[-1.125,-7.875]],"o":[[0,0],[1.125,7.875]],"v":[[14.375,-121.125],[28,-120.125]],"c":false},"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.549019607843,0.549019607843,0.549019607843,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":2,"ix":5},"lc":2,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"mouth","np":2,"cix":2,"bm":0,"ix":3,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":1,"k":[{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":0,"s":[{"i":[[0,0],[-5.043,0.672]],"o":[[0,0],[5.043,-0.672]],"v":[[8.363,-146.657],[17.04,-144.078]],"c":false}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":12.333,"s":[{"i":[[0,0],[-4.635,2.748]],"o":[[0,0],[4.376,-2.594]],"v":[[8.305,-147.345],[16.982,-144.766]],"c":false}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":26.359,"s":[{"i":[[0,0],[-5.043,0.672]],"o":[[0,0],[5.043,-0.672]],"v":[[8.363,-146.657],[17.04,-144.078]],"c":false}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":40.386,"s":[{"i":[[0,0],[-4.635,2.748]],"o":[[0,0],[4.376,-2.594]],"v":[[8.305,-147.345],[16.982,-144.766]],"c":false}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":54.412,"s":[{"i":[[0,0],[-5.043,0.672]],"o":[[0,0],[5.043,-0.672]],"v":[[8.363,-146.657],[17.04,-144.078]],"c":false}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":68.921,"s":[{"i":[[0,0],[-4.635,2.748]],"o":[[0,0],[4.376,-2.594]],"v":[[8.305,-147.345],[16.982,-144.766]],"c":false}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":82.947,"s":[{"i":[[0,0],[-5.043,0.672]],"o":[[0,0],[5.043,-0.672]],"v":[[8.363,-146.657],[17.04,-144.078]],"c":false}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":96.974,"s":[{"i":[[0,0],[-4.635,2.748]],"o":[[0,0],[4.376,-2.594]],"v":[[8.305,-147.345],[16.982,-144.766]],"c":false}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":111,"s":[{"i":[[0,0],[-5.043,0.672]],"o":[[0,0],[5.043,-0.672]],"v":[[8.363,-146.657],[17.04,-144.078]],"c":false}]},{"t":124,"s":[{"i":[[0,0],[-5.043,0.672]],"o":[[0,0],[5.043,-0.672]],"v":[[8.363,-146.657],[17.04,-144.078]],"c":false}]}],"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.549019607843,0.549019607843,0.549019607843,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":2,"ix":5},"lc":2,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"fl","c":{"a":0,"k":[1,0.996078431373,0.996078431373,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fond 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Forme 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"d":1,"ty":"el","s":{"a":0,"k":[3,3],"ix":2},"p":{"a":0,"k":[0,0],"ix":3},"nm":"TracÃ© d'ellipse 1","mn":"ADBE Vector Shape - Ellipse","hd":false},{"ty":"fl","c":{"a":0,"k":[1,0.996078431373,0.996078431373,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fond 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[13.125,-138.25],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Ellipse 2","np":2,"cix":2,"bm":0,"ix":2,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"d":1,"ty":"el","s":{"a":0,"k":[5,8],"ix":2},"p":{"a":0,"k":[0,0],"ix":3},"nm":"TracÃ© d'ellipse 1","mn":"ADBE Vector Shape - Ellipse","hd":false},{"ty":"fl","c":{"a":0,"k":[0.337254901961,0.337254901961,0.337254901961,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fond 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[12.5,-137],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Ellipse 1","np":2,"cix":2,"bm":0,"ix":3,"mn":"ADBE Vector Group","hd":false},{"ty":"tr","p":{"a":0,"k":[33.125,-136.875],"ix":2},"a":{"a":0,"k":[13.125,-140.125],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":10,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"eyes right","np":3,"cix":2,"bm":0,"ix":4,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":1,"k":[{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":0,"s":[{"i":[[0,0],[-2.625,3.875]],"o":[[0,0],[2.625,-3.875]],"v":[[8.5,-143],[17.75,-147.25]],"c":false}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":12.333,"s":[{"i":[[0,0],[-1.739,5.855]],"o":[[0,0],[1.333,-4.487]],"v":[[8.442,-143.688],[17.692,-147.938]],"c":false}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":26.359,"s":[{"i":[[0,0],[-2.625,3.875]],"o":[[0,0],[2.625,-3.875]],"v":[[8.5,-143],[17.75,-147.25]],"c":false}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":40.386,"s":[{"i":[[0,0],[-1.739,5.855]],"o":[[0,0],[1.333,-4.487]],"v":[[8.442,-143.688],[17.692,-147.938]],"c":false}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":54.412,"s":[{"i":[[0,0],[-2.625,3.875]],"o":[[0,0],[2.625,-3.875]],"v":[[8.5,-143],[17.75,-147.25]],"c":false}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":68.921,"s":[{"i":[[0,0],[-1.739,5.855]],"o":[[0,0],[1.333,-4.487]],"v":[[8.442,-143.688],[17.692,-147.938]],"c":false}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":82.947,"s":[{"i":[[0,0],[-2.625,3.875]],"o":[[0,0],[2.625,-3.875]],"v":[[8.5,-143],[17.75,-147.25]],"c":false}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":96.974,"s":[{"i":[[0,0],[-1.739,5.855]],"o":[[0,0],[1.333,-4.487]],"v":[[8.442,-143.688],[17.692,-147.938]],"c":false}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":111,"s":[{"i":[[0,0],[-2.625,3.875]],"o":[[0,0],[2.625,-3.875]],"v":[[8.5,-143],[17.75,-147.25]],"c":false}]},{"t":124,"s":[{"i":[[0,0],[-2.625,3.875]],"o":[[0,0],[2.625,-3.875]],"v":[[8.5,-143],[17.75,-147.25]],"c":false}]}],"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.549019607843,0.549019607843,0.549019607843,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":2,"ix":5},"lc":2,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"fl","c":{"a":0,"k":[1,0.996078431373,0.996078431373,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fond 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Forme 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"d":1,"ty":"el","s":{"a":0,"k":[3,3],"ix":2},"p":{"a":0,"k":[0,0],"ix":3},"nm":"TracÃ© d'ellipse 1","mn":"ADBE Vector Shape - Ellipse","hd":false},{"ty":"fl","c":{"a":0,"k":[1,0.996078431373,0.996078431373,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fond 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[13.125,-138.25],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Ellipse 2","np":2,"cix":2,"bm":0,"ix":2,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"d":1,"ty":"el","s":{"a":0,"k":[5,8],"ix":2},"p":{"a":0,"k":[0,0],"ix":3},"nm":"TracÃ© d'ellipse 1","mn":"ADBE Vector Shape - Ellipse","hd":false},{"ty":"fl","c":{"a":0,"k":[0.337254901961,0.337254901961,0.337254901961,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fond 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[12.5,-137],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Ellipse 1","np":2,"cix":2,"bm":0,"ix":3,"mn":"ADBE Vector Group","hd":false},{"ty":"tr","p":{"a":0,"k":[15.625,-138.875],"ix":2},"a":{"a":0,"k":[13.125,-140.125],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":10,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"eyes left","np":3,"cix":2,"bm":0,"ix":5,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[-2.875,0.875],[-15,-1.75]],"o":[[2.875,-0.875],[13.306,1.552]],"v":[[-3,-99.375],[20.875,-99.375]],"c":false},"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.549019607843,0.549019607843,0.549019607843,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":2,"ix":5},"lc":2,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"plis","np":2,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":1,"k":[{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":0,"s":[{"i":[[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0]],"v":[[-3.5,-150.625],[8.875,-147.625],[8,-161.5]],"c":false}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":25,"s":[{"i":[[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0]],"v":[[-3.5,-150.625],[11.625,-151],[8,-161.5]],"c":false}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":50,"s":[{"i":[[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0]],"v":[[-3.5,-150.625],[8.875,-148.25],[8,-161.5]],"c":false}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":75,"s":[{"i":[[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0]],"v":[[-3.5,-150.625],[11.75,-151],[8,-161.5]],"c":false}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":100,"s":[{"i":[[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0]],"v":[[-3.5,-150.625],[8.75,-147.375],[8,-161.5]],"c":false}]},{"t":124,"s":[{"i":[[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0]],"v":[[-3.5,-150.625],[8.875,-147.625],[8,-161.5]],"c":false}]}],"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.549019607843,0.549019607843,0.549019607843,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":3,"ix":5},"lc":2,"lj":2,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"angle","np":2,"cix":2,"bm":0,"ix":2,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":1,"k":[{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":0,"s":[{"i":[[0,0],[0,0],[0,0],[-7.5,-15],[-14.5,-2],[0,0],[-7.688,16.696],[-8.292,3.252],[10.125,0.776]],"o":[[0,0],[0,0],[0,0],[24.5,-4.5],[-1,-14],[0,0],[3.705,-8.046],[-12.384,-4.911],[-13.587,-1.042]],"v":[[7.5,-162],[-4.5,-152],[-13.5,-97],[1,-84],[52,-81.5],[40.5,-98.5],[47.96,-136.143],[65.5,-154.5],[30.607,-162.271]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":25,"s":[{"i":[[0,0],[0,0],[0,0],[-7.5,-15],[-14.5,-2],[0,0],[-7.688,16.696],[-8.875,0.875],[10.125,0.776]],"o":[[0,0],[0,0],[0,0],[24.5,-4.5],[-1,-14],[0,0],[3.705,-8.046],[-9.625,-9.5],[-13.587,-1.042]],"v":[[7.5,-162],[-4.5,-152],[-13.5,-97],[1,-84],[52,-81.5],[40.5,-98.5],[47.96,-136.143],[63.75,-147.875],[29.607,-159.771]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":49,"s":[{"i":[[0,0],[0,0],[0,0],[-7.5,-15],[-14.5,-2],[0,0],[-7.688,16.696],[-1.924,4.606],[10.125,0.776]],"o":[[0,0],[0,0],[0,0],[24.5,-4.5],[-1,-14],[0,0],[3.705,-8.046],[-12.049,3.356],[-13.587,-1.042]],"v":[[7.5,-162],[-4.5,-152],[-13.5,-97],[1,-84],[52,-81.5],[40.5,-98.5],[47.96,-136.143],[60.799,-161.356],[29.107,-163.771]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":71,"s":[{"i":[[0,0],[0,0],[0,0],[-7.5,-15],[-14.5,-2],[0,0],[-7.688,16.696],[-8.875,0.875],[10.125,0.776]],"o":[[0,0],[0,0],[0,0],[24.5,-4.5],[-1,-14],[0,0],[3.705,-8.046],[-9.625,-9.5],[-13.587,-1.042]],"v":[[7.5,-162],[-4.5,-152],[-13.5,-97],[1,-84],[52,-81.5],[40.5,-98.5],[47.96,-136.143],[63.75,-147.875],[30.107,-160.271]],"c":true}]},{"i":{"x":0.667,"y":1},"o":{"x":0.333,"y":0},"t":95,"s":[{"i":[[0,0],[0,0],[0,0],[-7.5,-15],[-14.5,-2],[0,0],[-7.688,16.696],[-1.924,4.606],[10.125,0.776]],"o":[[0,0],[0,0],[0,0],[24.5,-4.5],[-1,-14],[0,0],[3.705,-8.046],[-12.049,3.356],[-13.587,-1.042]],"v":[[7.5,-162],[-4.5,-152],[-13.5,-97],[1,-84],[52,-81.5],[40.5,-98.5],[47.96,-136.143],[60.799,-161.356],[30.607,-162.271]],"c":true}]},{"t":124,"s":[{"i":[[0,0],[0,0],[0,0],[-7.5,-15],[-14.5,-2],[0,0],[-7.688,16.696],[-8.292,3.252],[10.125,0.776]],"o":[[0,0],[0,0],[0,0],[24.5,-4.5],[-1,-14],[0,0],[3.705,-8.046],[-12.384,-4.911],[-13.587,-1.042]],"v":[[7.5,-162],[-4.5,-152],[-13.5,-97],[1,-84],[52,-81.5],[40.5,-98.5],[47.96,-136.143],[65.5,-154.5],[30.607,-162.271]],"c":true}]}],"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.549019607843,0.549019607843,0.549019607843,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":3,"ix":5},"lc":2,"lj":2,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"fl","c":{"a":0,"k":[1,1,1,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fond 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"corp","np":3,"cix":2,"bm":0,"ix":3,"mn":"ADBE Vector Group","hd":false},{"ty":"tr","p":{"a":0,"k":[26,-122.087],"ix":2},"a":{"a":0,"k":[26,-122.087],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"body","np":3,"cix":2,"bm":0,"ix":6,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[2.125,-10],[0,0]],"o":[[0,0],[5,0.125],[0,0]],"v":[[1.75,-86.5],[4.375,-70.25],[12.375,-69.625]],"c":false},"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0,0,0,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":3,"ix":5},"lc":2,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[50.688,-82.625],"ix":2},"a":{"a":0,"k":[2.563,-85.188],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":1,"k":[{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":0,"s":[0]},{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":29,"s":[25]},{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":59,"s":[-29.222]},{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":95,"s":[25]},{"t":124,"s":[0]}],"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"foot 2","np":2,"cix":2,"bm":0,"ix":7,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[2.125,-10],[0,0]],"o":[[0,0],[5,0.125],[0,0]],"v":[[1.75,-86.5],[4.375,-70.25],[12.375,-69.625]],"c":false},"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0,0,0,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":3,"ix":5},"lc":2,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[2.563,-85.188],"ix":2},"a":{"a":0,"k":[2.563,-85.188],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":1,"k":[{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":0,"s":[0]},{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":29,"s":[-36]},{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":59,"s":[10.6]},{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":95,"s":[-36]},{"t":124,"s":[0]}],"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"foot","np":2,"cix":2,"bm":0,"ix":8,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[3,-23.25]],"o":[[0,0],[-2.788,21.607]],"v":[[-3,-131.25],[-27,-87.5]],"c":false},"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0,0,0,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":3,"ix":5},"lc":2,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Forme 1","np":2,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"d":1,"ty":"el","s":{"a":0,"k":[8,8],"ix":2},"p":{"a":0,"k":[0,0],"ix":3},"nm":"TracÃ© d'ellipse 1","mn":"ADBE Vector Shape - Ellipse","hd":false},{"ty":"fl","c":{"a":0,"k":[0,0,0,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fond 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[-27.25,-86],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Ellipse 1","np":2,"cix":2,"bm":0,"ix":2,"mn":"ADBE Vector Group","hd":false},{"ty":"tr","p":{"a":0,"k":[52.875,-107.875],"ix":2},"a":{"a":0,"k":[52.875,-107.875],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"arm 2","np":2,"cix":2,"bm":0,"ix":9,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[3,-23.25]],"o":[[0,0],[-2.788,21.607]],"v":[[44,-133.75],[57.5,-87]],"c":false},"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0,0,0,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":3,"ix":5},"lc":2,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Forme 1","np":2,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"d":1,"ty":"el","s":{"a":0,"k":[8,8],"ix":2},"p":{"a":0,"k":[0,0],"ix":3},"nm":"TracÃ© d'ellipse 1","mn":"ADBE Vector Shape - Ellipse","hd":false},{"ty":"fl","c":{"a":0,"k":[0,0,0,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fond 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[57.75,-86],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Ellipse 1","np":2,"cix":2,"bm":0,"ix":2,"mn":"ADBE Vector Group","hd":false},{"ty":"tr","p":{"a":0,"k":[52.875,-107.875],"ix":2},"a":{"a":0,"k":[52.875,-107.875],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"arm","np":2,"cix":2,"bm":0,"ix":10,"mn":"ADBE Vector Group","hd":false},{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0],[3.625,-6.75],[0,0]],"o":[[0,0],[0,0],[45.75,-3.625],[0,0]],"v":[[35.625,-97.75],[-12.75,-97.125],[-8.5,-78.625],[46.125,-77.25]],"c":true},"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"fl","c":{"a":0,"k":[0,0,0,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fond 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":17,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"shadow","np":2,"cix":2,"bm":0,"ix":11,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":125,"st":0,"bm":0},{"ddd":0,"ind":7,"ty":4,"nm":"#wind5","ln":"wind5","parent":22,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[290.5,-73.5,0],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[-256,-130],[60,-130]],"c":false},"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[1,1,1,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":3,"ix":5},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Forme 1","np":2,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false},{"ty":"tm","s":{"a":1,"k":[{"i":{"x":[0],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":112,"s":[0]},{"t":125,"s":[100]}],"ix":1},"e":{"a":1,"k":[{"i":{"x":[0.197],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":104,"s":[0]},{"t":125,"s":[100]}],"ix":2},"o":{"a":0,"k":0,"ix":3},"m":1,"ix":2,"nm":"RÃ©duire les tracÃ©s 1","mn":"ADBE Vector Filter - Trim","hd":false}],"ip":104,"op":125,"st":104,"bm":0},{"ddd":0,"ind":8,"ty":4,"nm":"#wind4","ln":"wind4","parent":22,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[100.5,-133.5,0],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[-256,-130],[60,-130]],"c":false},"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[1,1,1,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":3,"ix":5},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Forme 1","np":2,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false},{"ty":"tm","s":{"a":1,"k":[{"i":{"x":[0],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":81,"s":[0]},{"t":94,"s":[100]}],"ix":1},"e":{"a":1,"k":[{"i":{"x":[0.197],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":73,"s":[0]},{"t":94,"s":[100]}],"ix":2},"o":{"a":0,"k":0,"ix":3},"m":1,"ix":2,"nm":"RÃ©duire les tracÃ©s 1","mn":"ADBE Vector Filter - Trim","hd":false}],"ip":73,"op":94,"st":73,"bm":0},{"ddd":0,"ind":10,"ty":4,"nm":"#wind 5","ln":"wind","parent":22,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[100.5,6.5,0],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[-256,-130],[270,-130]],"c":false},"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.717647058824,0.717647058824,0.717647058824,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":3,"ix":5},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Forme 1","np":2,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false},{"ty":"tm","s":{"a":1,"k":[{"i":{"x":[0],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":88,"s":[0]},{"t":105,"s":[100]}],"ix":1},"e":{"a":1,"k":[{"i":{"x":[0.197],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":80,"s":[0]},{"t":105,"s":[100]}],"ix":2},"o":{"a":0,"k":0,"ix":3},"m":1,"ix":2,"nm":"RÃ©duire les tracÃ©s 1","mn":"ADBE Vector Filter - Trim","hd":false}],"ip":80,"op":106,"st":80,"bm":0},{"ddd":0,"ind":12,"ty":4,"nm":"#wind3","ln":"wind3","parent":22,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[290.5,-73.5,0],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[-256,-130],[60,-130]],"c":false},"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[1,1,1,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":3,"ix":5},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Forme 1","np":2,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false},{"ty":"tm","s":{"a":1,"k":[{"i":{"x":[0],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":54,"s":[0]},{"t":67,"s":[100]}],"ix":1},"e":{"a":1,"k":[{"i":{"x":[0.197],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":46,"s":[0]},{"t":67,"s":[100]}],"ix":2},"o":{"a":0,"k":0,"ix":3},"m":1,"ix":2,"nm":"RÃ©duire les tracÃ©s 1","mn":"ADBE Vector Filter - Trim","hd":false}],"ip":46,"op":67,"st":46,"bm":0},{"ddd":0,"ind":14,"ty":4,"nm":"#wind 3","ln":"wind","parent":22,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[100.5,-143.5,0],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[-107,-130],[270,-130]],"c":false},"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.717647058824,0.717647058824,0.717647058824,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":3,"ix":5},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Forme 1","np":2,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false},{"ty":"tm","s":{"a":1,"k":[{"i":{"x":[0],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":28,"s":[0]},{"t":45,"s":[100]}],"ix":1},"e":{"a":1,"k":[{"i":{"x":[0.197],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":20,"s":[0]},{"t":45,"s":[100]}],"ix":2},"o":{"a":0,"k":0,"ix":3},"m":1,"ix":2,"nm":"RÃ©duire les tracÃ©s 1","mn":"ADBE Vector Filter - Trim","hd":false}],"ip":20,"op":46,"st":20,"bm":0},{"ddd":0,"ind":15,"ty":4,"nm":"#wind 2","ln":"wind","parent":22,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[100.5,6.5,0],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0]],"o":[[0,0],[0,0]],"v":[[-256,-130],[270,-130]],"c":false},"ix":2},"nm":"TracÃ© 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.717647058824,0.717647058824,0.717647058824,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":3,"ix":5},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"Forme 1","np":2,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false},{"ty":"tm","s":{"a":1,"k":[{"i":{"x":[0],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":45,"s":[0]},{"t":62,"s":[100]}],"ix":1},"e":{"a":1,"k":[{"i":{"x":[0.197],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":37,"s":[0]},{"t":62,"s":[100]}],"ix":2},"o":{"a":0,"k":0,"ix":3},"m":1,"ix":2,"nm":"RÃ©duire les tracÃ©s 1","mn":"ADBE Vector Filter - Trim","hd":false}],"ip":37,"op":63,"st":37,"bm":0},{"ddd":0,"ind":17,"ty":4,"nm":"shadow","parent":22,"sr":1,"ks":{"o":{"a":0,"k":10,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[202,14.5,0],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"hasMask":true,"masksProperties":[{"inv":false,"mode":"s","pt":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0]],"v":[[212.5,-24],[-26,-24],[-26,39],[212.5,39]],"c":true},"ix":1},"o":{"a":0,"k":100,"ix":3},"x":{"a":0,"k":0,"ix":4},"nm":"Masque 1"},{"inv":false,"mode":"s","pt":{"a":0,"k":{"i":[[0,0],[37,-26.5],[10.5,-14.5],[0,0],[0,0],[0,0]],"o":[[0,0],[-37,26.5],[-10.5,14.5],[0,0],[0,0],[0,0]],"v":[[155,-235.5],[60.5,-229.5],[-2.5,-122.5],[-26.5,-52],[48.5,-35],[158,-41.5]],"c":true},"ix":1},"o":{"a":0,"k":100,"ix":3},"x":{"a":0,"k":0,"ix":4},"nm":"Masque 2"}],"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],"v":[[139.106,-212.883],[91.222,-212.883],[91.222,-212.457],[8.383,-79.176],[11.225,-49.906],[91.222,-49.906],[91.222,-6],[139.106,-6],[139.106,-49.906],[160.135,-49.906],[160.135,-86.849],[139.106,-86.849]],"c":true},"ix":2},"nm":"4","mn":"ADBE Vector Shape - Group","hd":false},{"ind":1,"ty":"sh","ix":2,"ks":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0]],"v":[[88.238,-145.674],[91.222,-150.505],[91.222,-86.849],[53.994,-86.849]],"c":true},"ix":2},"nm":"4","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"mm","mm":1,"nm":"Fusionner les tracÃ©s 1","mn":"ADBE Vector Filter - Merge","hd":false},{"ty":"fl","c":{"a":0,"k":[0,0,0,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fond 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[58.5,3],"ix":2},"a":{"a":0,"k":[91.327,-6.373],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":9,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"4","np":4,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":125,"st":0,"bm":0},{"ddd":0,"ind":18,"ty":4,"nm":"#4last","ln":"4last","parent":22,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[202,14.5,0],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"hasMask":true,"masksProperties":[{"inv":false,"mode":"s","pt":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0]],"v":[[212.5,-24],[-26,-24],[-26,39],[212.5,39]],"c":true},"ix":1},"o":{"a":0,"k":100,"ix":3},"x":{"a":0,"k":0,"ix":4},"nm":"Masque 1"}],"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],"v":[[139.106,-212.883],[91.222,-212.883],[91.222,-212.457],[8.383,-79.176],[11.225,-49.906],[91.222,-49.906],[91.222,-6],[139.106,-6],[139.106,-49.906],[160.135,-49.906],[160.135,-86.849],[139.106,-86.849]],"c":true},"ix":2},"nm":"4","mn":"ADBE Vector Shape - Group","hd":false},{"ind":1,"ty":"sh","ix":2,"ks":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0]],"v":[[88.238,-145.674],[91.222,-150.505],[91.222,-86.849],[53.994,-86.849]],"c":true},"ix":2},"nm":"4","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"mm","mm":1,"nm":"Fusionner les tracÃ©s 1","mn":"ADBE Vector Filter - Merge","hd":false},{"ty":"fl","c":{"a":0,"k":[0.549019607843,0.549019607843,0.549019607843,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fond 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[58.5,3],"ix":2},"a":{"a":0,"k":[91.327,-6.373],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":9,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"4","np":4,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":125,"st":0,"bm":0},{"ddd":0,"ind":19,"ty":4,"nm":"shadow","parent":22,"sr":1,"ks":{"o":{"a":0,"k":10,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[-126,14.5,0],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"hasMask":true,"masksProperties":[{"inv":false,"mode":"s","pt":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0]],"v":[[212.5,-24],[-26,-24],[-26,39],[212.5,39]],"c":true},"ix":1},"o":{"a":0,"k":100,"ix":3},"x":{"a":0,"k":0,"ix":4},"nm":"Masque 1"},{"inv":false,"mode":"s","pt":{"a":0,"k":{"i":[[46,-1.5],[34.5,-13],[-21,-61.5],[0,0],[0,0],[0,0]],"o":[[-46,1.5],[-34.5,13],[21,61.5],[0,0],[0,0],[0,0]],"v":[[78,-236],[1,-228],[-56.5,-151.5],[-21.5,-31.5],[157,-45.5],[141,-145]],"c":true},"ix":1},"o":{"a":0,"k":100,"ix":3},"x":{"a":0,"k":0,"ix":4},"nm":"Masque 2"}],"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],"v":[[139.106,-212.883],[91.222,-212.883],[91.222,-212.457],[8.383,-79.176],[11.225,-49.906],[91.222,-49.906],[91.222,-6],[139.106,-6],[139.106,-49.906],[160.135,-49.906],[160.135,-86.849],[139.106,-86.849]],"c":true},"ix":2},"nm":"4","mn":"ADBE Vector Shape - Group","hd":false},{"ind":1,"ty":"sh","ix":2,"ks":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0]],"v":[[88.238,-145.674],[91.222,-150.505],[91.222,-86.849],[53.994,-86.849]],"c":true},"ix":2},"nm":"4","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"mm","mm":1,"nm":"Fusionner les tracÃ©s 1","mn":"ADBE Vector Filter - Merge","hd":false},{"ty":"fl","c":{"a":0,"k":[0,0,0,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fond 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[104,-5],"ix":2},"a":{"a":0,"k":[91.327,-6.373],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":-29,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"4","np":5,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":125,"st":0,"bm":0},{"ddd":0,"ind":20,"ty":4,"nm":"#4","ln":"4","parent":22,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[-126,14.5,0],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"hasMask":true,"masksProperties":[{"inv":false,"mode":"s","pt":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0]],"v":[[212.5,-24],[-26,-24],[-26,39],[212.5,39]],"c":true},"ix":1},"o":{"a":0,"k":100,"ix":3},"x":{"a":0,"k":0,"ix":4},"nm":"Masque 1"}],"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]],"v":[[139.106,-212.883],[91.222,-212.883],[91.222,-212.457],[8.383,-79.176],[11.225,-49.906],[91.222,-49.906],[91.222,-6],[139.106,-6],[139.106,-49.906],[160.135,-49.906],[160.135,-86.849],[139.106,-86.849]],"c":true},"ix":2},"nm":"4","mn":"ADBE Vector Shape - Group","hd":false},{"ind":1,"ty":"sh","ix":2,"ks":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0]],"v":[[88.238,-145.674],[91.222,-150.505],[91.222,-86.849],[53.994,-86.849]],"c":true},"ix":2},"nm":"4","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"mm","mm":1,"nm":"Fusionner les tracÃ©s 1","mn":"ADBE Vector Filter - Merge","hd":false},{"ty":"fl","c":{"a":0,"k":[0.549019607843,0.549019607843,0.549019607843,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fond 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[104,-5],"ix":2},"a":{"a":0,"k":[91.327,-6.373],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":-29,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"4","np":5,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":125,"st":0,"bm":0},{"ddd":0,"ind":21,"ty":4,"nm":"shadow","sr":1,"ks":{"o":{"a":0,"k":10,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[241.5,302.5,0],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"hasMask":true,"masksProperties":[{"inv":false,"mode":"s","pt":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0]],"v":[[254.5,-9],[-66.5,-9],[-66.5,63.5],[254.5,63.5]],"c":true},"ix":1},"o":{"a":0,"k":100,"ix":3},"x":{"a":0,"k":0,"ix":4},"nm":"Masque 1"},{"inv":false,"mode":"s","pt":{"a":0,"k":{"i":[[-1.5,0],[0,0],[-41.5,0],[0,0],[0,0]],"o":[[1.5,0],[0,0],[41.5,0],[0,0],[0,0]],"v":[[6,-263.5],[22.5,-45],[93.5,-17.5],[177,-31],[233.5,-243.5]],"c":true},"ix":1},"o":{"a":0,"k":100,"ix":3},"x":{"a":0,"k":0,"ix":4},"nm":"Masque 2"}],"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[12.597,15.252],[22.923,0],[12.551,-15.155],[0,-27.943],[0,0],[-12.599,-15.25],[-23.019,0],[-12.553,15.157],[0,27.945]],"o":[[0,-27.85],[-12.599,-15.25],[-22.925,0],[-12.553,15.157],[0,0],[0,27.756],[12.597,15.252],[22.828,0],[12.551,-15.155],[0,0]],"v":[[156.299,-128.197],[137.401,-192.848],[84.117,-215.725],[30.905,-192.99],[12.078,-128.339],[12.078,-90.543],[30.976,-26.035],[84.401,-3.158],[137.472,-25.893],[156.299,-90.543]],"c":true},"ix":2},"nm":"0","mn":"ADBE Vector Shape - Group","hd":false},{"ind":1,"ty":"sh","ix":2,"ks":{"a":0,"k":{"i":[[0,0],[3.883,-6.962],[8.146,0],[3.883,7.153],[0,15.441],[0,0],[-3.743,6.82],[-8.241,0],[-3.885,-7.34],[0,-14.871]],"o":[[-0.095,14.873],[-3.885,6.962],[-8.432,0],[-3.885,-7.151],[0,0],[0.284,-13.829],[3.741,-6.82],[8.43,0],[3.883,7.342],[0,0]],"v":[[108.415,-83.297],[102.447,-50.545],[84.401,-40.102],[65.93,-50.829],[60.104,-84.718],[60.104,-137.575],[66.143,-168.551],[84.117,-178.781],[102.589,-167.769],[108.415,-134.449]],"c":true},"ix":2},"nm":"0","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"mm","mm":1,"nm":"Fusionner les tracÃ©s 1","mn":"ADBE Vector Filter - Merge","hd":false},{"ty":"st","c":{"a":0,"k":[0,0,0,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":3,"ix":5},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"fl","c":{"a":0,"k":[0,0,0,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fond 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":13,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"0","np":5,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":125,"st":0,"bm":0},{"ddd":0,"ind":22,"ty":4,"nm":"#0","ln":"0","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[241.5,302.5,0],"ix":2},"a":{"a":0,"k":[0,0,0],"ix":1},"s":{"a":0,"k":[100,100,100],"ix":6}},"ao":0,"hasMask":true,"masksProperties":[{"inv":false,"mode":"s","pt":{"a":0,"k":{"i":[[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0]],"v":[[254.5,-9],[-66.5,-9],[-66.5,63.5],[254.5,63.5]],"c":true},"ix":1},"o":{"a":0,"k":100,"ix":3},"x":{"a":0,"k":0,"ix":4},"nm":"Masque 1"}],"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[12.597,15.252],[22.923,0],[12.551,-15.155],[0,-27.943],[0,0],[-12.599,-15.25],[-23.019,0],[-12.553,15.157],[0,27.945]],"o":[[0,-27.85],[-12.599,-15.25],[-22.925,0],[-12.553,15.157],[0,0],[0,27.756],[12.597,15.252],[22.828,0],[12.551,-15.155],[0,0]],"v":[[156.299,-128.197],[137.401,-192.848],[84.117,-215.725],[30.905,-192.99],[12.078,-128.339],[12.078,-90.543],[30.976,-26.035],[84.401,-3.158],[137.472,-25.893],[156.299,-90.543]],"c":true},"ix":2},"nm":"0","mn":"ADBE Vector Shape - Group","hd":false},{"ind":1,"ty":"sh","ix":2,"ks":{"a":0,"k":{"i":[[0,0],[3.883,-6.962],[8.146,0],[3.883,7.153],[0,15.441],[0,0],[-3.743,6.82],[-8.241,0],[-3.885,-7.34],[0,-14.871]],"o":[[-0.095,14.873],[-3.885,6.962],[-8.432,0],[-3.885,-7.151],[0,0],[0.284,-13.829],[3.741,-6.82],[8.43,0],[3.883,7.342],[0,0]],"v":[[108.415,-83.297],[102.447,-50.545],[84.401,-40.102],[65.93,-50.829],[60.104,-84.718],[60.104,-137.575],[66.143,-168.551],[84.117,-178.781],[102.589,-167.769],[108.415,-134.449]],"c":true},"ix":2},"nm":"0","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"mm","mm":1,"nm":"Fusionner les tracÃ©s 1","mn":"ADBE Vector Filter - Merge","hd":false},{"ty":"st","c":{"a":0,"k":[0.549019607843,0.549019607843,0.549019607843,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":3,"ix":5},"lc":1,"lj":1,"ml":4,"bm":0,"nm":"Contour 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"fl","c":{"a":0,"k":[1,1,1,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fond 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[0,0],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":13,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transformer "}],"nm":"0","np":5,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":125,"st":0,"bm":0}]`);
+const markers$1 = [];
+const Lonely404 = {
+  v: v$1,
+  fr: fr$1,
+  ip: ip$1,
+  op: op$1,
+  w: w$1,
+  h: h$1,
+  nm: nm$1,
+  ddd: ddd$1,
+  assets: assets$1,
+  layers: layers$1,
+  markers: markers$1
+};
+const v = "5.12.1";
+const fr = 30;
+const ip = 0;
+const op = 180;
+const w = 418;
+const h = 612;
+const nm = "Sad walking";
+const ddd = 0;
+const assets = [{ "id": "comp_0", "nm": "main", "fr": 30, "layers": [{ "ddd": 0, "ind": 1, "ty": 4, "nm": "head", "parent": 3, "sr": 1, "ks": { "o": { "a": 0, "k": 100, "ix": 11 }, "r": { "a": 0, "k": 0, "ix": 10 }, "p": { "a": 1, "k": [{ "i": { "x": 0.77, "y": 0.987 }, "o": { "x": 0.513, "y": 0.029 }, "t": 0, "s": [30.375, -106.375, 0], "to": [0, 0.5, 0], "ti": [0, 0.167, 0] }, { "i": { "x": 0.546, "y": 0.979 }, "o": { "x": 0.245, "y": 0.012 }, "t": 11, "s": [30.375, -103.375, 0], "to": [0, -0.167, 0], "ti": [0, 0.5, 0] }, { "i": { "x": 0.795, "y": 1 }, "o": { "x": 0.439, "y": 0.039 }, "t": 23, "s": [30.375, -107.375, 0], "to": [0, -0.5, 0], "ti": [0, -0.167, 0] }, { "t": 30, "s": [30.375, -106.375, 0] }], "ix": 2, "l": 2 }, "a": { "a": 0, "k": [29.875, -105.625, 0], "ix": 1, "l": 2 }, "s": { "a": 0, "k": [100, 100, 100], "ix": 6, "l": 2 } }, "ao": 0, "shapes": [{ "ty": "gr", "it": [{ "d": 1, "ty": "el", "s": { "a": 0, "k": [71.75, 71.75], "ix": 2 }, "p": { "a": 0, "k": [0, 0], "ix": 3 }, "nm": "Ellipse Path 1", "mn": "ADBE Vector Shape - Ellipse", "hd": false }, { "ty": "fl", "c": { "a": 0, "k": [0, 0, 0, 1], "ix": 4 }, "o": { "a": 0, "k": 100, "ix": 5 }, "r": 1, "bm": 0, "nm": "Fill 1", "mn": "ADBE Vector Graphic - Fill", "hd": false }, { "ty": "tr", "p": { "a": 0, "k": [29.875, -105.625], "ix": 2 }, "a": { "a": 0, "k": [0, 0], "ix": 1 }, "s": { "a": 0, "k": [100, 100], "ix": 3 }, "r": { "a": 0, "k": 0, "ix": 6 }, "o": { "a": 0, "k": 100, "ix": 7 }, "sk": { "a": 0, "k": 0, "ix": 4 }, "sa": { "a": 0, "k": 0, "ix": 5 }, "nm": "Transform" }], "nm": "Ellipse 1", "np": 3, "cix": 2, "bm": 0, "ix": 1, "mn": "ADBE Vector Group", "hd": false }], "ip": 0, "op": 180, "st": 0, "ct": 1, "bm": 0 }, { "ddd": 0, "ind": 2, "ty": 3, "nm": "Null 2", "sr": 1, "ks": { "o": { "a": 0, "k": 0, "ix": 11 }, "r": { "a": 0, "k": 0, "ix": 10 }, "p": { "a": 0, "k": [525.919, 641.898, 0], "ix": 2, "l": 2 }, "a": { "a": 0, "k": [50, 50, 0], "ix": 1, "l": 2 }, "s": { "a": 0, "k": [166, 166, 100], "ix": 6, "l": 2 } }, "ao": 0, "ip": 0, "op": 180, "st": 0, "bm": 0 }, { "ddd": 0, "ind": 3, "ty": 4, "nm": "body", "parent": 2, "sr": 1, "ks": { "o": { "a": 0, "k": 100, "ix": 11 }, "r": { "a": 0, "k": 0, "ix": 10 }, "p": { "a": 1, "k": [{ "i": { "x": 0.667, "y": 1 }, "o": { "x": 0.333, "y": 0 }, "t": 0, "s": [42.955, -16.898, 0], "to": [0, 0.792, 0], "ti": [0, 0.229, 0] }, { "i": { "x": 0.667, "y": 1 }, "o": { "x": 0.333, "y": 0 }, "t": 11, "s": [42.955, -12.148, 0], "to": [0, -0.229, 0], "ti": [0, 0.792, 0] }, { "i": { "x": 0.667, "y": 1 }, "o": { "x": 0.333, "y": 0 }, "t": 23, "s": [42.955, -18.273, 0], "to": [0, -0.792, 0], "ti": [0, -0.229, 0] }, { "t": 30, "s": [42.955, -16.898, 0] }], "ix": 2, "l": 2 }, "a": { "a": 0, "k": [-21.126, 35, 0], "ix": 1, "l": 2 }, "s": { "a": 0, "k": [100, 100, 100], "ix": 6, "l": 2 } }, "ao": 0, "shapes": [{ "ty": "gr", "it": [{ "ind": 0, "ty": "sh", "ix": 1, "ks": { "a": 0, "k": { "i": [[7.375, -1], [10.459, -23.754], [0, 0], [0, 0], [0.076, 1.748]], "o": [[-4.351, 0.59], [-17.052, 38.726], [0, 0], [0, 0], [-0.25, -5.75]], "v": [[-6.75, -77], [-33.198, -41.726], [-49.75, 35], [7.5, 35], [7.25, -66.375]], "c": true }, "ix": 2 }, "nm": "Path 1", "mn": "ADBE Vector Shape - Group", "hd": false }, { "ty": "fl", "c": { "a": 0, "k": [0, 0, 0, 1], "ix": 4 }, "o": { "a": 0, "k": 100, "ix": 5 }, "r": 1, "bm": 0, "nm": "Fill 1", "mn": "ADBE Vector Graphic - Fill", "hd": false }, { "ty": "tr", "p": { "a": 0, "k": [0, 0], "ix": 2 }, "a": { "a": 0, "k": [0, 0], "ix": 1 }, "s": { "a": 0, "k": [100, 100], "ix": 3 }, "r": { "a": 0, "k": 0, "ix": 6 }, "o": { "a": 0, "k": 100, "ix": 7 }, "sk": { "a": 0, "k": 0, "ix": 4 }, "sa": { "a": 0, "k": 0, "ix": 5 }, "nm": "Transform" }], "nm": "Shape 1", "np": 3, "cix": 2, "bm": 0, "ix": 1, "mn": "ADBE Vector Group", "hd": false }], "ip": 0, "op": 180, "st": 0, "ct": 1, "bm": 0 }, { "ddd": 0, "ind": 4, "ty": 4, "nm": "Shape Layer 2", "parent": 2, "sr": 1, "ks": { "o": { "a": 0, "k": 100, "ix": 11 }, "r": { "a": 1, "k": [{ "i": { "x": [0.833], "y": [0.833] }, "o": { "x": [0.167], "y": [0.167] }, "t": 0, "s": [9] }, { "i": { "x": [0.833], "y": [0.833] }, "o": { "x": [0.167], "y": [0.167] }, "t": 6, "s": [22.8] }, { "i": { "x": [0.833], "y": [0.833] }, "o": { "x": [0.167], "y": [0.167] }, "t": 11, "s": [43.133] }, { "i": { "x": [0.833], "y": [0.833] }, "o": { "x": [0.167], "y": [0.167] }, "t": 16, "s": [49.467] }, { "i": { "x": [0.833], "y": [0.833] }, "o": { "x": [0.167], "y": [0.167] }, "t": 23, "s": [-6.267] }, { "i": { "x": [0.833], "y": [0.833] }, "o": { "x": [0.167], "y": [0.167] }, "t": 26, "s": [-28.438] }, { "t": 30, "s": [-14] }], "ix": 10 }, "p": { "a": 1, "k": [{ "i": { "x": 0.833, "y": 0.833 }, "o": { "x": 0.167, "y": 0.167 }, "t": 0, "s": [10.143, 106.852, 0], "to": [0.811, -1.779, 0], "ti": [-4.22, 2.639, 0] }, { "i": { "x": 0.833, "y": 0.833 }, "o": { "x": 0.167, "y": 0.167 }, "t": 6, "s": [17.371, 101.477, 0], "to": [5.496, -3.437, 0], "ti": [-10.402, 2.404, 0] }, { "i": { "x": 0.833, "y": 0.833 }, "o": { "x": 0.167, "y": 0.167 }, "t": 16, "s": [51.11, 87.227, 0], "to": [15.565, -3.597, 0], "ti": [-5.183, -2.26, 0] }, { "i": { "x": 0.833, "y": 0.833 }, "o": { "x": 0.167, "y": 0.167 }, "t": 23, "s": [87.44, 88.192, 0], "to": [7.744, 3.377, 0], "ti": [0.653, -1.854, 0] }, { "t": 30, "s": [92.393, 101.477, 0] }], "ix": 2, "l": 2 }, "a": { "a": 0, "k": [17.563, 142.875, 0], "ix": 1, "l": 2 }, "s": { "a": 0, "k": [100, 100, 100], "ix": 6, "l": 2 } }, "ao": 0, "shapes": [{ "ty": "gr", "it": [{ "ind": 0, "ty": "sh", "ix": 1, "ks": { "a": 0, "k": { "i": [[0, 0], [0, 0]], "o": [[0, 0], [0, 0]], "v": [[4.25, 144.875], [30.875, 140.875]], "c": false }, "ix": 2 }, "nm": "Path 1", "mn": "ADBE Vector Shape - Group", "hd": false }, { "ty": "st", "c": { "a": 0, "k": [0, 0, 0, 1], "ix": 3 }, "o": { "a": 0, "k": 100, "ix": 4 }, "w": { "a": 0, "k": 13, "ix": 5 }, "lc": 2, "lj": 1, "ml": 4, "bm": 0, "nm": "Stroke 1", "mn": "ADBE Vector Graphic - Stroke", "hd": false }, { "ty": "tr", "p": { "a": 0, "k": [0, 0], "ix": 2 }, "a": { "a": 0, "k": [0, 0], "ix": 1 }, "s": { "a": 0, "k": [100, 100], "ix": 3 }, "r": { "a": 0, "k": 0, "ix": 6 }, "o": { "a": 0, "k": 100, "ix": 7 }, "sk": { "a": 0, "k": 0, "ix": 4 }, "sa": { "a": 0, "k": 0, "ix": 5 }, "nm": "Transform" }], "nm": "Shape 1", "np": 3, "cix": 2, "bm": 0, "ix": 1, "mn": "ADBE Vector Group", "hd": false }], "ip": 0, "op": 180, "st": 0, "ct": 1, "bm": 0 }, { "ddd": 0, "ind": 5, "ty": 4, "nm": "Shape Layer 1", "parent": 2, "sr": 1, "ks": { "o": { "a": 0, "k": 100, "ix": 11 }, "r": { "a": 1, "k": [{ "i": { "x": [0.833], "y": [0.833] }, "o": { "x": [0.167], "y": [0.167] }, "t": 0, "s": [-14] }, { "i": { "x": [0.833], "y": [0.833] }, "o": { "x": [0.167], "y": [0.167] }, "t": 6, "s": [9] }, { "t": 30, "s": [9] }], "ix": 10 }, "p": { "a": 1, "k": [{ "i": { "x": 0.833, "y": 0.833 }, "o": { "x": 0.167, "y": 0.167 }, "t": 0, "s": [92.643, 101.227, 0], "to": [-2.167, 0.979, 0], "ti": [13.75, -0.938, 0] }, { "i": { "x": 0.833, "y": 0.833 }, "o": { "x": 0.167, "y": 0.167 }, "t": 6, "s": [79.643, 107.102, 0], "to": [-13.75, 0.938, 0], "ti": [11.583, 0.042, 0] }, { "t": 30, "s": [10.143, 106.852, 0] }], "ix": 2, "l": 2 }, "a": { "a": 0, "k": [17.563, 142.875, 0], "ix": 1, "l": 2 }, "s": { "a": 0, "k": [100, 100, 100], "ix": 6, "l": 2 } }, "ao": 0, "shapes": [{ "ty": "gr", "it": [{ "ind": 0, "ty": "sh", "ix": 1, "ks": { "a": 0, "k": { "i": [[0, 0], [0, 0]], "o": [[0, 0], [0, 0]], "v": [[4.25, 144.875], [30.875, 140.875]], "c": false }, "ix": 2 }, "nm": "Path 1", "mn": "ADBE Vector Shape - Group", "hd": false }, { "ty": "st", "c": { "a": 0, "k": [0, 0, 0, 1], "ix": 3 }, "o": { "a": 0, "k": 100, "ix": 4 }, "w": { "a": 0, "k": 13, "ix": 5 }, "lc": 2, "lj": 1, "ml": 4, "bm": 0, "nm": "Stroke 1", "mn": "ADBE Vector Graphic - Stroke", "hd": false }, { "ty": "tr", "p": { "a": 0, "k": [0, 0], "ix": 2 }, "a": { "a": 0, "k": [0, 0], "ix": 1 }, "s": { "a": 0, "k": [100, 100], "ix": 3 }, "r": { "a": 0, "k": 0, "ix": 6 }, "o": { "a": 0, "k": 100, "ix": 7 }, "sk": { "a": 0, "k": 0, "ix": 4 }, "sa": { "a": 0, "k": 0, "ix": 5 }, "nm": "Transform" }], "nm": "Shape 1", "np": 3, "cix": 2, "bm": 0, "ix": 1, "mn": "ADBE Vector Group", "hd": false }], "ip": 0, "op": 180, "st": 0, "ct": 1, "bm": 0 }, { "ddd": 0, "ind": 6, "ty": 4, "nm": "Shape Layer 3", "parent": 2, "sr": 1, "ks": { "o": { "a": 0, "k": 20, "ix": 11 }, "r": { "a": 0, "k": 0, "ix": 10 }, "p": { "a": 0, "k": [42.956, 112.602, 0], "ix": 2, "l": 2 }, "a": { "a": 0, "k": [-21.125, 164.5, 0], "ix": 1, "l": 2 }, "s": { "a": 1, "k": [{ "i": { "x": [0.833, 0.833, 0.833], "y": [0.833, 0.833, 0.833] }, "o": { "x": [0.167, 0.167, 0.167], "y": [0.167, 0.167, 0.167] }, "t": 0, "s": [100, 100, 100] }, { "i": { "x": [0.833, 0.833, 0.833], "y": [0.833, 0.833, 0.833] }, "o": { "x": [0.167, 0.167, 0.167], "y": [0.167, 0.167, 0.167] }, "t": 16, "s": [83, 83, 100] }, { "t": 30, "s": [100, 100, 100] }], "ix": 6, "l": 2 } }, "ao": 0, "shapes": [{ "ty": "gr", "it": [{ "d": 1, "ty": "el", "s": { "a": 0, "k": [145.75, 10], "ix": 2 }, "p": { "a": 0, "k": [0, 0], "ix": 3 }, "nm": "Ellipse Path 1", "mn": "ADBE Vector Shape - Ellipse", "hd": false }, { "ty": "fl", "c": { "a": 0, "k": [0, 0, 0, 1], "ix": 4 }, "o": { "a": 0, "k": 100, "ix": 5 }, "r": 1, "bm": 0, "nm": "Fill 1", "mn": "ADBE Vector Graphic - Fill", "hd": false }, { "ty": "tr", "p": { "a": 0, "k": [-21.125, 164.5], "ix": 2 }, "a": { "a": 0, "k": [0, 0], "ix": 1 }, "s": { "a": 0, "k": [100, 100], "ix": 3 }, "r": { "a": 0, "k": 0, "ix": 6 }, "o": { "a": 0, "k": 100, "ix": 7 }, "sk": { "a": 0, "k": 0, "ix": 4 }, "sa": { "a": 0, "k": 0, "ix": 5 }, "nm": "Transform" }], "nm": "Ellipse 1", "np": 3, "cix": 2, "bm": 0, "ix": 1, "mn": "ADBE Vector Group", "hd": false }], "ip": 0, "op": 180, "st": 0, "ct": 1, "bm": 0 }] }];
+const layers = [{ "ddd": 0, "ind": 1, "ty": 0, "nm": "main", "refId": "comp_0", "sr": 1, "ks": { "o": { "a": 0, "k": 100, "ix": 11 }, "r": { "a": 0, "k": 0, "ix": 10 }, "p": { "a": 0, "k": [214, 364, 0], "ix": 2, "l": 2 }, "a": { "a": 0, "k": [540, 540, 0], "ix": 1, "l": 2 }, "s": { "a": 0, "k": [100, 100, 100], "ix": 6, "l": 2 } }, "ao": 0, "w": 1080, "h": 1080, "ip": 150, "op": 180, "st": 150, "bm": 0 }, { "ddd": 0, "ind": 2, "ty": 0, "nm": "main", "refId": "comp_0", "sr": 1, "ks": { "o": { "a": 0, "k": 100, "ix": 11 }, "r": { "a": 0, "k": 0, "ix": 10 }, "p": { "a": 0, "k": [214, 364, 0], "ix": 2, "l": 2 }, "a": { "a": 0, "k": [540, 540, 0], "ix": 1, "l": 2 }, "s": { "a": 0, "k": [100, 100, 100], "ix": 6, "l": 2 } }, "ao": 0, "w": 1080, "h": 1080, "ip": 120, "op": 150, "st": 120, "bm": 0 }, { "ddd": 0, "ind": 3, "ty": 0, "nm": "main", "refId": "comp_0", "sr": 1, "ks": { "o": { "a": 0, "k": 100, "ix": 11 }, "r": { "a": 0, "k": 0, "ix": 10 }, "p": { "a": 0, "k": [214, 364, 0], "ix": 2, "l": 2 }, "a": { "a": 0, "k": [540, 540, 0], "ix": 1, "l": 2 }, "s": { "a": 0, "k": [100, 100, 100], "ix": 6, "l": 2 } }, "ao": 0, "w": 1080, "h": 1080, "ip": 90, "op": 120, "st": 90, "bm": 0 }, { "ddd": 0, "ind": 4, "ty": 0, "nm": "main", "refId": "comp_0", "sr": 1, "ks": { "o": { "a": 0, "k": 100, "ix": 11 }, "r": { "a": 0, "k": 0, "ix": 10 }, "p": { "a": 0, "k": [214, 364, 0], "ix": 2, "l": 2 }, "a": { "a": 0, "k": [540, 540, 0], "ix": 1, "l": 2 }, "s": { "a": 0, "k": [100, 100, 100], "ix": 6, "l": 2 } }, "ao": 0, "w": 1080, "h": 1080, "ip": 60, "op": 90, "st": 60, "bm": 0 }, { "ddd": 0, "ind": 5, "ty": 0, "nm": "main", "refId": "comp_0", "sr": 1, "ks": { "o": { "a": 0, "k": 100, "ix": 11 }, "r": { "a": 0, "k": 0, "ix": 10 }, "p": { "a": 0, "k": [214, 364, 0], "ix": 2, "l": 2 }, "a": { "a": 0, "k": [540, 540, 0], "ix": 1, "l": 2 }, "s": { "a": 0, "k": [100, 100, 100], "ix": 6, "l": 2 } }, "ao": 0, "w": 1080, "h": 1080, "ip": 30, "op": 60, "st": 30, "bm": 0 }, { "ddd": 0, "ind": 6, "ty": 0, "nm": "main", "refId": "comp_0", "sr": 1, "ks": { "o": { "a": 0, "k": 100, "ix": 11 }, "r": { "a": 0, "k": 0, "ix": 10 }, "p": { "a": 0, "k": [214, 364, 0], "ix": 2, "l": 2 }, "a": { "a": 0, "k": [540, 540, 0], "ix": 1, "l": 2 }, "s": { "a": 0, "k": [100, 100, 100], "ix": 6, "l": 2 } }, "ao": 0, "w": 1080, "h": 1080, "ip": 0, "op": 30, "st": 0, "bm": 0 }];
+const markers = [{ "tm": 30, "cm": "1", "dr": 0 }];
+const props = {};
+const SadWalking = {
+  v,
+  fr,
+  ip,
+  op,
+  w,
+  h,
+  nm,
+  ddd,
+  assets,
+  layers,
+  markers,
+  props
+};
+const _sfc_main$2 = /* @__PURE__ */ defineComponent({
+  __name: "LottieAnimation",
+  __ssrInlineRender: true,
+  props: {
+    animationData: {},
+    animationPath: {},
+    width: { default: "100%" },
+    height: { default: "100%" },
+    loop: { type: Boolean, default: true },
+    autoPlay: { type: Boolean, default: true },
+    speed: { default: 1 },
+    pauseOnHover: { type: Boolean, default: false }
+  },
+  setup(__props, { expose: __expose }) {
+    const lottieRef = ref(null);
+    const isLoaded = ref(false);
+    const hasError = ref(false);
+    const handleAnimationLoaded = () => {
+      isLoaded.value = true;
     };
-    return resolvedPath;
-  }
-  function useNuxtLink(props) {
-    const router = useRouter();
-    const config = /* @__PURE__ */ useRuntimeConfig();
-    const hasTarget = computed(() => !!props.target && props.target !== "_self");
-    const isAbsoluteUrl = computed(() => {
-      const path = props.to || props.href || "";
-      return typeof path === "string" && hasProtocol(path, { acceptRelative: true });
-    });
-    const builtinRouterLink = resolveComponent("RouterLink");
-    const useBuiltinLink = builtinRouterLink && typeof builtinRouterLink !== "string" ? builtinRouterLink.useLink : void 0;
-    const isExternal = computed(() => {
-      if (props.external) {
-        return true;
+    const handleError = () => {
+      hasError.value = true;
+    };
+    const play = () => lottieRef.value?.play();
+    const pause = () => lottieRef.value?.pause();
+    const stop = () => lottieRef.value?.stop();
+    __expose({ play, pause, stop });
+    return (_ctx, _push, _parent, _attrs) => {
+      _push(`<div${ssrRenderAttrs(mergeProps({ class: "lottie-wrapper" }, _attrs))} data-v-04786625>`);
+      if (!unref(hasError)) {
+        _push(ssrRenderComponent(unref(Vue3Lottie), {
+          ref_key: "lottieRef",
+          ref: lottieRef,
+          "animation-data": __props.animationData,
+          "animation-link": __props.animationPath,
+          width: __props.width,
+          height: __props.height,
+          loop: __props.loop,
+          "auto-play": __props.autoPlay,
+          speed: __props.speed,
+          "pause-on-hover": __props.pauseOnHover,
+          onOnAnimationLoaded: handleAnimationLoaded,
+          onOnError: handleError
+        }, null, _parent));
+      } else {
+        _push(`<!---->`);
       }
-      const path = props.to || props.href || "";
-      if (typeof path === "object") {
-        return false;
+      if (unref(hasError)) {
+        _push(`<div class="lottie-fallback" data-v-04786625><svg class="fallback-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-v-04786625><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" data-v-04786625></path></svg></div>`);
+      } else {
+        _push(`<!---->`);
       }
-      return path === "" || isAbsoluteUrl.value;
-    });
-    const to = computed(() => {
-      const path = props.to || props.href || "";
-      if (isExternal.value) {
-        return path;
-      }
-      return resolveTrailingSlashBehavior(path, router.resolve, props.trailingSlash);
-    });
-    const link = isExternal.value ? void 0 : useBuiltinLink?.({ ...props, to });
-    const href = computed(() => {
-      const effectiveTrailingSlash = props.trailingSlash ?? options.trailingSlash;
-      if (!to.value || isAbsoluteUrl.value || isHashLinkWithoutHashMode(to.value)) {
-        return to.value;
-      }
-      if (isExternal.value) {
-        const path = typeof to.value === "object" && "path" in to.value ? resolveRouteObject(to.value) : to.value;
-        const href2 = typeof path === "object" ? router.resolve(path).href : path;
-        return applyTrailingSlashBehavior(href2, effectiveTrailingSlash);
-      }
-      if (typeof to.value === "object") {
-        return router.resolve(to.value)?.href ?? null;
-      }
-      return applyTrailingSlashBehavior(joinURL(config.app.baseURL, to.value), effectiveTrailingSlash);
-    });
-    return {
-      to,
-      hasTarget,
-      isAbsoluteUrl,
-      isExternal,
-      //
-      href,
-      isActive: link?.isActive ?? computed(() => to.value === router.currentRoute.value.path),
-      isExactActive: link?.isExactActive ?? computed(() => to.value === router.currentRoute.value.path),
-      route: link?.route ?? computed(() => router.resolve(to.value)),
-      async navigate(_e) {
-        await navigateTo(href.value, { replace: props.replace, external: isExternal.value || hasTarget.value });
-      }
+      _push(`</div>`);
     };
   }
-  return defineComponent({
-    name: componentName,
-    props: {
-      // Routing
-      to: {
-        type: [String, Object],
-        default: void 0,
-        required: false
-      },
-      href: {
-        type: [String, Object],
-        default: void 0,
-        required: false
-      },
-      // Attributes
-      target: {
-        type: String,
-        default: void 0,
-        required: false
-      },
-      rel: {
-        type: String,
-        default: void 0,
-        required: false
-      },
-      noRel: {
-        type: Boolean,
-        default: void 0,
-        required: false
-      },
-      // Prefetching
-      prefetch: {
-        type: Boolean,
-        default: void 0,
-        required: false
-      },
-      prefetchOn: {
-        type: [String, Object],
-        default: void 0,
-        required: false
-      },
-      noPrefetch: {
-        type: Boolean,
-        default: void 0,
-        required: false
-      },
-      // Styling
-      activeClass: {
-        type: String,
-        default: void 0,
-        required: false
-      },
-      exactActiveClass: {
-        type: String,
-        default: void 0,
-        required: false
-      },
-      prefetchedClass: {
-        type: String,
-        default: void 0,
-        required: false
-      },
-      // Vue Router's `<RouterLink>` additional props
-      replace: {
-        type: Boolean,
-        default: void 0,
-        required: false
-      },
-      ariaCurrentValue: {
-        type: String,
-        default: void 0,
-        required: false
-      },
-      // Edge cases handling
-      external: {
-        type: Boolean,
-        default: void 0,
-        required: false
-      },
-      // Slot API
-      custom: {
-        type: Boolean,
-        default: void 0,
-        required: false
-      },
-      // Behavior
-      trailingSlash: {
-        type: String,
-        default: void 0,
-        required: false
-      }
-    },
-    useLink: useNuxtLink,
-    setup(props, { slots }) {
-      const router = useRouter();
-      const { to, href, navigate, isExternal, hasTarget, isAbsoluteUrl } = useNuxtLink(props);
-      shallowRef(false);
-      const el = void 0;
-      const elRef = void 0;
-      async function prefetch(nuxtApp = useNuxtApp()) {
-        {
-          return;
-        }
-      }
-      return () => {
-        if (!isExternal.value && !hasTarget.value && !isHashLinkWithoutHashMode(to.value)) {
-          const routerLinkProps = {
-            ref: elRef,
-            to: to.value,
-            activeClass: props.activeClass || options.activeClass,
-            exactActiveClass: props.exactActiveClass || options.exactActiveClass,
-            replace: props.replace,
-            ariaCurrentValue: props.ariaCurrentValue,
-            custom: props.custom
-          };
-          if (!props.custom) {
-            routerLinkProps.rel = props.rel || void 0;
-          }
-          return h(
-            resolveComponent("RouterLink"),
-            routerLinkProps,
-            slots.default
-          );
-        }
-        const target = props.target || null;
-        const rel = firstNonUndefined(
-          // converts `""` to `null` to prevent the attribute from being added as empty (`rel=""`)
-          props.noRel ? "" : props.rel,
-          options.externalRelAttribute,
-          /*
-          * A fallback rel of `noopener noreferrer` is applied for external links or links that open in a new tab.
-          * This solves a reverse tabnapping security flaw in browsers pre-2021 as well as improving privacy.
-          */
-          isAbsoluteUrl.value || hasTarget.value ? "noopener noreferrer" : ""
-        ) || null;
-        if (props.custom) {
-          if (!slots.default) {
-            return null;
-          }
-          return slots.default({
-            href: href.value,
-            navigate,
-            prefetch,
-            get route() {
-              if (!href.value) {
-                return void 0;
-              }
-              const url = new URL(href.value, "http://localhost");
-              return {
-                path: url.pathname,
-                fullPath: url.pathname,
-                get query() {
-                  return parseQuery(url.search);
-                },
-                hash: url.hash,
-                params: {},
-                name: void 0,
-                matched: [],
-                redirectedFrom: void 0,
-                meta: {},
-                href: href.value
-              };
-            },
-            rel,
-            target,
-            isExternal: isExternal.value || hasTarget.value,
-            isActive: false,
-            isExactActive: false
-          });
-        }
-        return h("a", {
-          ref: el,
-          href: href.value || null,
-          // converts `""` to `null` to prevent the attribute from being added as empty (`href=""`)
-          rel,
-          target,
-          onClick: (event) => {
-            if (isExternal.value || hasTarget.value) {
-              return;
-            }
-            event.preventDefault();
-            return props.replace ? router.replace(href.value) : router.push(href.value);
-          }
-        }, slots.default?.());
-      };
-    }
-  });
-}
-const __nuxt_component_0 = /* @__PURE__ */ defineNuxtLink(nuxtLinkDefaults);
-function applyTrailingSlashBehavior(to, trailingSlash) {
-  const normalizeFn = trailingSlash === "append" ? withTrailingSlash : withoutTrailingSlash;
-  const hasProtocolDifferentFromHttp = hasProtocol(to) && !to.startsWith("http");
-  if (hasProtocolDifferentFromHttp) {
-    return to;
+});
+const _export_sfc = (sfc, props2) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props2) {
+    target[key] = val;
   }
-  return normalizeFn(to, true);
-}
+  return target;
+};
+const _sfc_setup$2 = _sfc_main$2.setup;
+_sfc_main$2.setup = (props2, ctx) => {
+  const ssrContext = useSSRContext();
+  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("components/LottieAnimation.vue");
+  return _sfc_setup$2 ? _sfc_setup$2(props2, ctx) : void 0;
+};
+const LottieAnimation = /* @__PURE__ */ Object.assign(_export_sfc(_sfc_main$2, [["__scopeId", "data-v-04786625"]]), { __name: "LottieAnimation" });
 const _sfc_main$1 = /* @__PURE__ */ defineComponent({
   __name: "error",
   __ssrInlineRender: true,
@@ -1537,102 +1524,73 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     error: {}
   },
   setup(__props) {
-    const props = __props;
-    useRouter$1();
-    const errorCode = computed(() => props.error?.statusCode || 500);
+    const props2 = __props;
+    useRouter();
+    const errorCode = computed(() => props2.error?.statusCode || 500);
+    const currentAnimation = computed(() => {
+      if (errorCode.value === 404) {
+        return Lonely404;
+      }
+      return SadWalking;
+    });
     const errorMessage = computed(() => {
-      if (props.error?.statusMessage) return props.error.statusMessage;
-      if (props.error?.message) return props.error.message;
+      if (props2.error?.statusMessage) return props2.error.statusMessage;
+      if (props2.error?.message) return props2.error.message;
       switch (errorCode.value) {
         case 404:
           return "Halaman yang Anda cari tidak ditemukan";
         case 403:
-          return "Anda tidak memiliki akses ke halaman ini";
-        case 401:
-          return "Anda harus login untuk mengakses halaman ini";
+          return "Maaf, Anda tidak memiliki izin untuk mengakses halaman ini.";
         case 500:
           return "Terjadi kesalahan pada server";
         case 502:
-          return "Server tidak dapat dihubungi";
+          return "Layanan sedang tidak dapat dihubungi saat ini.";
         case 503:
-          return "Layanan sedang dalam pemeliharaan";
+          return "Layanan sedang dalam pemeliharaan rutin.";
         default:
-          return "Terjadi kesalahan yang tidak terduga";
+          return "Terjadi kesalahan yang tidak terduga.";
       }
     });
     const errorTitle = computed(() => {
       switch (errorCode.value) {
         case 404:
           return "Halaman Tidak Ditemukan";
-        case 403:
-          return "Akses Ditolak";
-        case 401:
-          return "Autentikasi Diperlukan";
-        case 500:
-          return "Kesalahan Server";
         case 502:
-          return "Bad Gateway";
-        case 503:
-          return "Layanan Tidak Tersedia";
-        default:
-          return "Oops! Terjadi Kesalahan";
-      }
-    });
-    const errorIcon = computed(() => {
-      switch (errorCode.value) {
-        case 404:
-          return "🔍";
-        case 403:
-          return "🔒";
-        case 401:
-          return "🔐";
+          return "Koneksi Terputus";
         case 500:
-        case 502:
-        case 503:
-          return "⚠️";
+          return "Kesalahan Sistem";
         default:
-          return "❌";
+          return "Terjadi Kesalahan";
       }
     });
     return (_ctx, _push, _parent, _attrs) => {
-      const _component_NuxtLink = __nuxt_component_0;
-      _push(`<div${ssrRenderAttrs(mergeProps({ class: "min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-50 flex items-center justify-center px-4 py-12" }, _attrs))}><div class="max-w-2xl w-full"><div class="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden"><div class="bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-8 text-center"><div class="text-6xl mb-4">${ssrInterpolate(unref(errorIcon))}</div><h1 class="text-3xl font-bold text-white mb-2">${ssrInterpolate(unref(errorTitle))}</h1><div class="inline-flex items-center justify-center px-4 py-2 bg-white/20 rounded-full backdrop-blur-sm"><span class="text-sm font-semibold text-white">Error ${ssrInterpolate(unref(errorCode))}</span></div></div><div class="px-6 py-8 sm:px-10 sm:py-10"><p class="text-center text-gray-600 text-lg mb-8">${ssrInterpolate(unref(errorMessage))}</p>`);
-      if (props.error?.url) {
-        _push(`<div class="mb-8 p-4 bg-gray-50 rounded-lg border border-gray-200"><p class="text-xs font-mono text-gray-500 break-all"><span class="font-semibold">URL:</span> ${ssrInterpolate(props.error.url)}</p></div>`);
+      _push(`<div${ssrRenderAttrs(mergeProps({ class: "min-h-screen w-full flex items-center justify-center bg-white sm:bg-gray-50 px-4 sm:px-6 py-12" }, _attrs))}><div class="w-full max-w-5xl grid lg:grid-cols-2 gap-8 lg:gap-12 items-center mx-auto"><div class="space-y-6 text-center lg:text-left order-2 lg:order-1"><div class="space-y-4"><div class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-700 font-bold text-xs tracking-wide shadow-sm"> ERROR ${ssrInterpolate(unref(errorCode))}</div><h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 tracking-tight leading-tight">${ssrInterpolate(unref(errorTitle))}</h1><p class="text-base sm:text-lg text-gray-500 leading-relaxed font-medium max-w-xl mx-auto lg:mx-0">${ssrInterpolate(unref(errorMessage))}</p>`);
+      if (props2.error?.url) {
+        _push(`<div class="mt-2 p-2 bg-gray-50 rounded border border-gray-200 inline-block text-left"><p class="text-[10px] font-mono text-gray-400 break-all"><span class="font-bold text-gray-500">Source:</span> ${ssrInterpolate(props2.error.url)}</p></div>`);
       } else {
         _push(`<!---->`);
       }
-      _push(`<div class="flex flex-col sm:flex-row gap-3 justify-center"><button class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all shadow-md hover:shadow-lg active:scale-95"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg><span>Kembali ke Beranda</span></button>`);
+      _push(`</div><div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2"><button class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-sm font-bold rounded-xl text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all shadow-md hover:shadow-lg active:scale-[0.98]"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg> Kembali ke Beranda </button>`);
       if (unref(errorCode) === 500 || unref(errorCode) === 502 || unref(errorCode) === 503) {
-        _push(`<button class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all border border-gray-300 hover:border-gray-400 active:scale-95"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg><span>Muat Ulang</span></button>`);
+        _push(`<button class="inline-flex items-center justify-center px-6 py-3 border-2 border-gray-200 text-sm font-bold rounded-xl text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all shadow-sm hover:shadow active:scale-[0.98]"><svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Coba Lagi </button>`);
       } else {
-        _push(`<button class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all border border-gray-300 hover:border-gray-400 active:scale-95"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg><span>Kembali</span></button>`);
+        _push(`<button class="inline-flex items-center justify-center px-6 py-3 border-2 border-gray-200 text-sm font-bold rounded-xl text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all shadow-sm hover:shadow active:scale-[0.98]"><svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg> Kembali </button>`);
       }
-      _push(`</div></div><div class="px-6 py-4 bg-gray-50 border-t border-gray-100"><p class="text-center text-sm text-gray-500"> Jika masalah berlanjut, silakan hubungi administrator sistem. </p></div></div><div class="mt-8 text-center"><p class="text-sm text-gray-600"> Butuh bantuan? `);
-      _push(ssrRenderComponent(_component_NuxtLink, {
-        to: "/",
-        class: "text-blue-600 hover:text-blue-700 font-semibold hover:underline"
-      }, {
-        default: withCtx((_, _push2, _parent2, _scopeId) => {
-          if (_push2) {
-            _push2(` Kembali ke halaman utama `);
-          } else {
-            return [
-              createTextVNode(" Kembali ke halaman utama ")
-            ];
-          }
-        }),
-        _: 1
-      }, _parent));
-      _push(`</p></div></div></div>`);
+      _push(`</div></div><div class="order-1 lg:order-2 flex justify-center items-center relative w-full"><div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[100%] bg-gradient-to-tr from-blue-100/40 via-indigo-50/40 to-white rounded-full blur-3xl -z-10"></div><div class="${ssrRenderClass([unref(errorCode) === 404 ? "max-w-[240px] sm:max-w-xs lg:max-w-md" : "max-w-[180px] sm:max-w-[220px] lg:max-w-[300px]", "w-full transition-all duration-500 hover:scale-105"])}">`);
+      _push(ssrRenderComponent(LottieAnimation, {
+        "animation-data": unref(currentAnimation),
+        loop: true,
+        "auto-play": true
+      }, null, _parent));
+      _push(`</div></div></div></div>`);
     };
   }
 });
 const _sfc_setup$1 = _sfc_main$1.setup;
-_sfc_main$1.setup = (props, ctx) => {
+_sfc_main$1.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("error.vue");
-  return _sfc_setup$1 ? _sfc_setup$1(props, ctx) : void 0;
+  return _sfc_setup$1 ? _sfc_setup$1(props2, ctx) : void 0;
 };
 const _sfc_main = {
   __name: "nuxt-root",
@@ -1668,7 +1626,7 @@ const _sfc_main = {
           } else if (unref(SingleRenderer)) {
             ssrRenderVNode(_push, createVNode(resolveDynamicComponent(unref(SingleRenderer)), null, null), _parent);
           } else {
-            _push(ssrRenderComponent(unref(_sfc_main$2), null, null, _parent));
+            _push(ssrRenderComponent(unref(_sfc_main$3), null, null, _parent));
           }
         },
         _: 1
@@ -1677,10 +1635,10 @@ const _sfc_main = {
   }
 };
 const _sfc_setup = _sfc_main.setup;
-_sfc_main.setup = (props, ctx) => {
+_sfc_main.setup = (props2, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("node_modules/nuxt/dist/app/components/nuxt-root.vue");
-  return _sfc_setup ? _sfc_setup(props, ctx) : void 0;
+  return _sfc_setup ? _sfc_setup(props2, ctx) : void 0;
 };
 let entry;
 {
@@ -1702,5 +1660,5 @@ let entry;
 }
 const entry_default = (ssrContext) => entry(ssrContext);
 
-export { __nuxt_component_0 as _, useRuntimeConfig as a, useRouter as b, useRoute as c, createError as d, entry_default as default, asyncDataDefaults as e, fetchDefaults as f, useRequestFetch as g, defineNuxtRouteMiddleware as h, useRequestEvent as i, navigateTo as n, useNuxtApp as u };
+export { _export_sfc as _, useRoute as a, useRouter as b, createError as c, useState as d, entry_default as default, useNuxtApp as e, useRuntimeConfig as f, nuxtLinkDefaults as g, asyncDataDefaults as h, fetchDefaults as i, useRequestFetch as j, defineNuxtRouteMiddleware as k, useRequestEvent as l, navigateTo as n, resolveRouteObject as r, useAppOptions as u };
 //# sourceMappingURL=server.mjs.map

@@ -1,21 +1,25 @@
-import { d as defineEventHandler, r as readBody, u as useRuntimeConfig, c as createError, g as getCookie } from '../../../nitro/nitro.mjs';
+import { c as defineEventHandler, r as readBody, u as useRuntimeConfig, e as createError, g as getCookie } from '../../../_/nitro.mjs';
 import gql from 'graphql-tag';
 import 'node:http';
 import 'node:https';
 import 'node:events';
 import 'node:buffer';
 import 'node:fs';
-import 'node:path';
-import 'node:crypto';
 import 'node:url';
+import 'node:path';
 import 'better-sqlite3';
 import 'ipx';
+import 'node:crypto';
 
 const MUTATION_UPDATE_OPTION = gql`
-    mutation UpdateOption($name: String!, $description: String!, $email: String!, $nohp: String!, $address: String!) {
-        updateOption(name: $name, description: $description, email: $email, nohp: $nohp, address: $address) {
+    mutation UpdateOption($name: String!, $nameKet: String!, $description: String!, $unitName: String!, $unitDesc: String!, $email: String!, $nohp: String!, $address: String!) {
+        updateOption(name: $name, nameKet: $nameKet, description: $description, unitName: $unitName, unitDesc: $unitDesc, email: $email, nohp: $nohp, address: $address) {
             id
             name
+            nameKet
+            description
+            unitName
+            unitDesc
             email
             nohp
             address
@@ -25,7 +29,7 @@ const MUTATION_UPDATE_OPTION = gql`
 
 const update_post = defineEventHandler(async (event) => {
   var _a;
-  const { name, description, email, nohp, address } = await readBody(event);
+  const { name, nameKet, description, unitName, unitDesc, email, nohp, address } = await readBody(event);
   const config = useRuntimeConfig();
   const endpoint = config.public.gqlHttpEndpoint;
   if (!endpoint) {
@@ -35,7 +39,7 @@ const update_post = defineEventHandler(async (event) => {
   if (!token) {
     throw createError({ statusCode: 401, statusMessage: "Not authenticated" });
   }
-  if (!name || !description || !email || !nohp || !address) {
+  if (!name || !nameKet || !description || !unitName || !unitDesc || !email || !nohp || !address) {
     throw createError({ statusCode: 400, statusMessage: "Incomplete payload" });
   }
   try {
@@ -49,7 +53,10 @@ const update_post = defineEventHandler(async (event) => {
         query: MUTATION_UPDATE_OPTION,
         variables: {
           name,
+          nameKet,
           description,
+          unitName,
+          unitDesc,
           email,
           nohp,
           address
@@ -59,7 +66,7 @@ const update_post = defineEventHandler(async (event) => {
     if (res.errors && res.errors.length) {
       throw createError({
         statusCode: 400,
-        statusMessage: ((_a = res.errors[0]) == null ? void 0 : _a.message) || "Failed to update operating hour"
+        statusMessage: ((_a = res.errors[0]) == null ? void 0 : _a.message) || "Failed to update options"
       });
     }
     return res.data.updateOption;

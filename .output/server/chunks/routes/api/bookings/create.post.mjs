@@ -1,4 +1,4 @@
-import { d as defineEventHandler, u as useRuntimeConfig, c as createError, g as getCookie, $ as $fetch, r as readBody } from '../../../nitro/nitro.mjs';
+import { c as defineEventHandler, u as useRuntimeConfig, e as createError, g as getCookie, i as readFormData, $ as $fetch, r as readBody } from '../../../_/nitro.mjs';
 import { U as UPDATE_BOOK_STATUS } from '../../../_/update_book_status.mjs';
 import { U as UPDATE_PAYMENT } from '../../../_/update_payment.mjs';
 import 'node:http';
@@ -6,11 +6,11 @@ import 'node:https';
 import 'node:events';
 import 'node:buffer';
 import 'node:fs';
-import 'node:path';
-import 'node:crypto';
 import 'node:url';
+import 'node:path';
 import 'better-sqlite3';
 import 'ipx';
+import 'node:crypto';
 
 const MUTATION_CREATE_BOOKING = `
   mutation CreateBooking(
@@ -19,7 +19,8 @@ const MUTATION_CREATE_BOOKING = `
     $email: String!, 
     $institution: String, 
     $suratFile: Upload, 
-    $isAcademic: Boolean,
+    $sptjmFile: Upload,
+    $renterType: RenterType!,
     $details: [BookingDetailInput!]!
     $status: BookingStatus
     $paymentStatus: PaymentStatus
@@ -30,7 +31,8 @@ const MUTATION_CREATE_BOOKING = `
       email: $email, 
       institution: $institution,
       suratFile: $suratFile, 
-      isAcademic: $isAcademic,
+      sptjmFile: $sptjmFile,
+      renterType: $renterType,
       details: $details,
       status: $status,
       paymentStatus: $paymentStatus
@@ -41,20 +43,47 @@ const MUTATION_CREATE_BOOKING = `
 `;
 
 const create_post = defineEventHandler(async (event) => {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o;
   const config = useRuntimeConfig();
   const endpoint = config.public.gqlHttpEndpoint;
   if (!endpoint) throw createError({ statusCode: 500, statusMessage: "Missing GQL_HTTP_ENDPOINT" });
   const contentType = event.node.req.headers["content-type"] || "";
   if (contentType.includes("multipart/form-data")) {
     const token = getCookie(event, "admin_token");
-    const headers = {
-      "apollo-require-preflight": "true",
-      "content-type": contentType
-    };
-    if (token) headers["Authorization"] = `Bearer ${token}`;
     try {
-      const res = await fetch(endpoint, { method: "POST", headers, body: event.node.req, duplex: "half" });
+      const incomingFormData = await readFormData(event);
+      const operationsStr = incomingFormData.get("operations");
+      const mapStr = incomingFormData.get("map");
+      if (!operationsStr || !mapStr) {
+        throw createError({ statusCode: 400, statusMessage: "Missing operations or map in multipart request" });
+      }
+      const map = JSON.parse(mapStr);
+      const files = {};
+      for (const key of Object.keys(map)) {
+        const file = incomingFormData.get(key);
+        if (file instanceof File) {
+          files[key] = file;
+        }
+      }
+      const newFormData = new FormData();
+      newFormData.append("operations", operationsStr);
+      newFormData.append("map", mapStr);
+      const sortedKeys = Object.keys(files).sort();
+      for (const key of sortedKeys) {
+        const file = files[key];
+        if (file) {
+          newFormData.append(key, file);
+        }
+      }
+      const headers = {
+        "apollo-require-preflight": "true"
+      };
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers,
+        body: newFormData
+      });
       const json = await res.json();
       if ((_a = json.errors) == null ? void 0 : _a.length) {
         throw createError({ statusCode: 400, statusMessage: ((_b = json.errors[0]) == null ? void 0 : _b.message) || "Failed to create booking" });
@@ -64,6 +93,9 @@ const create_post = defineEventHandler(async (event) => {
         return bookingData;
       }
       try {
+        const operations = JSON.parse(operationsStr);
+        const renterType = ((_d = operations == null ? void 0 : operations.variables) == null ? void 0 : _d.renterType) || "UMUM";
+        const paymentStatusToSet = renterType === "AKADEMIK" ? "PAID" : "UNPAID";
         await $fetch(endpoint, {
           method: "POST",
           body: {
@@ -76,12 +108,12 @@ const create_post = defineEventHandler(async (event) => {
           method: "POST",
           body: {
             query: UPDATE_PAYMENT,
-            variables: { bookingCode: bookingData.bookingCode, paymentStatus: "UNPAID" }
+            variables: { bookingCode: bookingData.bookingCode, paymentStatus: paymentStatusToSet }
           },
           headers: { "Content-Type": "application/json", ...token && { "Authorization": `Bearer ${token}` } }
         });
       } catch (err) {
-        console.warn("Failed to auto-approve academic booking:", err == null ? void 0 : err.message);
+        console.warn("Failed to auto-approve booking:", err == null ? void 0 : err.message);
       }
       return bookingData;
     } catch (err) {
@@ -107,16 +139,16 @@ const create_post = defineEventHandler(async (event) => {
           email: body.email,
           institution: body.institution,
           suratUrl: body.suratUrl,
-          isAcademic: body.isAcademic,
+          renterType: body.renterType,
           details: body.details
         }
       },
       headers
     });
-    if ((_d = response.errors) == null ? void 0 : _d.length) {
-      throw createError({ statusCode: 400, statusMessage: ((_e = response.errors[0]) == null ? void 0 : _e.message) || "Failed to create booking" });
+    if ((_e = response.errors) == null ? void 0 : _e.length) {
+      throw createError({ statusCode: 400, statusMessage: ((_f = response.errors[0]) == null ? void 0 : _f.message) || "Failed to create booking" });
     }
-    const bookingData = (_f = response.data) == null ? void 0 : _f.createBooking;
+    const bookingData = (_g = response.data) == null ? void 0 : _g.createBooking;
     if (!(bookingData == null ? void 0 : bookingData.bookingCode)) {
       throw createError({ statusCode: 500, statusMessage: "Booking created but no booking code returned" });
     }
@@ -131,29 +163,30 @@ const create_post = defineEventHandler(async (event) => {
       },
       headers
     });
-    if ((_g = statusResponse.errors) == null ? void 0 : _g.length) {
-      console.warn("Failed to update booking status:", (_h = statusResponse.errors[0]) == null ? void 0 : _h.message);
+    if ((_h = statusResponse.errors) == null ? void 0 : _h.length) {
+      console.warn("Failed to update booking status:", (_i = statusResponse.errors[0]) == null ? void 0 : _i.message);
     }
     try {
+      const paymentStatusToSet = body.renterType === "AKADEMIK" ? "PAID" : "UNPAID";
       const paymentResponse = await $fetch(endpoint, {
         method: "POST",
         body: {
           query: UPDATE_PAYMENT,
           variables: {
             bookingCode: bookingData.bookingCode,
-            paymentStatus: "UNPAID"
+            paymentStatus: paymentStatusToSet
           }
         },
         headers
       });
-      if ((_i = paymentResponse.errors) == null ? void 0 : _i.length) {
-        console.warn("Failed to update payment status:", (_j = paymentResponse.errors[0]) == null ? void 0 : _j.message);
+      if ((_j = paymentResponse.errors) == null ? void 0 : _j.length) {
+        console.warn("Failed to update payment status:", (_k = paymentResponse.errors[0]) == null ? void 0 : _k.message);
       }
     } catch (err) {
-      const details = (err == null ? void 0 : err.data) || ((_k = err == null ? void 0 : err.response) == null ? void 0 : _k.data) || (err == null ? void 0 : err.message);
+      const details = (err == null ? void 0 : err.data) || ((_l = err == null ? void 0 : err.response) == null ? void 0 : _l.data) || (err == null ? void 0 : err.message);
       console.error("GraphQL payment mutation error:", details);
-      if ((_m = (_l = err == null ? void 0 : err.data) == null ? void 0 : _l.errors) == null ? void 0 : _m.length) {
-        throw createError({ statusCode: 400, statusMessage: ((_n = err.data.errors[0]) == null ? void 0 : _n.message) || "Failed to update payment status" });
+      if ((_n = (_m = err == null ? void 0 : err.data) == null ? void 0 : _m.errors) == null ? void 0 : _n.length) {
+        throw createError({ statusCode: 400, statusMessage: ((_o = err.data.errors[0]) == null ? void 0 : _o.message) || "Failed to update payment status" });
       }
       throw createError({ statusCode: 502, statusMessage: (err == null ? void 0 : err.message) || "Booking service unreachable" });
     }

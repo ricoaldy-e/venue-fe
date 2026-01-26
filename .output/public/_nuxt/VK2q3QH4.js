@@ -1,0 +1,1 @@
+import{_ as o,b as s,o as t,ah as n}from"./DLFbxUAz.js";const r={},c={class:"min-h-screen overflow-x-hidden"};function a(e,_){return t(),s("div",c,[n(e.$slots,"default")])}const l=o(r,[["render",a]]);export{l as default};

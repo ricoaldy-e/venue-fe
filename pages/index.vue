@@ -19,15 +19,11 @@ type StadiumCard = {
   name: string
   status?: string
   description?: string
+  bookingCount?: number // Sekarang dikirim langsung dari server
   images?: Array<{ id: number; imageUrl: string | null }>
   fields?: Array<{
     id: number
-    bookingDetails?: Array<{
-      bookingId?: number
-      Booking?: {
-        status: string
-      }
-    }>
+    status?: string
   }>
 }
 
@@ -57,22 +53,9 @@ const filteredStadions = computed(() => {
   
   const sorted = [...list].sort((a, b) => {
     if (sortBy.value === 'fields') {
-      return (b.fields?.length ?? 0) - (a.fields?.length ?? 0)
+      return activeFieldCount(b) - activeFieldCount(a)
     } else {
-      const getBookingCount = (s: StadiumCard) => {
-        const uniqueBookingIds = new Set<number>()
-        
-        s.fields?.forEach(field => {
-          field.bookingDetails?.forEach(bd => {
-            if (bd.Booking?.status === 'APPROVED' && bd.bookingId) {
-              uniqueBookingIds.add(bd.bookingId)
-            }
-          })
-        })
-        
-        return uniqueBookingIds.size
-      }
-      return getBookingCount(b) - getBookingCount(a)
+      return (b.bookingCount ?? 0) - (a.bookingCount ?? 0)
     }
   })
   
@@ -130,44 +113,38 @@ const handleSearch = () => {
 
 const getCoverImage = (stadion: StadiumCard) => stadion.images?.[0]?.imageUrl || fallbackImage
 
-const totalStadions = computed(() => stadionsData.value?.length ?? 0)
-const totalFields = computed(() =>
-  stadionsData.value?.reduce((sum, s) => sum + (s.fields?.length ?? 0), 0) ?? 0
+const totalStadions = computed(() => 
+  stadionsData.value?.filter(s => s.status === 'ACTIVE').length ?? 0
 )
 
-const activeFieldCount = (stadion?: StadiumCard) => stadion?.fields?.length ?? 0
+const activeFieldCount = (stadion?: StadiumCard) => 
+  stadion?.fields?.filter(f => f.status === 'ACTIVE').length ?? 0
 
 const totalFreeFields = computed(() =>
-  stadionsData.value?.reduce((sum, s) => sum + activeFieldCount(s), 0) ?? 0
+  stadionsData.value
+    ?.filter(s => s.status === 'ACTIVE')
+    .reduce((sum, s) => sum + activeFieldCount(s), 0) ?? 0
 )
 
-const topFreeStadions = computed(() => {
-  const list = stadionsData.value || []
-  
-  const getStadiumBookingCount = (s: StadiumCard) => {
-    const uniqueBookingIds = new Set<number>()
-    
-    s.fields?.forEach(field => {
-      field.bookingDetails?.forEach(bd => {
-        if (bd.Booking?.status === 'APPROVED' && bd.bookingId) {
-          uniqueBookingIds.add(bd.bookingId)
-        }
-      })
-    })
-    
-    const count = uniqueBookingIds.size
-    return count
+const formatNumber = (num: number) => {
+  if (num >= 1000) {
+    return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k+'
   }
+  return num.toString()
+}
+
+const topFreeStadions = computed(() => {
+  const list = (stadionsData.value || []).filter(s => s.status === 'ACTIVE')
   
   const mapped = [...list]
     .map((s) => ({
       ...s,
       freeFields: activeFieldCount(s),
-      bookingCount: getStadiumBookingCount(s),
+      bookingCountDisplay: formatNumber(s.bookingCount ?? 0),
       cover: getCoverImage(s),
     }))
-    .filter((s) => s.bookingCount > 0)
-    .sort((a, b) => b.bookingCount - a.bookingCount)
+    .filter((s) => (s.bookingCount ?? 0) > 0)
+    .sort((a, b) => (b.bookingCount ?? 0) - (a.bookingCount ?? 0))
     .slice(0, 3)
 
   if (mapped.length === 0) {
@@ -175,7 +152,7 @@ const topFreeStadions = computed(() => {
       .map((s) => ({ 
         ...s, 
         freeFields: activeFieldCount(s), 
-        bookingCount: 0,
+        bookingCountDisplay: '0',
         cover: getCoverImage(s) 
       }))
       .sort((a, b) => b.freeFields - a.freeFields)
@@ -219,42 +196,51 @@ const goToDetail = (stadionId: number) => {
             </p>
           </div>
           
-          <div class="grid w-full max-w-md grid-cols-1 gap-4 md:grid-cols-2">
+          <div class="grid w-full max-w-md grid-cols-2 gap-3 sm:gap-4">
             <div 
               @click="scrollToStadiumList"
-              class="group rounded-2xl border border-white/15 bg-white/10 backdrop-blur-md p-5 shadow-xl transition-all duration-300 hover:border-white/30 hover:bg-white/15 hover:-translate-y-1 hover:shadow-2xl cursor-pointer"
+              class="group relative overflow-hidden rounded-2xl border border-white/20 bg-white/10 p-4 sm:p-5 shadow-xl transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl cursor-pointer transform-gpu"
             >
-              <div class="flex items-start justify-between mb-3">
-                <div class="flex items-center justify-center h-10 w-10 rounded-xl bg-blue-500/20 border border-blue-400/30">
-                  <svg class="h-5 w-5 text-blue-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                  </svg>
+              <div class="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-300 pointer-events-none"></div>
+
+              <div class="relative z-10">
+                <div class="flex items-start justify-between mb-3">
+                  <div class="flex items-center justify-center h-10 w-10 rounded-xl bg-blue-500/20 border border-blue-400/30">
+                    <svg class="h-5 w-5 text-blue-300" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 3C6.48 3 2 5.24 2 8V12C2 14.76 6.48 17 12 17C17.52 17 22 14.76 22 12V8C22 5.24 17.52 3 12 3ZM4 8C4 6.34 7.58 5 12 5C16.42 5 20 6.34 20 8C20 9.66 16.42 11 12 11C7.58 11 4 9.66 4 8ZM20 12C20 12.24 19.94 12.48 19.8 12.71C18.92 14.15 15.78 15 12 15C8.22 15 5.08 14.15 4.2 12.71C4.06 12.48 4 12.24 4 12V10.74C5.77 11.64 8.64 12.25 12 12.25C15.36 12.25 18.23 11.64 20 10.74V12Z"/>
+                    </svg>
+                  </div>
                 </div>
+                <p class="text-[10px] uppercase tracking-wider text-blue-200/80 font-bold mb-1">Total Stadion</p>
+                <p class="text-2xl sm:text-4xl font-black mb-1">{{ totalStadions }}</p>
+                <p class="text-[10px] sm:text-xs text-blue-100/70 font-medium">Lokasi terdaftar</p>
               </div>
-              <p class="text-[10px] uppercase tracking-wider text-blue-200/80 font-bold mb-1">Total Stadion</p>
-              <p class="text-4xl font-black mb-1">{{ totalStadions }}</p>
-              <p class="text-xs text-blue-100/70 font-medium">Lokasi terdaftar</p>
             </div>
             
             <div 
               @click="scrollToStadiumList"
-              class="group rounded-2xl border border-white/15 bg-white/10 backdrop-blur-md p-5 shadow-xl transition-all duration-300 hover:border-white/30 hover:bg-white/15 hover:-translate-y-1 hover:shadow-2xl cursor-pointer"
+              class="group relative overflow-hidden rounded-2xl border border-white/20 bg-white/10 p-4 sm:p-5 shadow-xl transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl cursor-pointer transform-gpu"
             >
-              <div class="flex items-start justify-between mb-3">
-                <div class="flex items-center justify-center h-10 w-10 rounded-xl bg-emerald-500/20 border border-emerald-400/30">
-                  <svg class="h-5 w-5 text-emerald-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
+              <!-- Hover Overlay for "Glitch-Free" Lighting -->
+              <div class="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-300 pointer-events-none"></div>
+
+              <div class="relative z-10">
+                <div class="flex items-start justify-between mb-3">
+                  <div class="flex items-center justify-center h-10 w-10 rounded-xl bg-emerald-500/20 border border-emerald-400/30">
+                    <svg class="h-5 w-5 text-emerald-300" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M4 5C2.9 5 2 5.9 2 7V17C2 18.1 2.9 19 4 19H20C21.1 19 22 18.1 22 17V7C22 5.9 21.1 5 20 5H4ZM4 7H11V17H4V7ZM13 7H20V17H13V7ZM9 9C8.45 9 8 9.45 8 10C8 10.55 8.45 11 9 11C9.55 11 10 10.55 10 10C10 9.45 9.55 9 9 9ZM15 9C14.45 9 14 9.45 14 10C14 10.55 14.45 11 15 11C15.55 11 16 10.55 16 10C16 9.45 15.55 9 15 9Z"/>
+                    </svg>
+                  </div>
                 </div>
+                <p class="text-[10px] uppercase tracking-wider text-blue-200/80 font-bold mb-1">Lapangan Aktif</p>
+                <p class="text-2xl sm:text-4xl font-black mb-1">{{ totalFreeFields }}</p>
+                <p class="text-[10px] sm:text-xs text-blue-100/70 font-medium">Siap dijadwalkan</p>
               </div>
-              <p class="text-[10px] uppercase tracking-wider text-blue-200/80 font-bold mb-1">Lapangan Aktif</p>
-              <p class="text-4xl font-black mb-1">{{ totalFreeFields }}</p>
-              <p class="text-xs text-blue-100/70 font-medium">Siap dijadwalkan</p>
             </div>
           </div>
         </div>
 
-        <div class="relative z-10 mt-4 space-y-4">
+        <div class="relative z-10 mt-6 space-y-4">
           <div class="flex items-center justify-between">
             <h3 class="text-lg font-bold text-white flex items-center gap-2">
               <svg class="h-5 w-5 text-amber-400" fill="currentColor" viewBox="0 0 24 24">
@@ -293,7 +279,7 @@ const goToDetail = (stadionId: number) => {
                       <svg class="h-3 w-3 text-amber-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
                       </svg>
-                      <span><span class="font-bold text-white">{{ stadion.bookingCount }}</span> orang telah booking</span>
+                      <span><span class="font-bold text-white">{{ stadion.bookingCountDisplay }}</span> orang telah booking</span>
                     </div>
                     <div class="flex items-center gap-1.5 text-blue-100/80">
                       <svg class="h-3 w-3 text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -375,7 +361,16 @@ const goToDetail = (stadionId: number) => {
           </div>
           <div>
             <h3 class="text-lg font-bold text-gray-900 mb-2">Gagal Memuat Data</h3>
-            <p class="text-sm text-gray-600">{{ error.message }}</p>
+            <p class="text-sm text-gray-600 max-w-xs mx-auto leading-relaxed">
+              Layanan sedang tidak tersedia saat ini. Mohon periksa koneksi internet Anda atau coba muat ulang halaman.
+            </p>
+            <details class="group mt-2">
+              <summary class="cursor-pointer text-xs text-gray-400 hover:text-gray-600 transition-colors select-none list-none flex items-center justify-center gap-1">
+                <span>Detail Error</span>
+                <svg class="w-3 h-3 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+              </summary>
+              <pre class="mt-2 p-3 bg-gray-50 rounded-lg text-[10px] text-red-500 font-mono text-left overflow-x-auto border border-gray-100 whitespace-pre-wrap break-all">{{ error.message }}</pre>
+            </details>
           </div>
           <button 
             class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#1f2a56] to-[#0f1a3c] px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:-translate-y-0.5" 
@@ -458,8 +453,8 @@ const goToDetail = (stadionId: number) => {
                   <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
                   </svg>
-                  <span class="font-semibold text-gray-700">{{ stadion.fields?.length ?? 0 }}</span>
-                  <span>Lapangan</span>
+                  <span class="font-semibold text-gray-700">{{ activeFieldCount(stadion) }}</span>
+                  <span>Lapangan Aktif</span>
                 </div>
                 <div class="flex items-center gap-1 text-sm font-bold text-blue-600 group-hover:translate-x-1 transition-transform">
                   Lihat Jadwal
@@ -512,7 +507,6 @@ const goToDetail = (stadionId: number) => {
       </section>
     </div>
 
-    <!-- WhatsApp Floating Button -->
     <ClientWhatsAppFloatingButton />
   </div>
 </template>

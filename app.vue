@@ -1,11 +1,20 @@
 <script setup lang="ts">
 const isHydrated = ref(false)
-const { fetchOptions } = useAppOptions()
+const { fetchOptions, options } = useAppOptions()
 
-// Fetch options exactly once when the app app starts (client & server)
+const errorDismissed = useState<boolean>('app-error-dismissed', () => false)
+
 await callOnce(async () => {
   await fetchOptions()
 })
+
+if (options.value.error && !errorDismissed.value) {
+  throw createError({
+    statusCode: 502,
+    statusMessage: 'Layanan tidak tersedia. Silakan coba lagi nanti.',
+    fatal: true
+  })
+}
 
 onMounted(() => {
   isHydrated.value = true

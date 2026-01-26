@@ -29,7 +29,6 @@ export interface UseBookingCartReturn {
   clearCart: () => void
   hasSlot: (slotKey: string) => boolean
   setStadion: (id: number, name: string) => void
-  canAddMoreSlots: Ref<boolean>
   timeRemaining: Ref<number>
 }
 
@@ -96,10 +95,6 @@ export const useBookingCart = (): UseBookingCartReturn => {
   )
   
   const isEmpty = computed(() => totalSlots.value === 0)
-  
-  const canAddMoreSlots = computed(() => 
-    totalSlots.value < BOOKING.MAX_SLOTS_PER_BOOKING
-  )
 
   const isExpired = computed(() => {
     if (!cart.value.createdAt) return false
@@ -135,10 +130,6 @@ export const useBookingCart = (): UseBookingCartReturn => {
     }
 
     if (hasSlot(slot.key)) {
-      return false
-    }
-
-    if (!canAddMoreSlots.value) {
       return false
     }
 
@@ -189,7 +180,6 @@ export const useBookingCart = (): UseBookingCartReturn => {
     clearCart,
     hasSlot,
     setStadion,
-    canAddMoreSlots,
     timeRemaining,
   }
 }

@@ -1,12 +1,13 @@
 import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
 import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
 
 export interface Field {
   id: string
   name: string
   stadionId: number
-  status: string 
+  status: string
   Stadion: { id: string; name: string } | null
 }
 
@@ -37,6 +38,7 @@ export interface OperationalField {
 
 dayjs.extend(isBetween)
 dayjs.extend(utc)
+dayjs.extend(timezone)
 
 export interface DashboardCardItem {
   id: string
@@ -53,32 +55,32 @@ export interface DashboardCardItem {
 }
 
 export const useDashboardLogic = () => {
-  
+
   const getDailyHours = (opHours: { openHour: number, closeHour: number }) => {
     return Math.max(0, opHours.closeHour - opHours.openHour)
   }
 
   const calculateDailyStats = (
-    fields: Field[], 
-    bookings: Booking[], 
+    fields: Field[],
+    bookings: Booking[],
     opHours: { openHour: number, closeHour: number },
     targetDate: string
   ): DashboardCardItem[] => {
-    
+
     const dailyCapacity = getDailyHours(opHours)
 
     return fields.map(field => {
       let bookedCount = 0
 
       bookings.forEach(b => {
-        if (b.status === 'CANCELLED') return 
+        if (b.status === 'CANCELLED') return
 
         b.details.forEach(d => {
-            const dbDate = dayjs(d.bookingDate).utc().format('YYYY-MM-DD')
+          const dbDate = dayjs(d.bookingDate).tz('Asia/Jakarta').format('YYYY-MM-DD')
 
-            if (String(d.fieldId) === String(field.id) && dbDate === targetDate) {
-                bookedCount++
-            }
+          if (String(d.fieldId) === String(field.id) && dbDate === targetDate) {
+            bookedCount++
+          }
         })
       })
 
@@ -122,7 +124,7 @@ export const useDashboardLogic = () => {
 
     const start = dayjs(startDate).startOf('day')
     const end = dayjs(endDate).endOf('day')
-    const totalDays = end.diff(start, 'day') + 1 
+    const totalDays = end.diff(start, 'day') + 1
     const hoursPerDay = getDailyHours(opHours)
     const totalRangeCapacity = hoursPerDay * totalDays
 
@@ -130,15 +132,15 @@ export const useDashboardLogic = () => {
       let rangeBookedCount = 0
 
       bookings.forEach(b => {
-        if (b.status === 'CANCELLED') return 
+        if (b.status === 'CANCELLED') return
 
         b.details.forEach(d => {
-            const dDate = dayjs(d.bookingDate).utc()
-            
-            if (String(d.fieldId) === String(field.id) && 
-               (dDate.isSame(start, 'day') || dDate.isSame(end, 'day') || dDate.isBetween(start, end, 'day', '[]'))) {
-                rangeBookedCount++
-            }
+          const dDate = dayjs(d.bookingDate).tz('Asia/Jakarta')
+
+          if (String(d.fieldId) === String(field.id) &&
+            (dDate.isSame(start, 'day') || dDate.isSame(end, 'day') || dDate.isBetween(start, end, 'day', '[]'))) {
+            rangeBookedCount++
+          }
         })
       })
 
@@ -149,11 +151,11 @@ export const useDashboardLogic = () => {
       let statusColor = 'bg-blue-50 text-blue-700 border-blue-200'
 
       if (rangeBookedCount === 0) {
-          statusLabel = 'Kosong (0 Jam)'
-          statusColor = 'bg-gray-100 text-gray-600 border-gray-200'
+        statusLabel = 'Kosong (0 Jam)'
+        statusColor = 'bg-gray-100 text-gray-600 border-gray-200'
       } else if (occupancyRate > 80) {
-          statusLabel = 'Sangat Sibuk'
-          statusColor = 'bg-orange-100 text-orange-700 border-orange-200'
+        statusLabel = 'Sangat Sibuk'
+        statusColor = 'bg-orange-100 text-orange-700 border-orange-200'
       }
 
       return {

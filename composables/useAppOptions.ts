@@ -12,7 +12,7 @@ export const useAppOptions = () => {
     description: 'Platform booking lapangan olahraga terpercaya untuk Sivitas Akademika Universitas Diponegoro.',
     unitName: 'UPT Layanan Seni, Budaya dan Olahraga',
     unitDesc: 'Unit Pelaksana Teknis untuk mengelola fasilitas olahraga di lingkungan Universitas Diponegoro',
-    email: 'contact@venueundip.id',
+    email: 'helpdesk@undip.ac.id',
     nohp: '+62 851 6566 0339',
     address: 'Jl. Prof. Soedarto, Tembalang, Kec. Tembalang, Kota Semarang, Jawa Tengah'
   }
@@ -51,7 +51,10 @@ export const useAppOptions = () => {
       return options.value.data
     } catch (err) {
       console.error('[useAppOptions] Failed to fetch:', err)
-      options.value.error = err as Error
+      // Store only the error message (string) to avoid SSR serialization issues
+      // FetchError objects cannot be serialized by Nuxt's devalue
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error fetching options'
+      options.value.error = errorMessage
       // On error, if we have no data, set defaults so app doesn't break
       if (!options.value.data) {
         options.value.data = defaults

@@ -1,14 +1,14 @@
-import { d as defineEventHandler, u as useRuntimeConfig, c as createError, g as getCookie, b as getQuery, $ as $fetch } from '../../nitro/nitro.mjs';
+import { c as defineEventHandler, u as useRuntimeConfig, e as createError, g as getCookie, j as getQuery, $ as $fetch } from '../../_/nitro.mjs';
 import 'node:http';
 import 'node:https';
 import 'node:events';
 import 'node:buffer';
 import 'node:fs';
-import 'node:path';
-import 'node:crypto';
 import 'node:url';
+import 'node:path';
 import 'better-sqlite3';
 import 'ipx';
+import 'node:crypto';
 
 const QUERY_GET_FIELDS = `
   query FieldsDashboard($stadionId: ID) {
@@ -18,6 +18,7 @@ const QUERY_GET_FIELDS = `
       name
       description
       pricePerHour
+      priceTendik
       status
       Stadion {
         id

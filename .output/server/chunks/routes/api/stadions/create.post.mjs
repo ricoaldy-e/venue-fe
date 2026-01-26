@@ -1,14 +1,14 @@
-import { d as defineEventHandler, u as useRuntimeConfig, c as createError, g as getCookie, $ as $fetch } from '../../../nitro/nitro.mjs';
+import { c as defineEventHandler, u as useRuntimeConfig, e as createError, g as getCookie, r as readBody, $ as $fetch } from '../../../_/nitro.mjs';
 import 'node:http';
 import 'node:https';
 import 'node:events';
 import 'node:buffer';
 import 'node:fs';
-import 'node:path';
-import 'node:crypto';
 import 'node:url';
+import 'node:path';
 import 'better-sqlite3';
 import 'ipx';
+import 'node:crypto';
 
 const MUTATION_CREATE_STADION = `
   mutation CreateStadion(
@@ -46,6 +46,7 @@ const create_post = defineEventHandler(async (event) => {
   if (!endpoint) throw createError({ statusCode: 500, statusMessage: "Missing GQL_HTTP_ENDPOINT" });
   const token = getCookie(event, "admin_token");
   if (!token) throw createError({ statusCode: 401, statusMessage: "Not authenticated" });
+  const body = await readBody(event);
   try {
     const response = await $fetch(endpoint, {
       method: "POST",
