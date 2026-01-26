@@ -590,13 +590,13 @@ const _routes = [
     name: "admin-bookings-id-bookingCode",
     path: "/admin/bookings/:id()/:bookingCode()",
     meta: { ...__nuxt_page_meta$1 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./_bookingCode_-B14ukC87.mjs')
+    component: () => import('./_bookingCode_-BBzQyRyY.mjs')
   },
   {
     name: "admin-bookings-detail-bookingCode",
     path: "/admin/bookings/detail/:bookingCode()",
     meta: { ...__nuxt_page_meta || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./_bookingCode_-C_u85Z4n.mjs')
+    component: () => import('./_bookingCode_-DdzbCFmP.mjs')
   }
 ];
 const _wrapInTransition = (props2, children) => {
