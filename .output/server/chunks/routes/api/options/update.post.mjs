@@ -1,5 +1,4 @@
 import { c as defineEventHandler, r as readBody, u as useRuntimeConfig, e as createError, g as getCookie } from '../../../_/nitro.mjs';
-import gql from 'graphql-tag';
 import 'node:http';
 import 'node:https';
 import 'node:events';
@@ -11,7 +10,7 @@ import 'better-sqlite3';
 import 'ipx';
 import 'node:crypto';
 
-const MUTATION_UPDATE_OPTION = gql`
+const MUTATION_UPDATE_OPTION = `
     mutation UpdateOption($name: String!, $nameKet: String!, $description: String!, $unitName: String!, $unitDesc: String!, $email: String!, $nohp: String!, $address: String!) {
         updateOption(name: $name, nameKet: $nameKet, description: $description, unitName: $unitName, unitDesc: $unitDesc, email: $email, nohp: $nohp, address: $address) {
             id

@@ -278,7 +278,7 @@ const paginationSummary = computed(() => {
   return `Menampilkan ${start}-${end} dari ${p.total} data`
 })
 
-// Payment Summary - Menggunakan data dari SERVER (AKURAT untuk semua data sesuai filter)
+// Payment Summary - Menggunakan data dari SERVER
 // PENTING: Ini menampilkan total dari SEMUA data yang sesuai filter, bukan hanya halaman ini
 const paymentSummary = computed(() => {
   const summary = serverSummary.value
@@ -299,13 +299,11 @@ const paymentSummary = computed(() => {
   }
 })
 
-// Print handler
 const handlePrint = () => {
   printTimestamp.value = dayjs().format('DD MMMM YYYY, HH:mm') + ' WIB'
   setTimeout(() => window.print(), 100)
 }
 
-// Helper functions
 const formatDate = (dateString: string) => {
   const date = new Date(dateString)
   return date.toLocaleDateString('id-ID', { 
@@ -321,7 +319,6 @@ const formatDate = (dateString: string) => {
 const formatSlotDate = (booking: BookingHistory) => {
   if (!booking.details || booking.details.length === 0) return '-'
   
-  // Get all unique dates from booking details sorted
   const uniqueDates = [...new Set(booking.details.map(d => d.bookingDate))].sort()
   
   if (uniqueDates.length === 0) return '-'
@@ -330,7 +327,6 @@ const formatSlotDate = (booking: BookingHistory) => {
     return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' })
   }
   
-  // Check if dates are consecutive
   const isConsecutive = (dates: string[]) => {
     for (let i = 1; i < dates.length; i++) {
       const prev = new Date(dates[i - 1]!)
@@ -346,12 +342,10 @@ const formatSlotDate = (booking: BookingHistory) => {
     return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' })
   }
   
-  // If all dates are consecutive, show range with '-'
   if (isConsecutive(uniqueDates)) {
     return `${formatDateItem(uniqueDates[0]!)} - ${formatDateItem(uniqueDates[uniqueDates.length - 1]!)}`
   }
   
-  // Non-consecutive: group consecutive ranges
   const groups: string[][] = []
   let currentGroup: string[] = [uniqueDates[0]!]
   
@@ -397,7 +391,6 @@ const getFieldName = (booking: BookingHistory) => {
   return `${fieldNames[0]} (+${fieldNames.length - 1})`
 }
 
-// Reactive stadium name mapping
 const stadiumNameMap = computed(() => {
   const map = new Map<number, string>()
   if (stadions.value && stadions.value.length > 0) {
@@ -408,7 +401,6 @@ const stadiumNameMap = computed(() => {
   return map
 })
 
-// Reactive stadium name getter
 const getStadiumName = (booking: BookingHistory) => {
   if (!booking.details || booking.details.length === 0) return '-'
 
@@ -460,7 +452,6 @@ const getPaymentText = (status: string) => {
   return status === 'PAID' ? 'Lunas' : 'Belum Bayar'
 }
 
-// Print Handling - Fetch ALL data before printing
 const isPrinting = ref(false)
 const originalItemsPerPage = ref(10)
 
@@ -468,27 +459,19 @@ const printAllData = async () => {
   if (isPrinting.value) return
   isPrinting.value = true
   
-  // Set timestamp
   printTimestamp.value = dayjs().format('DD MMMM YYYY, HH:mm WIB')
   
-  // Save current pagination state
   originalItemsPerPage.value = itemsPerPage.value
   
-  // Set limit to total records to fetch EVERYTHING
-  // If total is 0, use a safe default like 1000
   const totalRecords = pagination.value.total > 0 ? pagination.value.total : 1000
   itemsPerPage.value = totalRecords
   
   try {
-    // Wait for data to refresh with new limit
     await refresh()
     
-    // Small delay to ensure DOM is updated
     setTimeout(() => {
       window.print()
       
-      // Restore pagination after print dialog is closed (approximation)
-      // Browsers block JS during print dialog, so this runs after
       itemsPerPage.value = originalItemsPerPage.value
       isPrinting.value = false
       refresh() 
@@ -1124,16 +1107,14 @@ const printAllData = async () => {
     -webkit-filter: none !important;
   }
 
-  /* Professional Table Structure */
   table {
     width: 100%;
     border-collapse: collapse;
     font-size: 8pt;
-    border: 1px solid #4b5563; /* Gray-600 */
+    border: 1px solid #4b5563;
     margin-bottom: 20px;
   }
 
-  /* Table Header */
   thead {
     display: table-header-group;
     page-break-inside: avoid;
@@ -1143,31 +1124,28 @@ const printAllData = async () => {
     background-color: transparent !important;
   }
 
-  /* Match Dashboard Print Style: Black Borders, 9px Font */
   table {
     width: 100%;
     border-collapse: collapse;
     font-size: 9px;
-    border: 1px solid #111827; /* Gray-900/Black */
+    border: 1px solid #111827;
     margin-bottom: 20px;
   }
 
   thead th {
-    border: 1px solid #111827; /* Gray-900/Black */
-    padding: 4px 6px; /* Compact padding like dashboard */
+    border: 1px solid #111827;
+    padding: 4px 6px;
     font-weight: 800;
     text-transform: uppercase;
     color: #111827;
     text-align: center;
   }
   
-  /* Specific alignments */
   thead th:nth-child(2)
   {
     text-align: left;
   }
 
-  /* Table Body */
   tbody tr {
     page-break-inside: avoid;
     page-break-after: auto;
@@ -1178,13 +1156,12 @@ const printAllData = async () => {
   }
 
   tbody td {
-    border: 1px solid #111827; /* Gray-900/Black */
-    padding: 4px 6px; /* Compact padding */
+    border: 1px solid #111827;
+    padding: 4px 6px;
     vertical-align: middle;
     color: #000;
   }
 
-  /* Ensure content wrapping */
   th, td {
     word-wrap: break-word;
     overflow-wrap: break-word;
@@ -1199,7 +1176,6 @@ const printAllData = async () => {
     margin: 1.5cm 1.5cm 1.5cm 1.5cm;
   }
   
-  /* Page Footer with Numbering */
   @page {
     @bottom-center {
       content: "Halaman " counter(page) " dari " counter(pages);

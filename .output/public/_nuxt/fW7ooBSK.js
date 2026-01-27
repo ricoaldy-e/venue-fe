@@ -1,0 +1,1 @@
+import"./DLsuPJG-.js";const s=globalThis.setInterval;export{s};

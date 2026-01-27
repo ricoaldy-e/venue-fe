@@ -646,7 +646,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
               <li 
                 v-for="facility in stadion?.facilities" 
                 :key="facility.Facility.id" 
-                class="flex items-center gap-2 sm:gap-2.5 text-xs sm:text-sm bg-gray-50 rounded-lg px-2.5 sm:px-3 py-2 sm:py-2.5 border border-gray-100 hover:bg-white hover:border-gray-300 hover:shadow-sm hover:scale-[1.02] transition-all"
+                class="flex items-center gap-2 sm:gap-2.5 text-xs sm:text-sm bg-gray-50 rounded-lg px-2.5 sm:px-3 py-2 sm:py-2.5 border border-gray-100 [@media(hover:hover)]:hover:bg-white [@media(hover:hover)]:hover:border-gray-300 [@media(hover:hover)]:hover:shadow-sm [@media(hover:hover)]:hover:scale-[1.02] transition-all"
               >
                 <div class="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg bg-gray-100 border border-gray-200 text-[#1f2a56]">
                   <Icon
@@ -901,20 +901,20 @@ watch(() => selectedSlots.value.length, (newLength) => {
                     class="group relative rounded-lg sm:rounded-xl border p-2 sm:p-3 text-left shadow-sm transition-all overflow-hidden"
                     :class="[
                       isSlotBooked(Number(field.id), Number(slot.start.split(':')[0]))
-                        ? 'bg-blue-50 text-blue-600 border-blue-200 cursor-pointer hover:bg-blue-100 hover:border-blue-300'
+                        ? 'bg-blue-50 text-blue-600 border-blue-200 cursor-pointer [@media(hover:hover)]:hover:bg-blue-100 [@media(hover:hover)]:hover:border-blue-300'
                         : field.status !== 'ACTIVE'
                         ? 'bg-orange-50 text-orange-400 border-orange-100 cursor-not-allowed'
                         : isSelectedDatePastOrToday()
                         ? 'bg-gray-50 text-gray-400 border-gray-200 cursor-not-allowed opacity-70'
                         : isSlotSelected(Number(field.id), Number(slot.start.split(':')[0]))
                         ? 'bg-[#1f2a56] text-white border-[#1f2a56] shadow-md ring-2 ring-[#1f2a56] ring-offset-2'
-                        : 'bg-white text-gray-900 border-gray-200 hover:border-emerald-500 hover:bg-emerald-50 hover:shadow-lg hover:shadow-emerald-500/20 hover:scale-105 active:scale-100 cursor-pointer'
+                        : 'bg-white text-gray-900 border-gray-200 [@media(hover:hover)]:hover:border-emerald-500 [@media(hover:hover)]:hover:bg-emerald-50 [@media(hover:hover)]:hover:shadow-lg [@media(hover:hover)]:hover:shadow-emerald-500/20 [@media(hover:hover)]:hover:scale-105 active:scale-100 cursor-pointer'
                     ]"
                     @click="handleSlotClick(Number(field.id), Number(slot.start.split(':')[0]), Number(slot.price), field.name, field.priceTendik)"
                   >
                     <div
                       v-if="isSlotBooked(Number(field.id), Number(slot.start.split(':')[0]))"
-                      class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-[#1f2a56]/90 opacity-0 backdrop-blur-[2px] transition-all duration-300 group-hover:opacity-100"
+                      class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-[#1f2a56]/90 opacity-0 backdrop-blur-[2px] transition-all duration-300 [@media(hover:hover)]:group-hover:opacity-100"
                     >
                       <svg class="mb-1 h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -928,7 +928,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
 
                     <div
                       v-if="isSlotBooked(Number(field.id), Number(slot.start.split(':')[0]))"
-                      class="flex items-center justify-between mb-1 group-hover:opacity-0 transition-opacity"
+                      class="flex items-center justify-between mb-1 [@media(hover:hover)]:group-hover:opacity-0 transition-opacity"
                     >
                       <p class="text-[10px] sm:text-[0.65rem] font-bold text-blue-700 truncate flex-1 pr-1">
                         {{ getFirstName(getBookingInfo(Number(field.id), Number(slot.start.split(':')[0]))?.name) }}
@@ -960,7 +960,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
                       class="text-[10px] sm:text-[0.65rem] uppercase tracking-wide font-semibold"
                       :class="[
                         isSlotBooked(Number(field.id), Number(slot.start.split(':')[0])) 
-                          ? 'text-blue-500 group-hover:opacity-0 transition-opacity' 
+                          ? 'text-blue-500 [@media(hover:hover)]:group-hover:opacity-0 transition-opacity' 
                           : field.status !== 'ACTIVE'
                           ? 'text-orange-400'
                           : isSelectedDatePastOrToday()
@@ -976,7 +976,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
                       class="text-sm sm:text-base font-bold mt-0.5"
                       :class="[
                         isSlotBooked(Number(field.id), Number(slot.start.split(':')[0]))
-                          ? 'text-blue-700 group-hover:opacity-0 transition-opacity'
+                          ? 'text-blue-700 [@media(hover:hover)]:group-hover:opacity-0 transition-opacity'
                           : field.status !== 'ACTIVE'
                           ? 'text-orange-600'
                           : isSelectedDatePastOrToday()
@@ -991,7 +991,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
                     <div class="flex items-center justify-between mt-1">
                       <p
                         v-if="isSlotBooked(Number(field.id), Number(slot.start.split(':')[0]))"
-                        class="text-[10px] sm:text-xs font-semibold text-blue-600 group-hover:opacity-0 transition-opacity"
+                        class="text-[10px] sm:text-xs font-semibold text-blue-600 [@media(hover:hover)]:group-hover:opacity-0 transition-opacity"
                       >
                         Booked
                       </p>

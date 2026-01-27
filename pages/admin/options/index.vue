@@ -29,10 +29,10 @@ type OptionRecord = {
 
 const FALLBACK_OPTIONS = {
   name: "VENUE UNDIP",
-  nameKet: "Booking Lapangan Olahraga Universitas Diponegoro",
+  nameKet: "Sistem Reservasi Fasilitas Olahraga Universitas Diponegoro",
   description: "Platform booking lapangan olahraga terpercaya untuk Sivitas Akademika Universitas Diponegoro.",
   unitName: "UPT Layanan Seni, Budaya dan Olahraga",
-  unitDesc: "Unit Pelaksana Teknis untuk mengelola fasilitas olahraga di lingkungan Universitas Diponegoro",
+  unitDesc: "Unit Pelaksana Teknis yang mengelola fasilitas seni, budaya, dan olahraga di lingkungan Universitas Diponegoro",
   email: "helpdesk@undip.ac.id",
   nohp: "+62 851 6566 0339",
   address: "Jl. Prof. Soedarto, Tembalang, Kec. Tembalang, Kota Semarang, Jawa Tengah",

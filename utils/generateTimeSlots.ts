@@ -9,9 +9,9 @@ interface Slot {
 }
 
 export function generateTimeSlots(
-  startHour = 8,
+  startHour = 6,
   endHour = 22,
-  pricePerHour = 0, // 100000,
+  pricePerHour = 0,
   bookedSlots: number[] = []
 ): Slot[] {
   const slots: Slot[] = []

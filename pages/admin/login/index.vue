@@ -112,45 +112,39 @@ const onSubmit = async () => {
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col items-center justify-center bg-ds-gradient-blue px-6 py-8 relative overflow-hidden">
-    <!-- Decorative background elements -->
+  <div class="flex min-h-screen flex-col items-center justify-center bg-ds-gradient-blue px-4 py-8 md:py-0 relative overflow-hidden">
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
       <div class="absolute -top-40 -right-40 w-80 h-80 bg-ds-blue-600/10 rounded-full blur-3xl"></div>
       <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-ds-blue-700/10 rounded-full blur-3xl"></div>
     </div>
 
-    <!-- Logo and Title Section -->
-    <div class="flex flex-col items-center mb-6 relative z-10 animate-fade-in">
-      <div class="flex justify-center mb-3 transform transition-transform duration-300 hover:scale-105">
+    <div class="flex flex-col items-center mb-6 md:mb-3 relative z-10 animate-fade-in">
+      <div class="flex justify-center mb-3 md:mb-2 transform transition-transform duration-300 hover:scale-105">
         <div class="relative">
           <img
             src="~/assets/images/VENUE-UNDIP-LOGO.png"
             alt="Venue UNDIP Logo"
-            class="w-20 h-20 sm:w-20 sm:h-20 object-contain relative z-10 drop-shadow-2xl"
+            class="w-20 h-20 sm:w-20 sm:h-20 md:w-16 md:h-16 object-contain relative z-10 drop-shadow-2xl"
           />
         </div>
       </div>
-      <h1 class="text-2xl sm:text-3xl font-bold text-ds-surface tracking-wide drop-shadow-lg">
+      <h1 class="text-2xl sm:text-3xl md:text-2xl font-bold text-ds-surface tracking-wide drop-shadow-lg text-center">
         {{ appName }}
       </h1>
       <div class="mt-2 h-0.5 w-16 bg-gradient-to-r from-transparent via-white to-transparent rounded-full"></div>
     </div>
 
-    <!-- Login Card -->
     <div
-      class="flex w-full max-w-sm flex-col items-center rounded-2xl border border-white/10 bg-white/95 backdrop-blur-xl px-6 py-7 text-center shadow-2xl relative z-10 animate-slide-up"
+      class="flex w-full max-w-sm flex-col items-center rounded-2xl border border-white/10 bg-white/95 backdrop-blur-xl px-5 sm:px-6 py-7 md:py-4 text-center shadow-2xl relative z-10 animate-slide-up mx-auto"
     >
-      <!-- Header -->
-      <div class="mb-6">
-        <h2 class="text-xl font-bold text-ds-blue-900 mb-1.5 tracking-tight">Operator Login</h2>
+      <div class="mb-6 md:mb-3">
+        <h2 class="text-xl md:text-lg font-bold text-ds-blue-900 mb-1.5 tracking-tight">Operator Login</h2>
         <p class="text-xs text-ds-muted">
           Masukkan kredensial Anda untuk melanjutkan
         </p>
       </div>
 
-      <!-- Login Form -->
-      <form @submit.prevent="onSubmit" class="grid gap-4 w-full text-left">
-        <!-- Email Field -->
+      <form @submit.prevent="onSubmit" class="grid gap-4 md:gap-3 w-full text-left">
         <label class="grid gap-1.5">
           <span class="text-xs font-semibold text-ds-text flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5 text-ds-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -160,7 +154,7 @@ const onSubmit = async () => {
           </span>
           <div
             :class="[
-              'relative flex items-center rounded-lg border-2 px-3 h-10 transition-all duration-300',
+              'relative flex items-center rounded-lg border-2 px-3 h-10 md:h-9 transition-all duration-300',
               errorField === 'email'
                 ? 'border-red-500 bg-red-50/50 ring-4 ring-red-100'
                 : 'border-gray-200 bg-gray-50/50 focus-within:border-ds-blue-600 focus-within:bg-white focus-within:ring-4 focus-within:ring-ds-blue-100'
@@ -177,7 +171,6 @@ const onSubmit = async () => {
           </div>
         </label>
 
-        <!-- Password Field -->
         <label class="grid gap-1.5">
           <span class="text-xs font-semibold text-ds-text flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5 text-ds-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -187,7 +180,7 @@ const onSubmit = async () => {
           </span>
           <div
             :class="[
-              'relative flex items-center rounded-lg border-2 px-3 h-10 transition-all duration-300',
+              'relative flex items-center rounded-lg border-2 px-3 h-10 md:h-9 transition-all duration-300',
               errorField === 'password'
                 ? 'border-red-500 bg-red-50/50 ring-4 ring-red-100'
                 : 'border-gray-200 bg-gray-50/50 focus-within:border-ds-blue-600 focus-within:bg-white focus-within:ring-4 focus-within:ring-ds-blue-100'
@@ -245,7 +238,7 @@ const onSubmit = async () => {
           </span>
           <div 
             :class="[
-              'relative flex items-center justify-center rounded-lg border-2 p-3 transition-all duration-300 min-h-[70px]',
+              'relative flex items-center justify-center rounded-lg border-2 p-3 transition-all duration-300 min-h-[70px] md:min-h-[60px]',
               errorField === 'token'
                 ? 'border-red-500 bg-red-50/50'
                 : token 
@@ -290,7 +283,7 @@ const onSubmit = async () => {
         <button
           type="submit"
           :disabled="loading"
-          class="relative flex h-10 w-full items-center justify-center rounded-lg bg-gradient-to-r from-ds-blue-700 to-ds-blue-800 text-white font-semibold text-sm shadow-lg hover:shadow-xl hover:from-ds-blue-800 hover:to-ds-blue-900 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] overflow-hidden group"
+          class="relative flex h-10 md:h-9 w-full items-center justify-center rounded-lg bg-gradient-to-r from-ds-blue-700 to-ds-blue-800 text-white font-semibold text-sm shadow-lg hover:shadow-xl hover:from-ds-blue-800 hover:to-ds-blue-900 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] overflow-hidden group"
         >
           <span class="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
           <span class="relative flex items-center gap-2">
@@ -303,13 +296,11 @@ const onSubmit = async () => {
         </button>
       </form>
 
-      <!-- Footer Text -->
-      <p class="mt-5 text-[10px] text-ds-muted/80">
+      <p class="mt-5 md:mt-3 text-[10px] text-ds-muted/80">
         Sistem Booking Venue Olahraga Universitas Diponegoro
       </p>
     </div>
 
-    <!-- Copyright -->
     <p class="mt-5 text-[10px] text-white/60 relative z-10">
       &copy; {{ new Date().getFullYear() }} {{ appName }}. All rights reserved.
     </p>

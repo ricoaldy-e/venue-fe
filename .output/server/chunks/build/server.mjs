@@ -450,7 +450,7 @@ const _routes = [
   {
     name: "index",
     path: "/",
-    component: () => import('./index-1WlK_IGd.mjs')
+    component: () => import('./index-BLcUisxh.mjs')
   },
   {
     name: "admin",
@@ -462,7 +462,7 @@ const _routes = [
     name: "venues-id",
     path: "/venues/:id()",
     meta: __nuxt_page_meta$j || {},
-    component: () => import('./_id_-B8-If4lX.mjs')
+    component: () => import('./_id_-BRsGil-D.mjs')
   },
   {
     name: "booking-order",
@@ -479,7 +479,7 @@ const _routes = [
     name: "admin-login",
     path: "/admin/login",
     meta: __nuxt_page_meta$h || {},
-    component: () => import('./index-DSuFHVD-.mjs')
+    component: () => import('./index-BUhWvN4G.mjs')
   },
   {
     name: "admin-fields",
@@ -497,7 +497,7 @@ const _routes = [
     name: "admin-options",
     path: "/admin/options",
     meta: { ...__nuxt_page_meta$e || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./index-BMIUBVW9.mjs')
+    component: () => import('./index-BjMHcMbS.mjs')
   },
   {
     name: "admin-stadiums-id",
@@ -509,7 +509,7 @@ const _routes = [
     name: "admin-bookings",
     path: "/admin/bookings",
     meta: { ...__nuxt_page_meta$c || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./index-CE1TTxmh.mjs')
+    component: () => import('./index-BX91o724.mjs')
   },
   {
     name: "admin-stadiums",
@@ -561,7 +561,7 @@ const _routes = [
     name: "admin-bookings-id",
     path: "/admin/bookings/:id()",
     meta: { ...__nuxt_page_meta$5 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./index-BrxXxAQf.mjs')
+    component: () => import('./index-BKwRQ15b.mjs')
   },
   {
     name: "bantuan-kebijakan-privasi",
@@ -584,7 +584,7 @@ const _routes = [
     name: "admin-bookings-history-payment",
     path: "/admin/bookings/history/payment",
     meta: { ...__nuxt_page_meta$2 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./payment-Bzw7w32U.mjs')
+    component: () => import('./payment-pAl0nhLn.mjs')
   },
   {
     name: "admin-bookings-id-bookingCode",
@@ -1019,7 +1019,7 @@ const plugins = [
 const layouts = {
   admin: defineAsyncComponent(() => import('./admin-Gg9ozD3v.mjs').then((m) => m.default || m)),
   auth: defineAsyncComponent(() => import('./auth-C5Tt_3g3.mjs').then((m) => m.default || m)),
-  default: defineAsyncComponent(() => import('./default-Hknn9Oj0.mjs').then((m) => m.default || m))
+  default: defineAsyncComponent(() => import('./default-buwnDFSE.mjs').then((m) => m.default || m))
 };
 const LayoutLoader = defineComponent({
   name: "LayoutLoader",
@@ -1260,10 +1260,10 @@ function useState(...args) {
 const useAppOptions = () => {
   const defaults = {
     name: "VENUE UNDIP",
-    nameKet: "Booking Lapangan Olahraga Universitas Diponegoro",
+    nameKet: "Sistem Reservasi Fasilitas Olahraga Universitas Diponegoro",
     description: "Platform booking lapangan olahraga terpercaya untuk Sivitas Akademika Universitas Diponegoro.",
     unitName: "UPT Layanan Seni, Budaya dan Olahraga",
-    unitDesc: "Unit Pelaksana Teknis untuk mengelola fasilitas olahraga di lingkungan Universitas Diponegoro",
+    unitDesc: "Unit Pelaksana Teknis yang mengelola fasilitas seni, budaya, dan olahraga di lingkungan Universitas Diponegoro",
     email: "helpdesk@undip.ac.id",
     nohp: "+62 851 6566 0339",
     address: "Jl. Prof. Soedarto, Tembalang, Kec. Tembalang, Kota Semarang, Jawa Tengah"
@@ -1302,7 +1302,6 @@ const useAppOptions = () => {
   const reset = () => {
     options.value = {
       data: null,
-      // or defaults
       pending: false,
       error: null
     };
@@ -1563,26 +1562,29 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
           return "Terjadi Kesalahan";
       }
     });
+    const { options } = useAppOptions();
+    const currentYear = (/* @__PURE__ */ new Date()).getFullYear();
+    const appName = computed(() => options.value.data?.name || "VENUE UNDIP");
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({ class: "min-h-screen w-full flex items-center justify-center bg-white sm:bg-gray-50 px-4 sm:px-6 py-12" }, _attrs))}><div class="w-full max-w-5xl grid lg:grid-cols-2 gap-8 lg:gap-12 items-center mx-auto"><div class="space-y-6 text-center lg:text-left order-2 lg:order-1"><div class="space-y-4"><div class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-700 font-bold text-xs tracking-wide shadow-sm"> ERROR ${ssrInterpolate(unref(errorCode))}</div><h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 tracking-tight leading-tight">${ssrInterpolate(unref(errorTitle))}</h1><p class="text-base sm:text-lg text-gray-500 leading-relaxed font-medium max-w-xl mx-auto lg:mx-0">${ssrInterpolate(unref(errorMessage))}</p>`);
+      _push(`<div${ssrRenderAttrs(mergeProps({ class: "min-h-screen w-full flex items-center justify-center bg-white sm:bg-gray-50 px-4 sm:px-6 py-12 relative overflow-hidden" }, _attrs))}><div class="w-full max-w-5xl grid lg:grid-cols-2 gap-8 lg:gap-12 items-center mx-auto z-10"><div class="space-y-6 text-center lg:text-left order-2 lg:order-1"><div class="space-y-4"><div class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-700 font-bold text-xs tracking-wide shadow-sm"> ERROR ${ssrInterpolate(unref(errorCode))}</div><h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 tracking-tight leading-tight">${ssrInterpolate(unref(errorTitle))}</h1><p class="text-base sm:text-lg text-gray-500 leading-relaxed font-medium max-w-xl mx-auto lg:mx-0">${ssrInterpolate(unref(errorMessage))}</p>`);
       if (props2.error?.url) {
         _push(`<div class="mt-2 p-2 bg-gray-50 rounded border border-gray-200 inline-block text-left"><p class="text-[10px] font-mono text-gray-400 break-all"><span class="font-bold text-gray-500">Source:</span> ${ssrInterpolate(props2.error.url)}</p></div>`);
       } else {
         _push(`<!---->`);
       }
-      _push(`</div><div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2"><button class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-sm font-bold rounded-xl text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all shadow-md hover:shadow-lg active:scale-[0.98]"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg> Kembali ke Beranda </button>`);
+      _push(`</div><div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">`);
       if (unref(errorCode) === 500 || unref(errorCode) === 502 || unref(errorCode) === 503) {
         _push(`<button class="inline-flex items-center justify-center px-6 py-3 border-2 border-gray-200 text-sm font-bold rounded-xl text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all shadow-sm hover:shadow active:scale-[0.98]"><svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Coba Lagi </button>`);
       } else {
         _push(`<button class="inline-flex items-center justify-center px-6 py-3 border-2 border-gray-200 text-sm font-bold rounded-xl text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all shadow-sm hover:shadow active:scale-[0.98]"><svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg> Kembali </button>`);
       }
-      _push(`</div></div><div class="order-1 lg:order-2 flex justify-center items-center relative w-full"><div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[100%] bg-gradient-to-tr from-blue-100/40 via-indigo-50/40 to-white rounded-full blur-3xl -z-10"></div><div class="${ssrRenderClass([unref(errorCode) === 404 ? "max-w-[240px] sm:max-w-xs lg:max-w-md" : "max-w-[180px] sm:max-w-[220px] lg:max-w-[300px]", "w-full transition-all duration-500 hover:scale-105"])}">`);
+      _push(`<button class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-sm font-bold rounded-xl text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all shadow-md hover:shadow-lg active:scale-[0.98]"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg> Kembali ke Beranda </button></div></div><div class="order-1 lg:order-2 flex justify-center items-center relative w-full"><div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[100%] bg-gradient-to-tr from-blue-100/40 via-indigo-50/40 to-white rounded-full blur-3xl -z-10"></div><div class="${ssrRenderClass([unref(errorCode) === 404 ? "max-w-[240px] sm:max-w-xs lg:max-w-md" : "max-w-[180px] sm:max-w-[220px] lg:max-w-[300px]", "w-full transition-all duration-500 hover:scale-105"])}">`);
       _push(ssrRenderComponent(LottieAnimation, {
         "animation-data": unref(currentAnimation),
         loop: true,
         "auto-play": true
       }, null, _parent));
-      _push(`</div></div></div></div>`);
+      _push(`</div></div></div><div class="absolute bottom-4 left-0 w-full text-center px-4"><p class="text-xs text-gray-400 font-medium"> © ${ssrInterpolate(unref(currentYear))} <span class="text-gray-500 font-semibold">${ssrInterpolate(unref(appName))}</span>. All rights reserved. </p></div></div>`);
     };
   }
 });

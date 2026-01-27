@@ -32,10 +32,8 @@ export default defineEventHandler(async (event) => {
     const token = getCookie(event, 'admin_token')
 
     try {
-      // Parse incoming FormData
       const incomingFormData = await readFormData(event)
 
-      // Get operations and map from the incoming FormData
       const operationsStr = incomingFormData.get('operations') as string
       const mapStr = incomingFormData.get('map') as string
 
@@ -43,10 +41,8 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 400, statusMessage: 'Missing operations or map in multipart request' })
       }
 
-      // Parse the map to find file keys
       const map = JSON.parse(mapStr) as Record<string, string[]>
 
-      // Collect files from the incoming FormData
       const files: Record<string, File> = {}
       for (const key of Object.keys(map)) {
         const file = incomingFormData.get(key)
@@ -55,16 +51,12 @@ export default defineEventHandler(async (event) => {
         }
       }
 
-      // Create new FormData with correct order: operations -> map -> files
       const newFormData = new FormData()
 
-      // 1. Append operations FIRST
       newFormData.append('operations', operationsStr)
 
-      // 2. Append map SECOND  
       newFormData.append('map', mapStr)
 
-      // 3. Append files LAST (in order of their keys)
       const sortedKeys = Object.keys(files).sort()
       for (const key of sortedKeys) {
         const file = files[key]
@@ -73,13 +65,11 @@ export default defineEventHandler(async (event) => {
         }
       }
 
-      // Build headers (let fetch set correct Content-Type with boundary)
       const headers: Record<string, string> = {
         'apollo-require-preflight': 'true',
       }
       if (token) headers['Authorization'] = `Bearer ${token}`
 
-      // Send to GraphQL endpoint
       const res = await fetch(endpoint, {
         method: 'POST',
         headers,
@@ -96,7 +86,6 @@ export default defineEventHandler(async (event) => {
       }
 
       try {
-        // Extract renterType from operations to determine payment status
         const operations = JSON.parse(operationsStr)
         const renterType = operations?.variables?.renterType || 'UMUM'
         const paymentStatusToSet = renterType === 'AKADEMIK' ? 'PAID' : 'UNPAID'

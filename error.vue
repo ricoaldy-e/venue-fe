@@ -76,12 +76,20 @@ const handleReload = () => {
   errorDismissed.value = false
   window.location.reload()
 }
+
+const { options, fetchOptions } = useAppOptions()
+const currentYear = new Date().getFullYear()
+const appName = computed(() => options.value.data?.name || 'VENUE UNDIP')
+
+onMounted(() => {
+  fetchOptions()
+})
 </script>
 
 <template>
-  <div class="min-h-screen w-full flex items-center justify-center bg-white sm:bg-gray-50 px-4 sm:px-6 py-12">
+  <div class="min-h-screen w-full flex items-center justify-center bg-white sm:bg-gray-50 px-4 sm:px-6 py-12 relative overflow-hidden">
     
-    <div class="w-full max-w-5xl grid lg:grid-cols-2 gap-8 lg:gap-12 items-center mx-auto">
+    <div class="w-full max-w-5xl grid lg:grid-cols-2 gap-8 lg:gap-12 items-center mx-auto z-10">
     
       <div class="space-y-6 text-center lg:text-left order-2 lg:order-1">
         
@@ -107,16 +115,6 @@ const handleReload = () => {
   
         <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
           <button
-            @click="handleGoHome"
-            class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-sm font-bold rounded-xl text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all shadow-md hover:shadow-lg active:scale-[0.98]"
-          >
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-            </svg>
-            Kembali ke Beranda
-          </button>
-  
-          <button
             v-if="errorCode === 500 || errorCode === 502 || errorCode === 503"
             @click="handleReload"
             class="inline-flex items-center justify-center px-6 py-3 border-2 border-gray-200 text-sm font-bold rounded-xl text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all shadow-sm hover:shadow active:scale-[0.98]"
@@ -137,6 +135,16 @@ const handleReload = () => {
             </svg>
             Kembali
           </button>
+
+          <button
+            @click="handleGoHome"
+            class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-sm font-bold rounded-xl text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all shadow-md hover:shadow-lg active:scale-[0.98]"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+            Kembali ke Beranda
+          </button>
         </div>
   
       </div>
@@ -156,6 +164,12 @@ const handleReload = () => {
          </div>
       </div>
   
+    </div>
+
+    <div class="absolute bottom-4 left-0 w-full text-center px-4">
+      <p class="text-xs text-gray-400 font-medium">
+        &copy; {{ currentYear }} <span class="text-gray-500 font-semibold">{{ appName }}</span>. All rights reserved.
+      </p>
     </div>
   </div>
 </template>

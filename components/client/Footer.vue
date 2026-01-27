@@ -12,7 +12,7 @@
           <div>
               <p class="text-lg font-bold leading-tight">{{ name }}</p>
               <p class="text-xs text-blue-200/70 hidden sm:block">{{ nameKet }}</p>
-              <p class="text-xs text-blue-200/70 sm:hidden">Booking Lapangan</p>
+              <p class="text-xs text-blue-200/70 sm:hidden">Booking Lapangan UNDIP</p>
             </div>
           </div>
           <p class="text-sm text-blue-100/80 leading-relaxed">{{ description }}</p>
@@ -219,8 +219,8 @@
 import { useAppOptions } from '~/composables/useAppOptions'
   
   const {options} = useAppOptions()
-  const name = computed(() => options.value.data?.name || 'Venue UNDIP')
-  const nameKet = computed(() => options.value.data?.nameKet || 'Booking Lapangan Olahraga Universitas Diponegoro')
+  const name = computed(() => options.value.data?.name || 'VENUE UNDIP')
+  const nameKet = computed(() => options.value.data?.nameKet || 'Sistem Reservasi Fasilitas Olahraga Universitas Diponegoro')
   const description = computed(() => options.value.data?.description || 'Platform booking lapangan olahraga terpercaya untuk Sivitas Akademika Universitas Diponegoro.')
   const email = computed(() => options.value.data?.email || 'default@example.com')
   const n = computed(() => options.value.data?.nohp || '+62 851 6566 0339')

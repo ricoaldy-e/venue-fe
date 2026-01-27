@@ -588,7 +588,6 @@ watch(() => bookingForm.renterType, (val) => {
         </div>
       </div>
 
-      <!-- ===================== BOOKING AKADEMIK CARD ===================== -->
       <div class="w-full">
         <div class="bg-white rounded-2xl border border-gray-300 shadow-sm overflow-hidden">
           <div class="p-5 border-b border-gray-200 bg-gray-50/50">
@@ -688,7 +687,6 @@ watch(() => bookingForm.renterType, (val) => {
         </div>
       </div>
 
-      <!-- ===================== TOTAL HARGA CARD ===================== -->
       <div class="w-full">
         <div class="bg-white rounded-2xl border border-gray-300 shadow-sm overflow-hidden">
           <div class="p-5 border-b border-gray-200 bg-gray-50/50">

@@ -563,7 +563,6 @@ const groupedDetails = computed(() => {
       </div>
     </div>
 
-    <!-- Confirmation Modal -->
     <ConfirmationModal ref="confirmationModal" />
   </section>
 </template>

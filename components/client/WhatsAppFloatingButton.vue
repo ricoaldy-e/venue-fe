@@ -83,42 +83,34 @@ const phoneDisplay = computed(() => phoneNumber.value)
 
 const cleanPhoneNumber = computed(() => {
   let phone = phoneNumber.value.replace(/[\s\-\(\)]/g, '')
-  // Convert 08xxx to 628xxx format
   if (phone.startsWith('08')) {
     phone = '62' + phone.substring(1)
   }
-  // Remove leading + if present
   if (phone.startsWith('+')) {
     phone = phone.substring(1)
   }
   return phone
 })
 
-// Dynamic venue name from app options
 const venueName = computed(() => options.value.data?.name || 'VENUE UNDIP')
 
-// WhatsApp URL with greeting message
 const whatsappUrl = computed(() => {
-  // On stadium detail page: include both stadium name and venue name
   if (props.stadiumName) {
     const message = encodeURIComponent(`Halo, saya ingin bertanya mengenai booking lapangan di ${props.stadiumName}, ${venueName.value}.`)
     return `https://wa.me/${cleanPhoneNumber.value}?text=${message}`
   }
   
-  // On home page: use only the dynamic venue name
   const message = encodeURIComponent(`Halo, saya ingin bertanya mengenai booking lapangan di ${venueName.value}.`)
   return `https://wa.me/${cleanPhoneNumber.value}?text=${message}`
 })
 </script>
 
 <style scoped>
-/* Tooltip visibility on button hover */
 .fixed:has(.whatsapp-btn:hover) .whatsapp-tooltip {
   opacity: 1 !important;
   transform: translateX(0) !important;
 }
 
-/* Slow down the ping animation for subtlety */
 @keyframes ping {
   75%, 100% {
     transform: scale(1.5);
@@ -130,7 +122,6 @@ const whatsappUrl = computed(() => {
   animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
-/* Mobile adjustments - only adjust right position, bottom is handled dynamically in template */
 @media (max-width: 640px) {
   .fixed {
     right: 1.25rem;

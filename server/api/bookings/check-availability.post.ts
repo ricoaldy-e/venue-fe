@@ -46,7 +46,6 @@ export default defineEventHandler(async (event): Promise<CheckAvailabilityRespon
   try {
     const graphqlUrl = config.public.gqlHttpEndpoint || 'http://localhost:4000/graphql'
 
-    // Use the same query as for displaying bookings
     const response = await $fetch<{
       data?: {
         bookings?: {

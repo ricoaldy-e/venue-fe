@@ -199,9 +199,9 @@ const goToDetail = (stadionId: number) => {
           <div class="grid w-full max-w-md grid-cols-2 gap-3 sm:gap-4">
             <div 
               @click="scrollToStadiumList"
-              class="group relative overflow-hidden rounded-2xl border border-white/20 bg-white/10 p-4 sm:p-5 shadow-xl transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl cursor-pointer transform-gpu"
+              class="group relative overflow-hidden rounded-2xl border border-white/20 bg-white/10 p-4 sm:p-5 shadow-xl transition-transform duration-300 [@media(hover:hover)]:hover:-translate-y-1 [@media(hover:hover)]:hover:shadow-2xl cursor-pointer transform-gpu"
             >
-              <div class="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-300 pointer-events-none"></div>
+              <div class="absolute inset-0 bg-white/0 [@media(hover:hover)]:group-hover:bg-white/10 transition-colors duration-300 pointer-events-none"></div>
 
               <div class="relative z-10">
                 <div class="flex items-start justify-between mb-3">
@@ -219,10 +219,9 @@ const goToDetail = (stadionId: number) => {
             
             <div 
               @click="scrollToStadiumList"
-              class="group relative overflow-hidden rounded-2xl border border-white/20 bg-white/10 p-4 sm:p-5 shadow-xl transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl cursor-pointer transform-gpu"
+              class="group relative overflow-hidden rounded-2xl border border-white/20 bg-white/10 p-4 sm:p-5 shadow-xl transition-transform duration-300 [@media(hover:hover)]:hover:-translate-y-1 [@media(hover:hover)]:hover:shadow-2xl cursor-pointer transform-gpu"
             >
-              <!-- Hover Overlay for "Glitch-Free" Lighting -->
-              <div class="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-300 pointer-events-none"></div>
+              <div class="absolute inset-0 bg-white/0 [@media(hover:hover)]:group-hover:bg-white/10 transition-colors duration-300 pointer-events-none"></div>
 
               <div class="relative z-10">
                 <div class="flex items-start justify-between mb-3">

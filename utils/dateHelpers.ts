@@ -33,8 +33,6 @@ export function toUtcMidnightIso(value?: string | Date | null): string | null {
 
 /**
  * Get current date in WIB timezone (UTC+7).
- * This ensures consistent "today" comparison regardless of user's browser timezone.
- * For example, a user in WIT (UTC+9) at 00:30 WIT will get "today" as WIB date (which is still yesterday in WIT).
  */
 export function getTodayInWib(): Date {
   // Get current time as ISO string in WIB timezone

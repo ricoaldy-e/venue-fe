@@ -40,7 +40,7 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#1f2a56' },
         // Open Graph Tags
         { property: 'og:title', content: 'VENUE UNDIP - Sewa Venue & Lapangan Olahraga' },
-        { property: 'og:description', content: 'Platform booking lapangan olahraga terpercaya untuk Sivitas Akademika Universitas Diponegoro. Menyediakan berbagai fasilitas olahraga berkualitas dengan proses reservasi yang mudah dan cepat.' },
+        { property: 'og:description', content: 'Platform booking lapangan olahraga terpercaya untuk Sivitas Akademika Universitas Diponegoro.' },
         { property: 'og:type', content: 'website' },
         { property: 'og:site_name', content: 'VENUE UNDIP' },
         { property: 'og:url', content: 'https://venue.undip.id' },
@@ -52,7 +52,7 @@ export default defineNuxtConfig({
         // Twitter Card Tags
         { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'twitter:title', content: 'VENUE UNDIP - Sewa Venue & Lapangan Olahraga' },
-        { name: 'twitter:description', content: 'Platform booking lapangan olahraga terpercaya untuk Sivitas Akademika Universitas Diponegoro. Menyediakan berbagai fasilitas olahraga berkualitas dengan proses reservasi yang mudah dan cepat.' },
+        { name: 'twitter:description', content: 'Platform booking lapangan olahraga terpercaya untuk Sivitas Akademika Universitas Diponegoro.' },
         { name: 'twitter:image', content: 'https://venue.undip.id/og-image.png' },
         { name: 'twitter:image:alt', content: 'VENUE UNDIP - Platform Sewa Venue & Lapangan Olahraga' }
       ],
@@ -90,8 +90,8 @@ export default defineNuxtConfig({
   },
 
   turnstile: {
-    siteKey: '0x4AAAAAACMZd-IE1Ec6SjaL', // Production Key
-    // siteKey: '1x00000000000000000000AA', // Test Key (Always Pass)
+    siteKey: '0x4AAAAAACMZd-IE1Ec6SjaL',
+    // siteKey: '1x00000000000000000000AA',
   },
 
   runtimeConfig: {

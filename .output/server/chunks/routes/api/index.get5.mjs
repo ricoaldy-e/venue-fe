@@ -1,5 +1,4 @@
 import { c as defineEventHandler, u as useRuntimeConfig, e as createError, g as getCookie, $ as $fetch } from '../../_/nitro.mjs';
-import gql from 'graphql-tag';
 import 'node:http';
 import 'node:https';
 import 'node:events';
@@ -11,7 +10,7 @@ import 'better-sqlite3';
 import 'ipx';
 import 'node:crypto';
 
-const QUERY_GET_OPTION = gql`
+const QUERY_GET_OPTION = `
     query Options {
         options {
             name

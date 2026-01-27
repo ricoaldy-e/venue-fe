@@ -1,6 +1,4 @@
-import gql from "graphql-tag";
-
-export const QUERY_GET_OPTION = gql`
+export const QUERY_GET_OPTION = `
     query Options {
         options {
             name

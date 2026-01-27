@@ -649,10 +649,8 @@ watch(selectedDate, () => {
           </div>
 
           <div class="relative rounded-lg sm:rounded-xl overflow-hidden bg-gradient-to-br from-gray-50 to-white p-3 sm:p-4 border border-gray-200">
-            <!-- Subtle Street Map Background Pattern -->
             <div class="absolute inset-0 opacity-[0.08] pointer-events-none">
               <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid slice">
-                <!-- Main roads berkelok natural -->
                 <path d="M 0 150 Q 50 145, 100 150 Q 140 155, 180 150 Q 220 145, 260 140 Q 300 138, 350 140" stroke="#94a3b8" stroke-width="2.5" fill="none"/>
                 <path d="M 350 140 Q 400 142, 450 145 Q 500 148, 550 150 L 600 152" stroke="#94a3b8" stroke-width="2" fill="none"/>
                 
@@ -660,14 +658,12 @@ watch(selectedDate, () => {
                 
                 <path d="M 420 0 Q 415 50, 420 100 Q 425 130, 420 160 Q 418 200, 420 240 L 420 300" stroke="#94a3b8" stroke-width="2" fill="none"/>
                 
-                <!-- Secondary roads berkelok -->
                 <path d="M 0 80 Q 40 78, 80 80 Q 120 82, 160 85 Q 200 83, 240 80 Q 280 78, 320 80" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
                 
                 <path d="M 100 50 Q 102 70, 100 90 Q 98 120, 100 150 Q 102 180, 105 210" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
                 
                 <path d="M 0 220 Q 60 218, 120 220 Q 180 222, 240 220 Q 300 218, 360 220 Q 420 222, 480 220 L 600 218" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
                 
-                <!-- Small connecting roads berkelok -->
                 <path d="M 350 140 Q 360 120, 370 100 Q 380 85, 390 80" stroke="#94a3b8" stroke-width="1" fill="none"/>
                 
                 <path d="M 260 80 Q 270 100, 280 120 Q 285 135, 280 150" stroke="#94a3b8" stroke-width="1" fill="none"/>
@@ -676,7 +672,6 @@ watch(selectedDate, () => {
                 
                 <path d="M 300 220 Q 310 200, 320 180 Q 330 160, 340 145" stroke="#94a3b8" stroke-width="1" fill="none"/>
                 
-                <!-- Intersection points (biru) -->
                 <circle cx="180" cy="150" r="3" fill="#3b82f6" opacity="0.7"/>
                 <circle cx="350" cy="140" r="3" fill="#3b82f6" opacity="0.7"/>
                 <circle cx="420" cy="160" r="3" fill="#3b82f6" opacity="0.7"/>
@@ -732,7 +727,7 @@ watch(selectedDate, () => {
             <li 
               v-for="(facility, index) in venue.facilities" 
               :key="index" 
-              class="flex items-center gap-2 sm:gap-2.5 text-xs sm:text-sm bg-gray-50 rounded-lg px-2.5 sm:px-3 py-2 sm:py-2.5 border border-gray-100 hover:bg-white hover:border-gray-300 hover:shadow-sm hover:scale-[1.02] transition-all"
+              class="flex items-center gap-2 sm:gap-2.5 text-xs sm:text-sm bg-gray-50 rounded-lg px-2.5 sm:px-3 py-2 sm:py-2.5 border border-gray-100 [@media(hover:hover)]:hover:bg-white [@media(hover:hover)]:hover:border-gray-300 [@media(hover:hover)]:hover:shadow-sm [@media(hover:hover)]:hover:scale-[1.02] transition-all"
             >
               <div class="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg bg-gray-100 border border-gray-200 text-[#1f2a56]">
                 <Icon
@@ -985,7 +980,7 @@ watch(selectedDate, () => {
                       ? 'bg-orange-50 text-orange-400 border-orange-100 cursor-not-allowed'
                       : isSlotSelected(court.id, slot.range)
                       ? 'bg-[#1f2a56] text-white border-[#1f2a56] shadow-md ring-2 ring-[#1f2a56] ring-offset-2'
-                      : 'bg-white text-gray-900 border-gray-200 hover:border-emerald-500 hover:bg-emerald-50 hover:shadow-lg hover:shadow-emerald-500/20 hover:scale-105 active:scale-100 cursor-pointer'
+                      : 'bg-white text-gray-900 border-gray-200 [@media(hover:hover)]:hover:border-emerald-500 [@media(hover:hover)]:hover:bg-emerald-50 [@media(hover:hover)]:hover:shadow-lg [@media(hover:hover)]:hover:shadow-emerald-500/20 [@media(hover:hover)]:hover:scale-105 active:scale-100 cursor-pointer'
                   ]"
                   @click="toggleSlotSelection(court, slot)"
                 >

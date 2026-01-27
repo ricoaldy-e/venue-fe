@@ -255,7 +255,6 @@ const formatSlotDate = (booking: BookingHistory) => {
     return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' })
   }
   
-  // If all dates are consecutive, show range with '-'
   if (isConsecutive(uniqueDates)) {
     return `${formatDate(uniqueDates[0]!)} - ${formatDate(uniqueDates[uniqueDates.length - 1]!)}`
   }
@@ -431,7 +430,6 @@ const navigateToDetail = (bookingCode: string) => {
       </div>
     </header>
 
-    <!-- Stats Cards (Non-clickable, highlight based on filter) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <!-- Total Booking Card -->
       <div
@@ -627,10 +625,6 @@ const navigateToDetail = (bookingCode: string) => {
               </div>
             </div>
           </div>
-
-          <!-- OLD Filters Row (REMOVE THIS SECTION) -->
-          <!--
-          -->
         </div>
       </div>
     </div>

@@ -16,5 +16,5 @@ export interface AppOption {
 export interface AppOptionsState {
   data: AppOption | null
   pending: boolean
-  error: string | null  // Store as string for SSR serialization
+  error: string | null
 }
