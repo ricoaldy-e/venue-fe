@@ -117,7 +117,6 @@
     "lodash.isstring": "4.0.1",
     "lodash.once": "4.1.1",
     "longest-streak": "3.1.0",
-    "lottie-web": "5.12.2",
     "markdown-table": "3.0.4",
     "mdast-util-find-and-replace": "3.0.2",
     "mdast-util-from-markdown": "2.0.2",
@@ -218,7 +217,6 @@
     "vue": "3.5.26",
     "vue-bundle-renderer": "2.2.0",
     "vue-router": "4.6.4",
-    "vue3-lottie": "3.3.1",
     "web-namespaces": "2.0.1",
     "yaml": "2.8.2",
     "zwitch": "2.0.4"
