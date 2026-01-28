@@ -42,20 +42,22 @@ defineExpose({ play, pause, stop })
 
 <template>
   <div class="lottie-wrapper">
-    <Vue3Lottie
-      v-if="!hasError"
-      ref="lottieRef"
-      :animation-data="animationData"
-      :animation-link="animationPath"
-      :width="width"
-      :height="height"
-      :loop="loop"
-      :auto-play="autoPlay"
-      :speed="speed"
-      :pause-on-hover="pauseOnHover"
-      @on-animation-loaded="handleAnimationLoaded"
-      @on-error="handleError"
-    />
+    <client-only>
+      <Vue3Lottie
+        v-if="!hasError"
+        ref="lottieRef"
+        :animation-data="animationData"
+        :animation-link="animationPath"
+        :width="width"
+        :height="height"
+        :loop="loop"
+        :auto-play="autoPlay"
+        :speed="speed"
+        :pause-on-hover="pauseOnHover"
+        @on-animation-loaded="handleAnimationLoaded"
+        @on-error="handleError"
+      />
+    </client-only>
     
     <div v-if="hasError" class="lottie-fallback">
       <svg class="fallback-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
