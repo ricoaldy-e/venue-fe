@@ -198,6 +198,7 @@ const { data: response, pending, error, refresh } = await useFetch<BookingRespon
     query: queryParams,
     server: false,
     lazy: true,
+    watch: false,
     default: () => ({ 
       data: [], 
       pagination: { page: 1, limit: 10, total: 0, totalPages: 0, hasNextPage: false, hasPrevPage: false },

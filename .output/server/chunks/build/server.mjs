@@ -577,13 +577,13 @@ const _routes = [
     name: "admin-bookings-history",
     path: "/admin/bookings/history",
     meta: { ...__nuxt_page_meta$3 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./index-CPk5G_06.mjs')
+    component: () => import('./index-Dk8hpCR4.mjs')
   },
   {
     name: "admin-bookings-history-payment",
     path: "/admin/bookings/history/payment",
     meta: { ...__nuxt_page_meta$2 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./payment-CW7wWuiP.mjs')
+    component: () => import('./payment-D_XgeQrS.mjs')
   },
   {
     name: "admin-bookings-id-bookingCode",
