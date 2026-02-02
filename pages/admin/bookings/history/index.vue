@@ -388,7 +388,7 @@ const navigateToDetail = (bookingCode: string) => {
             <button
               @click="handleManualRefresh"
               :disabled="isRefreshing"
-              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-all active:scale-95 disabled:opacity-50"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-200 rounded-lg [@media(hover:hover)]:hover:bg-blue-100 transition-all active:scale-95 disabled:opacity-50"
               title="Refresh data"
             >
               <svg 
@@ -412,7 +412,7 @@ const navigateToDetail = (bookingCode: string) => {
       <div class="flex items-center gap-2">
         <NuxtLink 
           to="/admin/bookings" 
-          class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:text-[#1f2a56] hover:border-[#1f2a56] hover:shadow-md active:scale-95"
+          class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all [@media(hover:hover)]:hover:bg-gray-50 [@media(hover:hover)]:hover:text-[#1f2a56] [@media(hover:hover)]:hover:border-[#1f2a56] [@media(hover:hover)]:hover:shadow-md active:scale-95"
         >
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -421,7 +421,7 @@ const navigateToDetail = (bookingCode: string) => {
         </NuxtLink>
         <NuxtLink
           to="/admin/bookings/history/payment"
-          class="inline-flex items-center gap-2 rounded-lg border border-emerald-600 bg-emerald-600 px-4 py-2 text-sm font-bold text-white shadow-sm transition-all hover:bg-emerald-700 active:scale-95"
+          class="inline-flex items-center gap-2 rounded-lg border border-emerald-600 bg-emerald-600 px-4 py-2 text-sm font-bold text-white shadow-sm transition-all [@media(hover:hover)]:hover:bg-emerald-700 active:scale-95"
         >
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -505,7 +505,7 @@ const navigateToDetail = (bookingCode: string) => {
       <!-- <button
         @click="statusFilter = 'PENDING'"
         :class="[
-          'bg-white rounded-xl border p-5 shadow-sm text-left transition-all duration-200 hover:shadow-lg hover:scale-105 hover:border-yellow-400 cursor-pointer',
+          'bg-white rounded-xl border p-5 shadow-sm text-left transition-all duration-200 [@media(hover:hover)]:hover:shadow-lg [@media(hover:hover)]:hover:scale-105 [@media(hover:hover)]:hover:border-yellow-400 cursor-pointer',
           statusFilter === 'PENDING' ? 'border-yellow-500 ring-2 ring-yellow-200' : 'border-gray-200'
         ]"
       >
@@ -553,7 +553,7 @@ const navigateToDetail = (bookingCode: string) => {
               <div class="relative">
                 <select 
                   v-model="selectedStadionId"
-                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
+                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors [@media(hover:hover)]:hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
                 >
                   <option value="">Semua Stadion</option>
                   <option v-for="stadion in stadions" :key="stadion.id" :value="stadion.id">
@@ -573,7 +573,7 @@ const navigateToDetail = (bookingCode: string) => {
               <div class="relative">
                 <select 
                   v-model="statusFilter"
-                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
+                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors [@media(hover:hover)]:hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
                 >
                   <option value="">Semua Status</option>
                   <option value="APPROVED">Disetujui</option>
@@ -593,7 +593,7 @@ const navigateToDetail = (bookingCode: string) => {
               <div class="relative">
                 <select 
                   v-model="paymentFilter"
-                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
+                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors [@media(hover:hover)]:hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
                 >
                   <option value="">Semua Status</option>
                   <option value="PAID">Lunas</option>
@@ -613,7 +613,7 @@ const navigateToDetail = (bookingCode: string) => {
               <div class="relative">
                 <select 
                   v-model="sortOrder"
-                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
+                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors [@media(hover:hover)]:hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
                 >
                   <option value="desc">Terbaru</option>
                   <option value="asc">Terlama</option>
@@ -650,7 +650,7 @@ const navigateToDetail = (bookingCode: string) => {
           </svg>
         </div>
         <p class="text-sm font-semibold text-gray-900 mb-1">Gagal memuat data booking</p>
-        <button @click="refresh()" class="mt-3 text-sm font-semibold text-blue-600 hover:text-blue-700 underline">
+        <button @click="refresh()" class="mt-3 text-sm font-semibold text-blue-600 [@media(hover:hover)]:hover:text-blue-700 underline">
           Coba lagi
         </button>
       </div>
@@ -806,7 +806,7 @@ const navigateToDetail = (bookingCode: string) => {
                 <div class="flex justify-center">
                   <button
                     @click="navigateToDetail(booking.bookingCode)"
-                    class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold rounded-lg transition-all shadow-sm hover:shadow-md active:scale-95"
+                    class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 [@media(hover:hover)]:hover:bg-blue-700 text-white text-[11px] font-bold rounded-lg transition-all shadow-sm [@media(hover:hover)]:hover:shadow-md active:scale-95"
                   >
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -834,7 +834,7 @@ const navigateToDetail = (bookingCode: string) => {
           <button
             @click="prevPage"
             :disabled="!pagination.hasPrevPage"
-            class="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
+            class="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 [@media(hover:hover)]:hover:bg-gray-50 [@media(hover:hover)]:hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
@@ -848,7 +848,7 @@ const navigateToDetail = (bookingCode: string) => {
           <button
             @click="nextPage"
             :disabled="!pagination.hasNextPage"
-            class="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
+            class="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 [@media(hover:hover)]:hover:bg-gray-50 [@media(hover:hover)]:hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />

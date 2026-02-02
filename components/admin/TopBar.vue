@@ -160,7 +160,7 @@ const handleTopbarLogout = async () => {
         <button
           type="button"
           @click="toggleSidebar"
-          class="lg:hidden relative flex items-center justify-center h-10 w-10 rounded-lg text-gray-700 hover:bg-gradient-to-br hover:from-blue-50 hover:to-indigo-50 hover:text-blue-600 transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          class="lg:hidden relative flex items-center justify-center h-10 w-10 rounded-lg text-gray-700 [@media(hover:hover)]:hover:bg-gradient-to-br [@media(hover:hover)]:hover:from-blue-50 [@media(hover:hover)]:hover:to-indigo-50 [@media(hover:hover)]:hover:text-blue-600 transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           aria-label="Buka sidebar"
         >
           <div class="relative h-5 w-5">
@@ -181,7 +181,7 @@ const handleTopbarLogout = async () => {
                   'transition-all duration-200 px-2.5 py-1.5 rounded-md truncate',
                   crumb.isLast 
                     ? 'text-gray-900 font-semibold bg-gradient-to-br from-blue-50 to-indigo-50 pointer-events-none' 
-                    : 'hover:text-blue-600 hover:bg-gray-50'
+                    : '[@media(hover:hover)]:hover:text-blue-600 [@media(hover:hover)]:hover:bg-gray-50'
                 ]"
                 :aria-current="crumb.isLast ? 'page' : undefined"
               >
@@ -217,9 +217,9 @@ const handleTopbarLogout = async () => {
           type="button"
           :disabled="topbarLogoutLoading"
           @click="handleTopbarLogout"
-          class="group flex items-center gap-2 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 text-gray-700 bg-gray-100 hover:bg-red-50 hover:text-red-600 hover:shadow-md active:scale-95 disabled:opacity-50 disabled:cursor-wait disabled:hover:scale-100 border border-gray-200 hover:border-red-200"
+          class="group flex items-center gap-2 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 text-gray-700 bg-gray-100 [@media(hover:hover)]:hover:bg-red-50 [@media(hover:hover)]:hover:text-red-600 [@media(hover:hover)]:hover:shadow-md active:scale-95 disabled:opacity-50 disabled:cursor-wait disabled:[@media(hover:hover)]:hover:scale-100 border border-gray-200 [@media(hover:hover)]:hover:border-red-200"
         >
-          <svg v-if="!topbarLogoutLoading" class="w-4 h-4 transition-transform duration-200 group-hover:scale-110" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <svg v-if="!topbarLogoutLoading" class="w-4 h-4 transition-transform duration-200 [@media(hover:hover)]:group-hover:scale-110" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path d="M16 13V11H8V8L3 12L8 16V13H16ZM20 3H12V5H20V19H12V21H20C21.1 21 22 20.1 22 19V5C22 3.9 21.1 3 20 3Z"/>
           </svg>
           <svg v-else class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">

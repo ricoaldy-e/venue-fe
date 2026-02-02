@@ -23,6 +23,9 @@ onMounted(() => {
 
 <template>
   <div>
+    <!-- Loading bar for page navigation -->
+    <LoadingBar />
+    
     <div 
       v-if="!isHydrated"
       class="loading-screen"

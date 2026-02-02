@@ -21,7 +21,7 @@
       :href="whatsappUrl"
       target="_blank"
       rel="noopener noreferrer"
-      class="whatsapp-btn group relative flex items-center justify-center h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-gradient-to-br from-[#25D366] to-[#128C7E] text-white shadow-lg shadow-green-500/40 transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-green-500/50 active:scale-95"
+      class="whatsapp-btn group relative flex items-center justify-center h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-gradient-to-br from-[#25D366] to-[#128C7E] text-white shadow-lg shadow-green-500/40 transition-all duration-300 [@media(hover:hover)]:hover:scale-110 [@media(hover:hover)]:hover:shadow-xl [@media(hover:hover)]:hover:shadow-green-500/50 active:scale-95"
       aria-label="Hubungi Operator via WhatsApp"
     >
       <!-- Pulse Animation Ring -->

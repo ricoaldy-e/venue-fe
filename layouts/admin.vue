@@ -73,13 +73,13 @@ onMounted(() => {
           <div class="flex gap-3">
             <button
               @click="handleRefreshSession"
-              class="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+              class="flex-1 px-4 py-2.5 bg-blue-600 [@media(hover:hover)]:hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
             >
               Perpanjang Sesi
             </button>
             <button
               @click="logout"
-              class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors"
+              class="px-4 py-2.5 bg-gray-100 [@media(hover:hover)]:hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors"
             >
               Logout
             </button>

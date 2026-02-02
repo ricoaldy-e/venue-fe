@@ -1,9 +1,5 @@
 import type { AppOption, AppOptionsState } from '~/types/app-options'
 
-/**
- * Global state for app options
- * Used throughout the application without needing constant re-fetching
- */
 export const useAppOptions = () => {
   const defaults: AppOption = {
     name: 'VENUE UNDIP',
@@ -22,10 +18,6 @@ export const useAppOptions = () => {
     error: null,
   }))
 
-  /**
-   * Fetch options from API
-   * Only fetches if data is missing or force is true
-   */
   const fetchOptions = async (force = false) => {
     if (options.value.data && !force) {
       return options.value.data
@@ -56,14 +48,8 @@ export const useAppOptions = () => {
     }
   }
 
-  /**
-   * Refresh options data
-   */
   const refresh = () => fetchOptions(true)
 
-  /**
-   * Reset options state
-   */
   const reset = () => {
     options.value = {
       data: null,

@@ -30,7 +30,7 @@ const venueName = computed(() => options.value.data?.name || 'VENUE UNDIP')
         <div class="flex items-center gap-6 text-xs text-gray-600">
           <div class="flex items-center gap-1.5 group cursor-help" title="System Status">
             <div class="h-2 w-2 rounded-full bg-green-500 animate-pulse"></div>
-            <span class="font-medium group-hover:text-green-600 transition-colors">System Online</span>
+            <span class="font-medium [@media(hover:hover)]:group-hover:text-green-600 transition-colors">System Online</span>
           </div>
           <span class="hidden sm:inline text-gray-400">•</span>
           <p class="hidden sm:block font-medium text-gray-500">

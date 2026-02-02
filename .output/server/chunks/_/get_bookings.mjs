@@ -118,6 +118,18 @@ const QUERY_GET_BOOKINGS = `
         hasNextPage
         hasPrevPage
       }
+      fieldAnalytics {
+        fieldId
+        fieldName
+        stadionId
+        stadionName
+        totalCapacity
+        totalBooked
+        remaining
+        occupancyRate
+        statusLabel
+        statusColor
+      }
     }
   }
 `;

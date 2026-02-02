@@ -6,6 +6,8 @@ import { Icon } from '@iconify/vue'
 import { useConfirmation } from '~/composables/useConfirmation'
 import { parseBackendError } from '~/utils/errorParser'
 
+const { onFormEnter } = useFormNavigation()
+
 definePageMeta({
   middleware: 'auth-admin',
   layout: 'admin',
@@ -151,7 +153,7 @@ async function handleDelete() {
           type="button"
           @click="handleDelete"
           :disabled="loadingDelete || loading"
-          class="inline-flex items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-5 py-2.5 text-sm font-bold text-red-700 shadow-sm transition-all active:scale-95 hover:bg-red-100 hover:border-red-300 disabled:opacity-50"
+          class="inline-flex items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-5 py-2.5 text-sm font-bold text-red-700 shadow-sm transition-all active:scale-95 [@media(hover:hover)]:hover:bg-red-100 [@media(hover:hover)]:hover:border-red-300 disabled:opacity-50"
         >
           <svg v-if="loadingDelete" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
           <span>{{ loadingDelete ? 'Menghapus...' : 'Hapus' }}</span>
@@ -159,7 +161,7 @@ async function handleDelete() {
 
         <NuxtLink
           to="/admin/facilities"
-          class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 shadow-sm transition-all active:scale-95 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
+          class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 shadow-sm transition-all active:scale-95 [@media(hover:hover)]:hover:bg-blue-50 [@media(hover:hover)]:hover:text-blue-700 [@media(hover:hover)]:hover:border-blue-300"
         >
           Batal
         </NuxtLink>
@@ -168,7 +170,7 @@ async function handleDelete() {
           type="submit"
           form="edit-facility-form"
           :disabled="loading || loadingDelete"
-          class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-blue-700 hover:shadow-md transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+          class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-sm [@media(hover:hover)]:hover:bg-blue-700 [@media(hover:hover)]:hover:shadow-md transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
         >
           <svg v-if="loading" class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
           <span>{{ loading ? 'Menyimpan...' : 'Simpan Perubahan' }}</span>
@@ -184,10 +186,10 @@ async function handleDelete() {
     <div v-else-if="errorMsg && !facility" class="p-8 text-center rounded-2xl border border-red-200 bg-red-50 text-red-700">
       <p class="font-bold mb-2">Terjadi Kesalahan</p>
       <p class="text-sm">{{ errorMsg }}</p>
-      <NuxtLink to="/admin/facilities" class="mt-4 inline-block underline hover:no-underline">Kembali ke daftar</NuxtLink>
+      <NuxtLink to="/admin/facilities" class="mt-4 inline-block underline [@media(hover:hover)]:hover:no-underline">Kembali ke daftar</NuxtLink>
     </div>
 
-    <form v-else id="edit-facility-form" @submit.prevent="handleSubmit" class="flex flex-col gap-8">
+    <form v-else id="edit-facility-form" @submit.prevent="handleSubmit" @keydown.enter="onFormEnter" class="flex flex-col gap-8">
       
       <div class="w-full">
         <div class="bg-white rounded-2xl border border-gray-300 shadow-sm overflow-hidden">
@@ -229,7 +231,7 @@ async function handleDelete() {
                   v-if="searchQuery"
                   @click="searchQuery = ''"
                   type="button"
-                  class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 transition-colors"
+                  class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 [@media(hover:hover)]:hover:text-gray-600 transition-colors"
                 >
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -249,7 +251,7 @@ async function handleDelete() {
                 v-for="icon in filteredIcons"
                 :key="icon.id"
                 class="group relative flex flex-col items-center justify-center p-3 rounded-xl border cursor-pointer transition-all duration-200"
-                :class="[form.icon === icon.value ? 'border-blue-500 bg-blue-50/50 shadow-md ring-1 ring-blue-500/20' : 'border-gray-200 bg-white hover:border-blue-400 hover:bg-blue-50/30 hover:shadow-sm']"
+                :class="[form.icon === icon.value ? 'border-blue-500 bg-blue-50/50 shadow-md ring-1 ring-blue-500/20' : 'border-gray-200 bg-white [@media(hover:hover)]:hover:border-blue-400 [@media(hover:hover)]:hover:bg-blue-50/30 [@media(hover:hover)]:hover:shadow-sm']"
               >
                 <input type="radio" v-model="form.icon" :value="icon.value" class="sr-only" />
                 <div v-if="form.icon === icon.value" class="absolute top-2 right-2 bg-blue-500 rounded-full p-0.5 shadow-sm">
@@ -270,7 +272,7 @@ async function handleDelete() {
               <button
                 @click="searchQuery = ''"
                 type="button"
-                class="mt-4 inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-xs font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors"
+                class="mt-4 inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-xs font-bold text-gray-700 shadow-sm [@media(hover:hover)]:hover:bg-gray-50 transition-colors"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />

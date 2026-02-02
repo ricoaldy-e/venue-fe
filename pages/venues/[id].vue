@@ -540,7 +540,7 @@ watch(selectedDate, () => {
     <div class="mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6 py-4 sm:py-6">
       <NuxtLink 
         to="/" 
-        class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:text-[#1f2a56] hover:border-[#1f2a56] hover:shadow-md active:scale-95"
+        class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all [@media(hover:hover)]:hover:bg-gray-50 [@media(hover:hover)]:hover:text-[#1f2a56] [@media(hover:hover)]:hover:border-[#1f2a56] [@media(hover:hover)]:hover:shadow-md active:scale-95"
         aria-label="Kembali ke halaman utama"
       >
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -572,7 +572,7 @@ watch(selectedDate, () => {
           <button
             v-if="(venue?.gallery?.length || 0) > 1"
             @click="prevGallery"
-            class="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 sm:p-2.5 text-gray-700 shadow-lg hover:bg-white hover:scale-110 transition-all backdrop-blur-sm active:scale-95"
+            class="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 sm:p-2.5 text-gray-700 shadow-lg [@media(hover:hover)]:hover:bg-white [@media(hover:hover)]:hover:scale-110 transition-all backdrop-blur-sm active:scale-95"
             aria-label="Foto sebelumnya"
           >
             <svg class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -582,7 +582,7 @@ watch(selectedDate, () => {
           <button
             v-if="(venue?.gallery?.length || 0) > 1"
             @click="nextGallery"
-            class="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 sm:p-2.5 text-gray-700 shadow-lg hover:bg-white hover:scale-110 transition-all backdrop-blur-sm active:scale-95"
+            class="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 sm:p-2.5 text-gray-700 shadow-lg [@media(hover:hover)]:hover:bg-white [@media(hover:hover)]:hover:scale-110 transition-all backdrop-blur-sm active:scale-95"
             aria-label="Foto berikutnya"
           >
             <svg class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -595,7 +595,7 @@ watch(selectedDate, () => {
               v-for="(img, idx) in venue?.gallery"
               :key="`dot-${idx}`"
               class="h-1.5 sm:h-2 rounded-full transition-all"
-              :class="idx === activeGalleryIndex ? 'bg-white w-6 sm:w-8' : 'bg-white/60 w-1.5 sm:w-2 hover:bg-white/80'"
+              :class="idx === activeGalleryIndex ? 'bg-white w-6 sm:w-8' : 'bg-white/60 w-1.5 sm:w-2 [@media(hover:hover)]:hover:bg-white/80'"
               @click="activeGalleryIndex = idx"
               :aria-label="`Lihat gambar ${idx + 1} dari ${venue.gallery.length}`"
               :aria-current="idx === activeGalleryIndex"
@@ -615,7 +615,7 @@ watch(selectedDate, () => {
             <div
               v-for="(img, idx) in venue?.gallery?.slice(1, 3)"
               :key="`thumb-${idx}`"
-              class="relative w-full h-full overflow-hidden rounded-[24px] shadow-sm cursor-pointer transition-all hover:opacity-80 hover:shadow-md hover:scale-[1.02]"
+              class="relative w-full h-full overflow-hidden rounded-[24px] shadow-sm cursor-pointer transition-all [@media(hover:hover)]:hover:opacity-80 [@media(hover:hover)]:hover:shadow-md [@media(hover:hover)]:hover:scale-[1.02]"
               @click="activeGalleryIndex = idx + 1"
             >
               <img
@@ -702,7 +702,7 @@ watch(selectedDate, () => {
                   :href="venue.mapUrl"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#3b82f6] hover:text-[#2563eb] hover:underline transition-all whitespace-nowrap"
+                  class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#3b82f6] [@media(hover:hover)]:hover:text-[#2563eb] [@media(hover:hover)]:hover:underline active:text-[#2563eb] transition-all whitespace-nowrap"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
@@ -778,7 +778,7 @@ watch(selectedDate, () => {
               :class="
                 isDateEqual(selectedDate, day.value)
                   ? 'bg-[#1f2a56] text-white shadow border-[#1f2a56] hover:bg-[#162347]'
-                  : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+                  : 'bg-white text-gray-700 border-gray-200 [@media(hover:hover)]:hover:bg-gray-50 [@media(hover:hover)]:hover:border-gray-300 active:bg-gray-100'
               "
               @click="selectedDate = day.value"
             >
@@ -792,7 +792,7 @@ watch(selectedDate, () => {
               :class="
                 isDateEqual(selectedDate, day.value)
                   ? 'bg-[#1f2a56] text-white shadow border-[#1f2a56] hover:bg-[#162347]'
-                  : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+                  : 'bg-white text-gray-700 border-gray-200 [@media(hover:hover)]:hover:bg-gray-50 [@media(hover:hover)]:hover:border-gray-300 active:bg-gray-100'
               "
               @click="selectedDate = day.value"
             >
@@ -816,7 +816,7 @@ watch(selectedDate, () => {
           </p>
           <NuxtLink 
             to="/" 
-            class="inline-flex items-center gap-2 rounded-xl bg-[#1f2a56] px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-[#162347] transition-all active:scale-95"
+            class="inline-flex items-center gap-2 rounded-xl bg-[#1f2a56] px-6 py-3 text-sm font-semibold text-white shadow-sm [@media(hover:hover)]:hover:bg-[#162347] transition-all active:scale-95"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -853,7 +853,7 @@ watch(selectedDate, () => {
                   <button
                     @click.stop="prevCourtImage(court.id, court.gallery.length)"
                     aria-label="Foto sebelumnya"
-                    class="absolute left-2 sm:left-2.5 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 sm:p-2 text-gray-700 hover:bg-white hover:scale-110 shadow-lg transition-all backdrop-blur-sm active:scale-95"
+                    class="absolute left-2 sm:left-2.5 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 sm:p-2 text-gray-700 [@media(hover:hover)]:hover:bg-white [@media(hover:hover)]:hover:scale-110 shadow-lg transition-all backdrop-blur-sm active:scale-95"
                   >
                     <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
@@ -862,7 +862,7 @@ watch(selectedDate, () => {
                   <button
                     @click.stop="nextCourtImage(court.id, court.gallery.length)"
                     aria-label="Foto berikutnya"
-                    class="absolute right-2 sm:right-2.5 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 sm:p-2 text-gray-700 hover:bg-white hover:scale-110 shadow-lg transition-all backdrop-blur-sm active:scale-95"
+                    class="absolute right-2 sm:right-2.5 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 sm:p-2 text-gray-700 [@media(hover:hover)]:hover:bg-white [@media(hover:hover)]:hover:scale-110 shadow-lg transition-all backdrop-blur-sm active:scale-95"
                   >
                     <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
@@ -926,7 +926,7 @@ watch(selectedDate, () => {
 
                 <div class="flex flex-wrap items-center gap-2 sm:gap-3">
                   <button
-                    class="inline-flex items-center gap-1.5 sm:gap-2 rounded-full bg-[#1f2a56] px-4 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-white shadow hover:bg-[#162347] transition-all active:scale-95"
+                    class="inline-flex items-center gap-1.5 sm:gap-2 rounded-full bg-[#1f2a56] px-4 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-white shadow [@media(hover:hover)]:hover:bg-[#162347] transition-all active:scale-95"
                     @click="toggleCourt(court.id)"
                     :aria-expanded="isCourtExpanded(court.id)"
                     :aria-controls="`court-schedule-${court.id}`"
@@ -1078,7 +1078,7 @@ watch(selectedDate, () => {
               <p class="text-sm text-gray-500">{{ selectedDayLabel }}</p>
             </div>
 
-            <button class="text-gray-500 hover:text-gray-800" @click="closeDrawer">
+            <button class="text-gray-500 [@media(hover:hover)]:hover:text-gray-800 active:text-gray-800" @click="closeDrawer">
               <span class="sr-only">Tutup</span>
               <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -1102,7 +1102,7 @@ watch(selectedDate, () => {
                 <p class="mt-1 font-semibold">Rp{{ item.price.toLocaleString('id-ID') }}</p>
               </div>
 
-              <button class="text-[#b91c1c] hover:text-red-700" @click="removeSelectedSlot(item.key)">
+              <button class="text-[#b91c1c] [@media(hover:hover)]:hover:text-red-700 active:text-red-700" @click="removeSelectedSlot(item.key)">
                 <span class="sr-only">Hapus slot</span>
                 <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12M10 11v6m4-6v6M9 7l.867-1.8A1 1 0 0 1 10.79 5h2.42a1 1 0 0 1 .923.2L15 7" />
@@ -1115,7 +1115,7 @@ watch(selectedDate, () => {
           <footer class="border-t border-gray-100 px-6 py-4">
             <button
               type="button"
-              class="w-full rounded-xl bg-[#1f2a56] px-4 py-3 text-sm font-semibold text-white shadow hover:bg-[#162347] disabled:cursor-not-allowed disabled:bg-gray-300"
+              class="w-full rounded-xl bg-[#1f2a56] px-4 py-3 text-sm font-semibold text-white shadow [@media(hover:hover)]:hover:bg-[#162347] disabled:cursor-not-allowed disabled:bg-gray-300"
               :disabled="!selectedSlots.length"
               @click="proceedToOrder"
             >

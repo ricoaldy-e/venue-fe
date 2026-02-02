@@ -3,6 +3,9 @@ import { $fetch } from 'ofetch'
 import { toUtcMidnightIso } from '~/utils/dateHelpers'
 import { MUTATION_CREATE_BOOKING } from '~/graphql/mutations/create_booking'
 import { parseBackendError } from '~/utils/errorParser'
+
+const { onFormEnter } = useFormNavigation()
+
 definePageMeta({
   layout: 'admin',
   middleware: 'auth-admin'
@@ -447,7 +450,7 @@ watch(() => bookingForm.renterType, (val) => {
       </div>
     </header>
 
-    <form id="booking-form" @submit.prevent="handleSubmit" class="flex flex-col gap-8 w-full">
+    <form id="booking-form" @submit.prevent="handleSubmit" @keydown.enter="onFormEnter" class="flex flex-col gap-8 w-full">
       
       <div class="w-full">
         <div class="bg-white rounded-2xl border border-gray-300 shadow-sm overflow-hidden">
@@ -469,7 +472,7 @@ watch(() => bookingForm.renterType, (val) => {
               <div 
                 v-for="slot in selectedSlots" 
                 :key="slot.fieldId + '-' + slot.startHour"
-                class="p-4 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 shadow-sm hover:shadow-md transition-shadow"
+                class="p-4 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 shadow-sm [@media(hover:hover)]:hover:shadow-md transition-shadow"
               >
                 <div class="flex items-start justify-between">
                   <div class="flex-1">
@@ -625,7 +628,7 @@ watch(() => bookingForm.renterType, (val) => {
                   type="file" 
                   accept="application/pdf" 
                   @change="handleSptjmUpload"
-                  class="block w-full text-sm text-gray-900 border border-gray-300 rounded-xl cursor-pointer bg-gray-50 focus:outline-none focus:border-blue-500 file:mr-4 file:py-3 file:px-4 file:rounded-l-xl file:border-0 file:text-sm file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition-all" 
+                  class="block w-full text-sm text-gray-900 border border-gray-300 rounded-xl cursor-pointer bg-gray-50 focus:outline-none focus:border-blue-500 file:mr-4 file:py-3 file:px-4 file:rounded-l-xl file:border-0 file:text-sm file:font-bold file:bg-blue-600 file:text-white [@media(hover:hover)]:hover:file:bg-blue-700 transition-all" 
                 />
               </div>
               <p class="text-xs text-gray-500 mt-1">
@@ -663,7 +666,7 @@ watch(() => bookingForm.renterType, (val) => {
                     type="file" 
                     accept="application/pdf" 
                     @change="handleSuratUpload"
-                    class="block w-full text-sm text-gray-900 border border-gray-300 rounded-xl cursor-pointer bg-gray-50 focus:outline-none focus:border-blue-500 file:mr-4 file:py-3 file:px-4 file:rounded-l-xl file:border-0 file:text-sm file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition-all" 
+                    class="block w-full text-sm text-gray-900 border border-gray-300 rounded-xl cursor-pointer bg-gray-50 focus:outline-none focus:border-blue-500 file:mr-4 file:py-3 file:px-4 file:rounded-l-xl file:border-0 file:text-sm file:font-bold file:bg-blue-600 file:text-white [@media(hover:hover)]:hover:file:bg-blue-700 transition-all" 
                   />
                 </div>
                 <p class="text-xs text-gray-500 mt-1">
@@ -727,7 +730,7 @@ watch(() => bookingForm.renterType, (val) => {
         <button 
           type="button" 
           @click="errorMsg = null" 
-          class="text-red-700 hover:text-red-900 transition-colors"
+          class="text-red-700 [@media(hover:hover)]:hover:text-red-900 transition-colors"
           aria-label="Tutup pesan error"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -741,7 +744,7 @@ watch(() => bookingForm.renterType, (val) => {
         <button
           type="button"
           @click="$router.back()"
-          class="flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 shadow-sm transition-all active:scale-95 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
+          class="flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 shadow-sm transition-all active:scale-95 [@media(hover:hover)]:hover:bg-blue-50 [@media(hover:hover)]:hover:text-blue-700 [@media(hover:hover)]:hover:border-blue-300"
         >
           Batal
         </button>
@@ -749,7 +752,7 @@ watch(() => bookingForm.renterType, (val) => {
         <button
           type="submit"
           :disabled="checkingAvailability || submitting || isUploadingFiles"
-          class="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-blue-700 hover:shadow-md transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+          class="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-sm [@media(hover:hover)]:hover:bg-blue-700 [@media(hover:hover)]:hover:shadow-md transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
         >
           <svg
             v-if="checkingAvailability || submitting || isUploadingFiles"

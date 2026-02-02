@@ -85,7 +85,7 @@ const getStatusClasses = (status?: 'ACTIVE' | 'INACTIVE') => {
 
       <NuxtLink
         to="/admin/fields/create"
-        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 hover:shadow-md transition-all active:scale-95"
+        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm [@media(hover:hover)]:hover:bg-blue-700 [@media(hover:hover)]:hover:shadow-md transition-all active:scale-95"
       >
         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -117,7 +117,7 @@ const getStatusClasses = (status?: 'ACTIVE' | 'INACTIVE') => {
           <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
           <div class="text-sm font-medium">
             {{ error?.message || 'Terjadi kesalahan saat memuat data.' }}
-            <button @click="refresh()" class="underline ml-1 font-bold hover:text-red-800">Coba lagi</button>
+            <button @click="refresh()" class="underline ml-1 font-bold [@media(hover:hover)]:hover:text-red-800 active:text-red-800">Coba lagi</button>
           </div>
         </div>
       </div>
@@ -137,7 +137,7 @@ const getStatusClasses = (status?: 'ACTIVE' | 'INACTIVE') => {
         <p class="text-sm text-gray-500 mt-1 max-w-xs mx-auto">
           {{ searchQuery ? `Tidak ada hasil untuk "${searchQuery}"` : 'Belum ada lapangan yang terdaftar.' }}
         </p>
-        <button v-if="searchQuery" @click="searchQuery = ''" class="mt-4 text-sm font-medium text-blue-600 hover:text-blue-700">
+        <button v-if="searchQuery" @click="searchQuery = ''" class="mt-4 text-sm font-medium text-blue-600 [@media(hover:hover)]:hover:text-blue-700 active:text-blue-700">
           Bersihkan Pencarian
         </button>
       </div>
@@ -157,11 +157,11 @@ const getStatusClasses = (status?: 'ACTIVE' | 'INACTIVE') => {
               <tr
                 v-for="field in paginatedFields"
                 :key="field.id"
-                class="group hover:bg-gray-100 transition-colors duration-200"
+                class="group [@media(hover:hover)]:hover:bg-gray-100 transition-colors duration-200"
               >
                 <td class="px-6 py-4 align-middle">
                   <div class="flex flex-col">
-                    <span class="text-sm font-bold text-gray-900 group-hover:text-blue-700 transition-colors">{{ field.name }}</span>
+                    <span class="text-sm font-bold text-gray-900 [@media(hover:hover)]:group-hover:text-blue-700 transition-colors">{{ field.name }}</span>
                     <div class="flex items-center gap-1.5 mt-1">
                       <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                       <span class="text-xs text-gray-500 font-medium">{{ getStadiumName(field) }}</span>
@@ -188,7 +188,7 @@ const getStatusClasses = (status?: 'ACTIVE' | 'INACTIVE') => {
                 <td class="px-6 py-4 text-center align-middle">
                   <NuxtLink
                     :to="`/admin/fields/${field.id}`"
-                    class="text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline decoration-2 underline-offset-2 transition-all"
+                    class="text-sm font-semibold text-blue-600 [@media(hover:hover)]:hover:text-blue-800 [@media(hover:hover)]:hover:underline decoration-2 underline-offset-2 transition-all"
                   >
                     Edit
                   </NuxtLink>
@@ -202,7 +202,7 @@ const getStatusClasses = (status?: 'ACTIVE' | 'INACTIVE') => {
           <div
             v-for="field in paginatedFields"
             :key="field.id"
-            class="bg-white rounded-xl border border-gray-300 p-4 shadow-sm hover:shadow-md transition-all duration-200"
+            class="bg-white rounded-xl border border-gray-300 p-4 shadow-sm [@media(hover:hover)]:hover:shadow-md transition-all duration-200"
           >
             <div class="flex justify-between items-start gap-3">
               <div class="flex-1 min-w-0">
@@ -225,7 +225,7 @@ const getStatusClasses = (status?: 'ACTIVE' | 'INACTIVE') => {
             <div class="flex items-center justify-end">
               <NuxtLink
                 :to="`/admin/fields/${field.id}`"
-                class="text-sm font-semibold text-blue-600 hover:text-blue-800 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors"
+                class="text-sm font-semibold text-blue-600 [@media(hover:hover)]:hover:text-blue-800 [@media(hover:hover)]:hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors"
               >
                 Edit
               </NuxtLink>
@@ -246,7 +246,7 @@ const getStatusClasses = (status?: 'ACTIVE' | 'INACTIVE') => {
           <button
             @click="prevPage"
             :disabled="currentPage === 1"
-            class="p-2 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
+            class="p-2 rounded-lg border border-gray-300 bg-white text-gray-600 [@media(hover:hover)]:hover:bg-gray-50 [@media(hover:hover)]:hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
           </button>
@@ -258,7 +258,7 @@ const getStatusClasses = (status?: 'ACTIVE' | 'INACTIVE') => {
           <button
             @click="nextPage"
             :disabled="currentPage === totalPages"
-            class="p-2 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
+            class="p-2 rounded-lg border border-gray-300 bg-white text-gray-600 [@media(hover:hover)]:hover:bg-gray-50 [@media(hover:hover)]:hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
           </button>

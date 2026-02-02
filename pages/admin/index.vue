@@ -173,7 +173,34 @@ onMounted(() => {
 
 const rawBookings = computed<any[]>(() => (bookingsResponse.value as any)?.data?.bookings?.data || [])
 
+const beFieldAnalytics = computed<any[]>(() => (bookingsResponse.value as any)?.data?.bookings?.fieldAnalytics || [])
+
 const dashboardData = computed<DashboardCardItem[]>(() => {
+  if (beFieldAnalytics.value && beFieldAnalytics.value.length > 0) {
+    let beData = beFieldAnalytics.value
+    
+    if (selectedStadionId.value) {
+      beData = beData.filter((item: any) => 
+        String(item.stadionId) === String(selectedStadionId.value)
+      )
+    }
+    
+    return beData.map((item: any) => ({
+      id: item.fieldId,
+      name: item.fieldName,
+      stadionId: Number(item.stadionId),
+      stadionName: item.stadionName,
+      mode: filterMode.value,
+      totalCapacity: item.totalCapacity,
+      totalBooked: item.totalBooked,
+      remaining: item.remaining,
+      occupancyRate: item.occupancyRate,
+      statusLabel: item.statusLabel,
+      statusColor: item.statusColor
+    }))
+  }
+  
+  // Fallback to FE calculation if BE returns null/empty
   let fieldsToCheck = allFields.value
 
   if (selectedStadionId.value) {
@@ -255,7 +282,7 @@ const switchMode = (mode: 'daily' | 'range') => {
             <button
               @click="handleManualRefresh"
               :disabled="isRefreshing"
-              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-all active:scale-95 disabled:opacity-50"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-200 rounded-lg [@media(hover:hover)]:hover:bg-blue-100 transition-all active:scale-95 disabled:opacity-50"
               title="Refresh data"
             >
               <svg 
@@ -280,7 +307,7 @@ const switchMode = (mode: 'daily' | 'range') => {
         <button 
           @click="switchMode('daily')" 
           class="flex-1 md:flex-none justify-center px-5 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 flex items-center gap-2" 
-          :class="filterMode === 'daily' ? 'bg-white text-blue-700 shadow-sm ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-700'"
+          :class="filterMode === 'daily' ? 'bg-white text-blue-700 shadow-sm ring-1 ring-black/5' : 'text-gray-500 [@media(hover:hover)]:hover:text-gray-700'"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
           Harian
@@ -288,7 +315,7 @@ const switchMode = (mode: 'daily' | 'range') => {
         <button 
           @click="switchMode('range')" 
           class="flex-1 md:flex-none justify-center px-5 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 flex items-center gap-2" 
-          :class="filterMode === 'range' ? 'bg-white text-blue-700 shadow-sm ring-1 ring-black/5' : 'text-gray-500 hover:text-gray-700'"
+          :class="filterMode === 'range' ? 'bg-white text-blue-700 shadow-sm ring-1 ring-black/5' : 'text-gray-500 [@media(hover:hover)]:hover:text-gray-700'"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
           Rentang
@@ -300,7 +327,7 @@ const switchMode = (mode: 'daily' | 'range') => {
       <div class="flex-1 w-full">
         <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Lokasi Stadion</label>
         <div class="relative">
-          <select v-model="selectedStadionId" class="appearance-none w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors hover:bg-gray-100/50 cursor-pointer font-medium">
+          <select v-model="selectedStadionId" class="appearance-none w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors [@media(hover:hover)]:hover:bg-gray-100/50 cursor-pointer font-medium">
             <option value="">Semua Stadion</option>
             <option v-for="s in stadionList" :key="s.id" :value="s.id">{{ s.name }}</option>
           </select>
@@ -334,8 +361,8 @@ const switchMode = (mode: 'daily' | 'range') => {
             {{ filterMode === 'daily' ? 'Pilih Tanggal' : 'Pilih Periode Waktu' }}
           </label>
           <div v-if="filterMode === 'range'" class="flex gap-2">
-            <button @click="setRange(7)" class="text-[10px] font-semibold px-2 py-1 rounded transition-colors" :class="isRangeActive(7) ? 'bg-blue-600 text-white shadow-sm' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'">7 Hari ke Depan</button>
-            <button @click="setRange(30)" class="text-[10px] font-semibold px-2 py-1 rounded transition-colors" :class="isRangeActive(30) ? 'bg-blue-600 text-white shadow-sm' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'">1 Bulan ke Depan</button>
+            <button @click="setRange(7)" class="text-[10px] font-semibold px-2 py-1 rounded transition-colors" :class="isRangeActive(7) ? 'bg-blue-600 text-white shadow-sm' : 'bg-blue-50 text-blue-600 [@media(hover:hover)]:hover:bg-blue-100'">7 Hari ke Depan</button>
+            <button @click="setRange(30)" class="text-[10px] font-semibold px-2 py-1 rounded transition-colors" :class="isRangeActive(30) ? 'bg-blue-600 text-white shadow-sm' : 'bg-blue-50 text-blue-600 [@media(hover:hover)]:hover:bg-blue-100'">1 Bulan ke Depan</button>
           </div>
         </div>
         <div v-if="filterMode === 'daily'" class="flex flex-col sm:flex-row items-center gap-3">
@@ -350,7 +377,7 @@ const switchMode = (mode: 'daily' | 'range') => {
       </div>
 
       <div class="flex gap-2 w-full lg:w-auto">
-        <button @click="handlePrint()" class="flex-1 lg:flex-none px-4 py-3 bg-gray-800 text-white rounded-xl hover:bg-gray-900 font-semibold transition-all flex items-center justify-center gap-2 shadow-sm">
+        <button @click="handlePrint()" class="flex-1 lg:flex-none px-4 py-3 bg-gray-800 text-white rounded-xl [@media(hover:hover)]:hover:bg-gray-900 font-semibold transition-all flex items-center justify-center gap-2 shadow-sm">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
           <span>Cetak</span>
         </button>
@@ -410,7 +437,7 @@ const switchMode = (mode: 'daily' | 'range') => {
         </div>
       </div>
 
-      <div class="print:hidden relative overflow-hidden bg-white border-2 border-gray-200 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <div class="print:hidden relative overflow-hidden bg-white border-2 border-gray-200 rounded-2xl p-8 shadow-lg [@media(hover:hover)]:hover:shadow-xl transition-shadow duration-300">
         <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-orange-100 to-red-100 opacity-50 rounded-bl-full print:hidden"></div>
         
         <div class="absolute right-4 top-4 opacity-5 print:hidden">
@@ -468,14 +495,14 @@ const switchMode = (mode: 'daily' | 'range') => {
       <h3 class="text-lg font-bold text-gray-900">{{ searchQuery ? 'Tidak ada hasil pencarian' : 'Tidak ada data lapangan' }}</h3>
       <p class="text-gray-500 mt-1 max-w-sm text-center">{{ searchQuery ? `Tidak ditemukan lapangan dengan kata kunci "${searchQuery}"` : 'Belum ada lapangan yang aktif atau sesuai dengan filter lokasi yang Anda pilih.' }}</p>
       
-      <button @click="resetFilters(); searchQuery = ''" class="mt-6 px-5 py-2.5 text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-100 rounded-xl transition-colors print:hidden flex items-center gap-2">
+      <button @click="resetFilters(); searchQuery = ''" class="mt-6 px-5 py-2.5 text-sm font-medium text-blue-700 bg-blue-50 [@media(hover:hover)]:hover:bg-blue-100 border border-blue-100 rounded-xl transition-colors print:hidden flex items-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
         Reset Filter Pencarian
       </button>
     </div>
 
     <div v-else class="print:hidden grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-      <div v-for="item in filteredDashboardData" :key="item.id" class="group bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:border-blue-300 transition-all duration-300 overflow-hidden flex flex-col break-inside-avoid">
+      <div v-for="item in filteredDashboardData" :key="item.id" class="group bg-white rounded-2xl border border-gray-200 shadow-sm [@media(hover:hover)]:hover:shadow-lg [@media(hover:hover)]:hover:border-blue-300 transition-all duration-300 overflow-hidden flex flex-col break-inside-avoid">
         
         <div class="p-5 border-b border-gray-100 bg-gray-50/50">
           <div class="flex justify-between items-start gap-4">
@@ -527,8 +554,8 @@ const switchMode = (mode: 'daily' | 'range') => {
           </div>
         </div>
 
-        <div class="p-4 bg-gray-50 border-t border-gray-100 group-hover:bg-blue-50/30 transition-colors">
-          <NuxtLink :to="`/admin/bookings/${item.stadionId}`" class="flex items-center justify-center w-full py-2.5 text-sm font-semibold text-gray-700 hover:text-blue-700 bg-white border border-gray-200 hover:border-blue-300 rounded-xl shadow-sm hover:shadow transition-all gap-2">
+        <div class="p-4 bg-gray-50 border-t border-gray-100 [@media(hover:hover)]:group-hover:bg-blue-50/30 transition-colors">
+          <NuxtLink :to="`/admin/bookings/${item.stadionId}`" class="flex items-center justify-center w-full py-2.5 text-sm font-semibold text-gray-700 [@media(hover:hover)]:hover:text-blue-700 bg-white border border-gray-200 [@media(hover:hover)]:hover:border-blue-300 rounded-xl shadow-sm [@media(hover:hover)]:hover:shadow transition-all gap-2">
             Lihat Jadwal Detail
           </NuxtLink>
         </div>

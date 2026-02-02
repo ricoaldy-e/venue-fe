@@ -438,7 +438,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
     <header class="mx-auto flex max-w-7xl items-center justify-between pt-2 pb-4 sm:pt-1 sm:pb-6">
         <NuxtLink 
           to="/admin/bookings" 
-          class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:text-[#1f2a56] hover:border-[#1f2a56] hover:shadow-md active:scale-95"
+          class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all [@media(hover:hover)]:hover:bg-gray-50 [@media(hover:hover)]:hover:text-[#1f2a56] [@media(hover:hover)]:hover:border-[#1f2a56] [@media(hover:hover)]:hover:shadow-md active:scale-95"
         >
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -489,7 +489,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
             <button
               v-if="(stadion?.images?.length || 0) > 1"
               @click="prevStadionImage"
-              class="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 sm:p-2.5 text-gray-700 shadow-lg hover:bg-white hover:scale-110 transition-all backdrop-blur-sm active:scale-95"
+              class="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 sm:p-2.5 text-gray-700 shadow-lg [@media(hover:hover)]:hover:bg-white [@media(hover:hover)]:hover:scale-110 transition-all backdrop-blur-sm active:scale-95"
               aria-label="Foto sebelumnya"
             >
               <svg class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -499,7 +499,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
             <button
               v-if="(stadion?.images?.length || 0) > 1"
               @click="nextStadionImage"
-              class="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 sm:p-2.5 text-gray-700 shadow-lg hover:bg-white transition-all backdrop-blur-sm"
+              class="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 sm:p-2.5 text-gray-700 shadow-lg [@media(hover:hover)]:hover:bg-white transition-all backdrop-blur-sm"
               aria-label="Foto berikutnya"
             >
               <svg class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -512,7 +512,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
                 v-for="(img, idx) in stadion?.images"
                 :key="`dot-${idx}`"
                 class="h-1.5 sm:h-2 rounded-full transition-all"
-                :class="idx === stadionImageIndex ? 'bg-white w-6 sm:w-8' : 'bg-white/60 w-1.5 sm:w-2 hover:bg-white/80'"
+                :class="idx === stadionImageIndex ? 'bg-white w-6 sm:w-8' : 'bg-white/60 w-1.5 sm:w-2 [@media(hover:hover)]:hover:bg-white/80'"
                 @click="stadionImageIndex = idx"
                 :aria-label="`Gambar ${idx + 1}`"
               />
@@ -531,7 +531,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
               <div
                 v-for="(img, idx) in stadion?.images?.slice(1, 3)"
                 :key="`thumb-${idx}`"
-                class="relative w-full h-full overflow-hidden rounded-[24px] shadow-sm cursor-pointer transition-all duration-200 hover:opacity-80 hover:shadow-md hover:scale-[1.02]"
+                class="relative w-full h-full overflow-hidden rounded-[24px] shadow-sm cursor-pointer transition-all duration-200 [@media(hover:hover)]:hover:opacity-80 [@media(hover:hover)]:hover:shadow-md [@media(hover:hover)]:hover:scale-[1.02]"
                 @click="stadionImageIndex = idx + 1"
               >
                 <img
@@ -621,7 +621,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
                     :href="stadion.mapUrl"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#3b82f6] hover:text-[#2563eb] hover:underline transition-all whitespace-nowrap"
+                    class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#3b82f6] [@media(hover:hover)]:hover:text-[#2563eb] [@media(hover:hover)]:hover:underline transition-all whitespace-nowrap"
                   >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
@@ -701,8 +701,8 @@ watch(() => selectedSlots.value.length, (newLength) => {
                 class="rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold transition-all border"
                 :class="
                   isDateEqual(selectedDate, day.value)
-                    ? 'bg-[#1f2a56] text-white shadow border-[#1f2a56] hover:bg-[#162347]'
-                    : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+                    ? 'bg-[#1f2a56] text-white shadow border-[#1f2a56] [@media(hover:hover)]:hover:bg-[#162347]'
+                    : 'bg-white text-gray-700 border-gray-200 [@media(hover:hover)]:hover:bg-gray-50 [@media(hover:hover)]:hover:border-gray-300'
                 "
                 @click="selectedDate = day.value"
               >
@@ -715,8 +715,8 @@ watch(() => selectedSlots.value.length, (newLength) => {
                 class="hidden sm:inline-flex rounded-xl px-4 py-2.5 text-sm font-semibold transition-all border"
                 :class="
                   isDateEqual(selectedDate, day.value)
-                    ? 'bg-[#1f2a56] text-white shadow border-[#1f2a56] hover:bg-[#162347]'
-                    : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+                    ? 'bg-[#1f2a56] text-white shadow border-[#1f2a56] [@media(hover:hover)]:hover:bg-[#162347]'
+                    : 'bg-white text-gray-700 border-gray-200 [@media(hover:hover)]:hover:bg-gray-50 [@media(hover:hover)]:hover:border-gray-300'
                 "
                 @click="selectedDate = day.value"
               >
@@ -737,7 +737,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
                 <p class="text-xs text-yellow-700 mt-1">{{ bookingError }}</p>
                 <button 
                   @click="loadPublicBookings" 
-                  class="mt-2 text-xs font-semibold text-yellow-900 hover:text-yellow-700 underline"
+                  class="mt-2 text-xs font-semibold text-yellow-900 [@media(hover:hover)]:hover:text-yellow-700 underline"
                 >
                   Coba Lagi
                 </button>
@@ -761,7 +761,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
             </p>
             <NuxtLink 
               :to="`/admin/fields/create?stadionId=${stadionId}`"
-              class="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition-all active:scale-95"
+              class="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-sm [@media(hover:hover)]:hover:bg-blue-700 transition-all active:scale-95"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -796,7 +796,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
                     <button
                       @click.stop="prevFieldImage(Number(field.id))"
                       aria-label="Foto sebelumnya"
-                      class="absolute left-2 sm:left-2.5 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 sm:p-2 text-gray-700 hover:bg-white hover:scale-110 shadow-lg transition-all backdrop-blur-sm active:scale-95"
+                      class="absolute left-2 sm:left-2.5 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 sm:p-2 text-gray-700 [@media(hover:hover)]:hover:bg-white [@media(hover:hover)]:hover:scale-110 shadow-lg transition-all backdrop-blur-sm active:scale-95"
                     >
                       <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
@@ -805,7 +805,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
                     <button
                       @click.stop="nextFieldImage(Number(field.id))"
                       aria-label="Foto berikutnya"
-                      class="absolute right-2 sm:right-2.5 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 sm:p-2 text-gray-700 hover:bg-white hover:scale-110 shadow-lg transition-all backdrop-blur-sm active:scale-95"
+                      class="absolute right-2 sm:right-2.5 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 sm:p-2 text-gray-700 [@media(hover:hover)]:hover:bg-white [@media(hover:hover)]:hover:scale-110 shadow-lg transition-all backdrop-blur-sm active:scale-95"
                     >
                       <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
@@ -868,7 +868,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
                   </div>
 
                   <button
-                    class="inline-flex items-center gap-1.5 sm:gap-2 rounded-full bg-[#1f2a56] px-4 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-white shadow hover:bg-[#162347] transition-all active:scale-95"
+                    class="inline-flex items-center gap-1.5 sm:gap-2 rounded-full bg-[#1f2a56] px-4 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-white shadow [@media(hover:hover)]:hover:bg-[#162347] transition-all active:scale-95"
                     @click="toggleField(Number(field.id))"
                   >
                     <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1051,14 +1051,14 @@ watch(() => selectedSlots.value.length, (newLength) => {
           <div class="flex gap-2 sm:gap-2.5">
             <button
               type="button"
-              class="rounded-lg sm:rounded-xl border border-gray-300 bg-white px-3 sm:px-5 py-1.5 sm:py-2.5 text-xs sm:text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all active:scale-95"
+              class="rounded-lg sm:rounded-xl border border-gray-300 bg-white px-3 sm:px-5 py-1.5 sm:py-2.5 text-xs sm:text-sm font-semibold text-gray-700 [@media(hover:hover)]:hover:bg-gray-50 [@media(hover:hover)]:hover:border-gray-400 transition-all active:scale-95"
               @click="selectedSlots = []"
             >
               Batalkan
             </button>
             <button
               type="button"
-              class="inline-flex items-center gap-1.5 sm:gap-2 rounded-lg sm:rounded-xl bg-[#1f2a56] px-3 sm:px-5 py-1.5 sm:py-2.5 text-xs sm:text-sm font-semibold text-white shadow hover:bg-[#162347] transition-all active:scale-95"
+              class="inline-flex items-center gap-1.5 sm:gap-2 rounded-lg sm:rounded-xl bg-[#1f2a56] px-3 sm:px-5 py-1.5 sm:py-2.5 text-xs sm:text-sm font-semibold text-white shadow [@media(hover:hover)]:hover:bg-[#162347] transition-all active:scale-95"
               @click="makeBooking"
             >
               <span>Lanjut</span>

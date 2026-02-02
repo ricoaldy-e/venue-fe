@@ -388,7 +388,7 @@ const createBooking = async () => {
                   Rp{{ slot.price.toLocaleString('id-ID') }}
                 </p>
               </div>
-              <button class="text-red-500 hover:text-red-700" @click="removeSlot(slot.key)">
+              <button class="text-red-500 [@media(hover:hover)]:hover:text-red-700 active:text-red-700" @click="removeSlot(slot.key)">
                 <span class="sr-only">Hapus slot</span>
                 <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12M10 11v6m4-6v6M9 7l.867-1.8A1 1 0 0 1 10.79 5h2.42a1 1 0 0 1 .923.2L15 7" />
@@ -397,7 +397,7 @@ const createBooking = async () => {
               </button>
             </article>
           </div>
-          <button class="mt-4 text-sm font-semibold text-[#1f2a56] hover:underline" @click="addMore">
+          <button class="mt-4 text-sm font-semibold text-[#1f2a56] [@media(hover:hover)]:hover:underline active:underline" @click="addMore">
             Tambah Jadwal
           </button>
         </div>
@@ -501,7 +501,7 @@ const createBooking = async () => {
               <span class="text-gray-600">Upload SPTJM <span class="text-red-500">*</span></span>
               <p class="text-xs text-gray-500 mb-2">Surat Pernyataan Tanggung Jawab Mutlak (format PDF)</p>
               <div v-if="!sptjmFile" class="mt-1">
-                <label class="flex items-center justify-center w-full rounded-xl border-2 border-dashed border-gray-300 px-3 py-4 cursor-pointer hover:border-[#1f2a56] hover:bg-gray-50 transition-colors">
+                <label class="flex items-center justify-center w-full rounded-xl border-2 border-dashed border-gray-300 px-3 py-4 cursor-pointer [@media(hover:hover)]:hover:border-[#1f2a56] [@media(hover:hover)]:hover:bg-gray-50 active:bg-gray-50 transition-colors">
                   <div class="flex flex-col items-center">
                     <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
@@ -518,7 +518,7 @@ const createBooking = async () => {
                   </svg>
                   <span class="text-sm text-green-700 font-medium truncate max-w-[150px]">{{ sptjmFile.name }}</span>
                 </div>
-                <button type="button" @click="removeSptjm" class="text-red-500 hover:text-red-700 p-1">
+                <button type="button" @click="removeSptjm" class="text-red-500 [@media(hover:hover)]:hover:text-red-700 active:text-red-700 p-1">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                   </svg>
@@ -603,7 +603,7 @@ const createBooking = async () => {
         </div>
 
         <button
-          class="w-full rounded-xl bg-[#1f2a56] py-3 text-sm font-semibold text-white shadow hover:bg-[#162347] disabled:bg-[#1f2a56]/70 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
+          class="w-full rounded-xl bg-[#1f2a56] py-3 text-sm font-semibold text-white shadow [@media(hover:hover)]:hover:bg-[#162347] disabled:bg-[#1f2a56]/70 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
           @click="createBooking"
           :disabled="pending || !orderSlots.length || bookingLoading"
         >

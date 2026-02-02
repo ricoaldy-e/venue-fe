@@ -192,7 +192,7 @@ const handleSubmit = async () => {
       <div v-else-if="error" class="p-6">
         <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
           <p class="font-semibold text-sm">Gagal memuat data: {{ error.message }}</p>
-          <button class="mt-2 text-sm font-bold underline hover:text-red-800" @click="refresh()">Coba lagi</button>
+          <button class="mt-2 text-sm font-bold underline [@media(hover:hover)]:hover:text-red-800 active:text-red-800" @click="refresh()">Coba lagi</button>
         </div>
       </div>
 
@@ -314,7 +314,7 @@ const handleSubmit = async () => {
                     </div>
                     <select
                       v-model="formState.open"
-                      class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm appearance-none transition-all cursor-pointer hover:border-gray-400"
+                      class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm appearance-none transition-all cursor-pointer [@media(hover:hover)]:hover:border-gray-400"
                       required
                       :disabled="submitting"
                     >
@@ -337,7 +337,7 @@ const handleSubmit = async () => {
                     </div>
                     <select
                       v-model="formState.close"
-                      class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm appearance-none transition-all cursor-pointer hover:border-gray-400"
+                      class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm appearance-none transition-all cursor-pointer [@media(hover:hover)]:hover:border-gray-400"
                       required
                       :disabled="submitting"
                     >

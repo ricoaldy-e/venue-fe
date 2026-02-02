@@ -254,7 +254,7 @@ const goToDetail = (stadionId: number) => {
               v-for="stadion in topFreeStadions"
               :key="stadion.id"
               :to="`/venues/${stadion.id}`"
-              class="group relative flex gap-3 overflow-hidden rounded-lg border border-white/20 bg-white/5 backdrop-blur-sm p-2.5 transition-all duration-300 hover:border-amber-400/40 hover:bg-white/10 hover:shadow-lg hover:shadow-amber-500/10"
+              class="group relative flex gap-3 overflow-hidden rounded-lg border border-white/20 bg-white/5 backdrop-blur-sm p-2.5 transition-all duration-300 [@media(hover:hover)]:hover:border-amber-400/40 [@media(hover:hover)]:hover:bg-white/10 [@media(hover:hover)]:hover:shadow-lg [@media(hover:hover)]:hover:shadow-amber-500/10"
             >
               <!-- Badge Top Rank -->
               <div class="absolute -top-1 -left-1 flex items-center justify-center w-8 h-8 bg-gradient-to-br from-amber-400 to-amber-600 rounded-br-lg shadow-md z-10">
@@ -263,14 +263,14 @@ const goToDetail = (stadionId: number) => {
 
               <!-- Image Thumbnail -->
               <div class="relative w-20 h-20 flex-shrink-0 overflow-hidden rounded-md">
-                <img :src="stadion.cover" :alt="stadion.name" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                <img :src="stadion.cover" :alt="stadion.name" class="h-full w-full object-cover transition-transform duration-500 [@media(hover:hover)]:group-hover:scale-110" />
                 <div class="absolute inset-0 bg-gradient-to-br from-black/20 to-black/40"></div>
               </div>
 
               <!-- Content -->
               <div class="flex-1 flex flex-col justify-between min-w-0 py-0.5">
                 <div>
-                  <h4 class="text-sm font-bold text-white leading-tight line-clamp-1 mb-1.5 group-hover:text-amber-300 transition-colors">
+                  <h4 class="text-sm font-bold text-white leading-tight line-clamp-1 mb-1.5 [@media(hover:hover)]:group-hover:text-amber-300 transition-colors">
                     {{ stadion.name }}
                   </h4>
                   <div class="flex flex-col gap-0.5 text-[11px]">
@@ -291,7 +291,7 @@ const goToDetail = (stadionId: number) => {
                 
                 <!-- Arrow Icon -->
                 <div class="flex items-center justify-end mt-1">
-                  <svg class="h-3.5 w-3.5 text-white/60 transition-all group-hover:text-amber-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <svg class="h-3.5 w-3.5 text-white/60 transition-all [@media(hover:hover)]:group-hover:text-amber-300 [@media(hover:hover)]:group-hover:translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
                   </svg>
                 </div>
@@ -318,7 +318,7 @@ const goToDetail = (stadionId: number) => {
               <button 
                 v-if="searchQuery"
                 @click="searchQuery = ''; debouncedSearchQuery = ''"
-                class="text-gray-400 hover:text-gray-600 transition-colors"
+                class="text-gray-400 [@media(hover:hover)]:hover:text-gray-600 active:text-gray-600 transition-colors"
               >
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
@@ -327,9 +327,9 @@ const goToDetail = (stadionId: number) => {
             </div>
             <button
               @click="handleSearch"
-              class="group inline-flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#1f2a56] to-[#0f1a3c] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#1f2a56]/20 transition-all duration-300 hover:shadow-xl hover:shadow-[#1f2a56]/30 hover:-translate-y-0.5 sm:w-auto w-full"
+              class="group inline-flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#1f2a56] to-[#0f1a3c] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#1f2a56]/20 transition-all duration-300 [@media(hover:hover)]:hover:shadow-xl [@media(hover:hover)]:hover:shadow-[#1f2a56]/30 [@media(hover:hover)]:hover:-translate-y-0.5 active:scale-[0.98] sm:w-auto w-full"
             >
-              <svg class="h-5 w-5 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <svg class="h-5 w-5 transition-transform [@media(hover:hover)]:group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
               </svg>
               Cari Sekarang
@@ -364,7 +364,7 @@ const goToDetail = (stadionId: number) => {
               Layanan sedang tidak tersedia saat ini. Mohon periksa koneksi internet Anda atau coba muat ulang halaman.
             </p>
             <details class="group mt-2">
-              <summary class="cursor-pointer text-xs text-gray-400 hover:text-gray-600 transition-colors select-none list-none flex items-center justify-center gap-1">
+              <summary class="cursor-pointer text-xs text-gray-400 [@media(hover:hover)]:hover:text-gray-600 active:text-gray-600 transition-colors select-none list-none flex items-center justify-center gap-1">
                 <span>Detail Error</span>
                 <svg class="w-3 h-3 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
               </summary>
@@ -372,7 +372,7 @@ const goToDetail = (stadionId: number) => {
             </details>
           </div>
           <button 
-            class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#1f2a56] to-[#0f1a3c] px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:-translate-y-0.5" 
+            class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#1f2a56] to-[#0f1a3c] px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all [@media(hover:hover)]:hover:shadow-xl [@media(hover:hover)]:hover:-translate-y-0.5 active:scale-[0.98]" 
             @click="refresh()"
           >
             <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -397,7 +397,7 @@ const goToDetail = (stadionId: number) => {
           </div>
           <button 
             @click="searchQuery = ''"
-            class="inline-flex items-center gap-2 rounded-xl bg-gray-100 px-6 py-3 text-sm font-semibold text-gray-700 transition-all hover:bg-gray-200"
+            class="inline-flex items-center gap-2 rounded-xl bg-gray-100 px-6 py-3 text-sm font-semibold text-gray-700 transition-all [@media(hover:hover)]:hover:bg-gray-200 active:bg-gray-200"
           >
             <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
@@ -427,14 +427,14 @@ const goToDetail = (stadionId: number) => {
           <article
               v-for="stadion in paginatedStadions"
               :key="stadion.id"
-              class="group relative flex flex-col overflow-hidden rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-lg hover:border-blue-300 transition-all duration-300 cursor-pointer h-full"
+              class="group relative flex flex-col overflow-hidden rounded-2xl bg-white border border-gray-200 shadow-sm [@media(hover:hover)]:hover:shadow-lg [@media(hover:hover)]:hover:border-blue-300 transition-all duration-300 cursor-pointer h-full"
               @click="goToDetail(stadion.id)"
             >
             <div class="relative h-48 w-full overflow-hidden bg-gray-100">
               <img
                 :src="getCoverImage(stadion)"
                 :alt="stadion.name"
-                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                class="h-full w-full object-cover transition-transform duration-500 [@media(hover:hover)]:group-hover:scale-105"
               />
               <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-60"></div>
             </div>
@@ -442,7 +442,7 @@ const goToDetail = (stadionId: number) => {
             <div class="flex flex-col flex-1 p-5">
               <div class="flex-1">
                 <p class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Venue</p>
-                <h3 class="text-lg font-bold text-gray-900 group-hover:text-blue-700 transition-colors line-clamp-2">
+                <h3 class="text-lg font-bold text-gray-900 [@media(hover:hover)]:group-hover:text-blue-700 transition-colors line-clamp-2">
                   {{ stadion.name }}
                 </h3>
               </div>
@@ -455,7 +455,7 @@ const goToDetail = (stadionId: number) => {
                   <span class="font-semibold text-gray-700">{{ activeFieldCount(stadion) }}</span>
                   <span>Lapangan Aktif</span>
                 </div>
-                <div class="flex items-center gap-1 text-sm font-bold text-blue-600 group-hover:translate-x-1 transition-transform">
+                <div class="flex items-center gap-1 text-sm font-bold text-blue-600 [@media(hover:hover)]:group-hover:translate-x-1 transition-transform">
                   Lihat Jadwal
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -470,7 +470,7 @@ const goToDetail = (stadionId: number) => {
           <button
             @click="changePage(currentPage - 1)"
             :disabled="currentPage === 1"
-            class="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            class="p-2 rounded-lg border border-gray-200 [@media(hover:hover)]:hover:bg-gray-50 active:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -486,7 +486,7 @@ const goToDetail = (stadionId: number) => {
                 'w-10 h-10 rounded-lg text-sm font-semibold transition-all duration-200',
                 currentPage === page
                   ? 'bg-[#1f2a56] text-white shadow-lg shadow-[#1f2a56]/20 scale-105'
-                  : 'text-gray-600 hover:bg-gray-100'
+                  : 'text-gray-600 [@media(hover:hover)]:hover:bg-gray-100 active:bg-gray-100'
               ]"
             >
               {{ page }}
@@ -496,7 +496,7 @@ const goToDetail = (stadionId: number) => {
           <button
             @click="changePage(currentPage + 1)"
             :disabled="currentPage === totalPages"
-            class="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            class="p-2 rounded-lg border border-gray-200 [@media(hover:hover)]:hover:bg-gray-50 active:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />

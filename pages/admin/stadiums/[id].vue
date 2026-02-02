@@ -5,6 +5,8 @@ import { Icon } from '@iconify/vue'
 import { useConfirmation } from '~/composables/useConfirmation'
 import { parseBackendError } from '~/utils/errorParser'
 
+const { onFormEnter } = useFormNavigation()
+
 definePageMeta({
   middleware: 'auth-admin',
   layout: 'admin',
@@ -283,7 +285,7 @@ async function handleDelete() {
           type="button"
           @click="handleDelete"
           :disabled="loadingDelete || loading"
-          class="inline-flex items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-5 py-2.5 text-sm font-bold text-red-700 shadow-sm transition-all active:scale-95 hover:bg-red-100 hover:border-red-300 disabled:opacity-50"
+          class="inline-flex items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-5 py-2.5 text-sm font-bold text-red-700 shadow-sm transition-all active:scale-95 [@media(hover:hover)]:hover:bg-red-100 [@media(hover:hover)]:hover:border-red-300 disabled:opacity-50"
         >
           <svg v-if="loadingDelete" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
           <span>{{ loadingDelete ? 'Menghapus...' : 'Hapus' }}</span>
@@ -291,7 +293,7 @@ async function handleDelete() {
 
         <NuxtLink
           to="/admin/stadiums"
-          class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 shadow-sm transition-all active:scale-95 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
+          class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 shadow-sm transition-all active:scale-95 [@media(hover:hover)]:hover:bg-blue-50 [@media(hover:hover)]:hover:text-blue-700 [@media(hover:hover)]:hover:border-blue-300"
         >
           Batal
         </NuxtLink>
@@ -300,7 +302,7 @@ async function handleDelete() {
           type="submit"
           form="edit-stadium-form"
           :disabled="loading || loadingDelete"
-          class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-blue-700 hover:shadow-md transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+          class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-sm [@media(hover:hover)]:hover:bg-blue-700 [@media(hover:hover)]:hover:shadow-md transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
         >
           <svg v-if="loading" class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
           <span>{{ loading ? 'Menyimpan...' : 'Simpan Perubahan' }}</span>
@@ -316,10 +318,10 @@ async function handleDelete() {
     <div v-else-if="errorMsg && !stadion" class="p-8 text-center rounded-2xl border border-red-200 bg-red-50 text-red-700">
       <p class="font-bold mb-2">Terjadi Kesalahan</p>
       <p class="text-sm">{{ errorMsg }}</p>
-      <NuxtLink to="/admin/stadiums" class="mt-4 inline-block underline hover:no-underline">Kembali ke daftar</NuxtLink>
+      <NuxtLink to="/admin/stadiums" class="mt-4 inline-block underline [@media(hover:hover)]:hover:no-underline">Kembali ke daftar</NuxtLink>
     </div>
 
-    <form v-else id="edit-stadium-form" @submit.prevent="handleSubmit" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <form v-else id="edit-stadium-form" @submit.prevent="handleSubmit" @keydown.enter="onFormEnter" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       
       <div class="lg:col-span-2 space-y-8">
         
@@ -384,11 +386,11 @@ async function handleDelete() {
             <div v-else-if="facilityError" class="text-center py-8 text-red-600 text-sm">Gagal memuat data. <button type="button" @click="retryLoadFacilities" class="underline font-bold">Coba lagi</button></div>
             <div v-else class="space-y-4">
               <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3">
-                <label v-for="facility in facilities" :key="facility.id" class="group relative flex flex-col items-center justify-center p-3 rounded-xl border cursor-pointer transition-all duration-200" :class="[form.facilityIds.includes(facility.id) ? 'border-blue-500 bg-blue-50/50 shadow-md ring-1 ring-blue-500/20' : 'border-gray-200 bg-white hover:border-blue-400 hover:bg-blue-50/30 hover:shadow-sm', (form.facilityIds.length >= 10 && !form.facilityIds.includes(facility.id)) ? 'opacity-50 cursor-not-allowed grayscale' : '']">
+                <label v-for="facility in facilities" :key="facility.id" class="group relative flex flex-col items-center justify-center p-3 rounded-xl border cursor-pointer transition-all duration-200" :class="[form.facilityIds.includes(facility.id) ? 'border-blue-500 bg-blue-50/50 shadow-md ring-1 ring-blue-500/20' : 'border-gray-200 bg-white [@media(hover:hover)]:hover:border-blue-400 [@media(hover:hover)]:hover:bg-blue-50/30 [@media(hover:hover)]:hover:shadow-sm', (form.facilityIds.length >= 10 && !form.facilityIds.includes(facility.id)) ? 'opacity-50 cursor-not-allowed grayscale' : '']">
                   <input type="checkbox" v-model="form.facilityIds" :value="facility.id" :disabled="form.facilityIds.length >= 10 && !form.facilityIds.includes(facility.id)" class="sr-only" />
                   <div v-if="form.facilityIds.includes(facility.id)" class="absolute top-2 right-2 bg-blue-500 rounded-full p-0.5 shadow-sm"><svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg></div>
-                  <Icon :icon="facility.icon" class="w-8 h-8 mb-2 transition-transform duration-200 group-hover:scale-110" :class="form.facilityIds.includes(facility.id) ? 'text-blue-600' : 'text-gray-400 group-hover:text-blue-500'" />
-                  <span class="text-xs font-medium text-center leading-tight transition-colors" :class="form.facilityIds.includes(facility.id) ? 'text-blue-700 font-bold' : 'text-gray-600 group-hover:text-blue-600'">{{ facility.name }}</span>
+                  <Icon :icon="facility.icon" class="w-8 h-8 mb-2 transition-transform duration-200 [@media(hover:hover)]:group-hover:scale-110" :class="form.facilityIds.includes(facility.id) ? 'text-blue-600' : 'text-gray-400 [@media(hover:hover)]:group-hover:text-blue-500'" />
+                  <span class="text-xs font-medium text-center leading-tight transition-colors" :class="form.facilityIds.includes(facility.id) ? 'text-blue-700 font-bold' : 'text-gray-600 [@media(hover:hover)]:group-hover:text-blue-600'">{{ facility.name }}</span>
                 </label>
               </div>
               <p v-if="errorMsg && errorMsg.includes('Fasilitas')" class="mt-2 text-xs text-red-600 font-medium flex items-start gap-1.5">
@@ -409,7 +411,7 @@ async function handleDelete() {
             <div class="space-y-1.5">
               <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Status</label>
               <div class="relative">
-                <select v-model="form.status" class="block w-full rounded-xl border border-gray-300 pl-4 pr-10 py-3 text-sm font-medium focus:border-blue-500 focus:ring-blue-500 cursor-pointer shadow-sm transition-all hover:border-gray-400 appearance-none bg-white">
+                <select v-model="form.status" class="block w-full rounded-xl border border-gray-300 pl-4 pr-10 py-3 text-sm font-medium focus:border-blue-500 focus:ring-blue-500 cursor-pointer shadow-sm transition-all [@media(hover:hover)]:hover:border-gray-400 appearance-none bg-white">
                   <option value="ACTIVE">Aktif)</option>
                   <option value="INACTIVE">Non-Aktif</option>
                 </select>
@@ -436,7 +438,7 @@ async function handleDelete() {
               v-if="activeImageCount < 5"
               class="relative w-full rounded-xl transition-all duration-200 ease-in-out border-2 border-dashed overflow-hidden"
               :class="[
-                isDragging ? 'border-blue-500 bg-blue-50/50 ring-4 ring-blue-500/10' : 'border-gray-200 bg-gray-50 hover:border-blue-400 hover:bg-gray-100',
+                isDragging ? 'border-blue-500 bg-blue-50/50 ring-4 ring-blue-500/10' : 'border-gray-200 bg-gray-50 [@media(hover:hover)]:hover:border-blue-400 [@media(hover:hover)]:hover:bg-gray-100',
                 activeImageCount === 0 ? 'h-40' : 'h-24 mb-4'
               ]"
               @dragover.prevent="onDragOver" 
@@ -446,7 +448,7 @@ async function handleDelete() {
               <label class="flex flex-col items-center justify-center w-full h-full cursor-pointer">
                 <div class="flex flex-col items-center justify-center p-4 text-center">
                   <div class="p-2 rounded-full bg-white shadow-sm ring-1 ring-gray-100 mb-2">
-                    <svg class="w-6 h-6 text-gray-400 group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                    <svg class="w-6 h-6 text-gray-400 [@media(hover:hover)]:group-hover:text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                   </div>
                   <p class="text-xs font-bold text-gray-700">Klik / Tarik Foto</p>
                   <p class="text-[10px] text-gray-500 mt-0.5">JPG/PNG (Maks 2MB)</p>
@@ -471,7 +473,7 @@ async function handleDelete() {
                 <button 
                   type="button" 
                   @click="activeExistingImages[0] && markRemoveExisting(activeExistingImages[0].id)" 
-                  class="absolute top-2 right-2 p-1.5 bg-white/90 backdrop-blur-sm rounded-lg text-red-500 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-50 shadow-sm"
+                  class="absolute top-2 right-2 p-1.5 bg-white/90 backdrop-blur-sm rounded-lg text-red-500 opacity-0 [@media(hover:hover)]:group-hover:opacity-100 transition-all [@media(hover:hover)]:hover:bg-red-50 shadow-sm"
                   title="Hapus"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
@@ -485,11 +487,11 @@ async function handleDelete() {
                   class="relative aspect-square rounded-lg overflow-hidden border border-gray-200 group bg-gray-100"
                 >
                   <img :src="img.imageUrl" class="w-full h-full object-cover" />
-                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+                  <div class="absolute inset-0 bg-black/0 [@media(hover:hover)]:group-hover:bg-black/10 transition-colors"></div>
                   <button 
                     type="button" 
                     @click="markRemoveExisting(img.id)" 
-                    class="absolute top-1.5 right-1.5 p-1 bg-white/90 rounded-md text-red-500 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-50 shadow-sm"
+                    class="absolute top-1.5 right-1.5 p-1 bg-white/90 rounded-md text-red-500 opacity-0 [@media(hover:hover)]:group-hover:opacity-100 transition-all [@media(hover:hover)]:hover:bg-red-50 shadow-sm"
                   >
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                   </button>
@@ -506,7 +508,7 @@ async function handleDelete() {
                   <button 
                     type="button" 
                     @click="removeNewImage(idx)" 
-                    class="absolute top-1.5 right-1.5 p-1 bg-white/90 rounded-full text-red-500 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-50 shadow-sm"
+                    class="absolute top-1.5 right-1.5 p-1 bg-white/90 rounded-full text-red-500 opacity-0 [@media(hover:hover)]:group-hover:opacity-100 transition-all [@media(hover:hover)]:hover:bg-red-50 shadow-sm"
                   >
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                   </button>
@@ -525,7 +527,7 @@ async function handleDelete() {
                   :key="id" 
                   @click="undoRemoveExisting(id)" 
                   type="button" 
-                  class="inline-flex items-center gap-1 text-[10px] font-semibold bg-white border border-red-200 text-red-600 px-2 py-1 rounded-md shadow-sm hover:bg-red-50 hover:border-red-300 transition-all"
+                  class="inline-flex items-center gap-1 text-[10px] font-semibold bg-white border border-red-200 text-red-600 px-2 py-1 rounded-md shadow-sm [@media(hover:hover)]:hover:bg-red-50 [@media(hover:hover)]:hover:border-red-300 transition-all"
                 >
                   <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
                   <span>Batal Hapus #{{ id }}</span>

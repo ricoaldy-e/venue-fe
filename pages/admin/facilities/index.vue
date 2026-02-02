@@ -64,7 +64,7 @@ const {
 
       <NuxtLink
         to="/admin/facilities/create"
-        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 hover:shadow-md transition-all active:scale-95"
+        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm [@media(hover:hover)]:hover:bg-blue-700 [@media(hover:hover)]:hover:shadow-md transition-all active:scale-95"
       >
         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -96,7 +96,7 @@ const {
           <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
           <div class="text-sm font-medium">
             {{ error?.message || 'Terjadi kesalahan saat memuat data.' }}
-            <button @click="refresh()" class="underline ml-1 font-bold hover:text-red-800">Coba lagi</button>
+            <button @click="refresh()" class="underline ml-1 font-bold [@media(hover:hover)]:hover:text-red-800 active:text-red-800">Coba lagi</button>
           </div>
         </div>
       </div>
@@ -116,7 +116,7 @@ const {
         <p class="text-sm text-gray-500 mt-1 max-w-xs mx-auto">
           {{ searchQuery ? `Tidak ada hasil untuk "${searchQuery}"` : 'Belum ada fasilitas yang terdaftar.' }}
         </p>
-        <button v-if="searchQuery" @click="searchQuery = ''" class="mt-4 text-sm font-medium text-blue-600 hover:text-blue-700">
+        <button v-if="searchQuery" @click="searchQuery = ''" class="mt-4 text-sm font-medium text-blue-600 [@media(hover:hover)]:hover:text-blue-700 active:text-blue-700">
           Bersihkan Pencarian
         </button>
       </div>
@@ -135,11 +135,11 @@ const {
               <tr
                 v-for="facility in paginatedFacilities"
                 :key="facility.id"
-                class="group hover:bg-gray-100 transition-colors duration-200"
+                class="group [@media(hover:hover)]:hover:bg-gray-100 transition-colors duration-200"
               >
                 <td class="px-6 py-4 align-middle">
                   <div class="flex flex-col">
-                    <span class="text-sm font-bold text-gray-900 group-hover:text-blue-700 transition-colors">{{ facility.name }}</span>
+                    <span class="text-sm font-bold text-gray-900 [@media(hover:hover)]:group-hover:text-blue-700 transition-colors">{{ facility.name }}</span>
                     <span class="text-xs text-gray-400">ID: #{{ facility.id }}</span>
                   </div>
                 </td>
@@ -158,7 +158,7 @@ const {
                 <td class="px-6 py-4 text-center align-middle">
                   <NuxtLink
                     :to="`/admin/facilities/${facility.id}`"
-                    class="text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline decoration-2 underline-offset-2 transition-all"
+                    class="text-sm font-semibold text-blue-600 [@media(hover:hover)]:hover:text-blue-800 [@media(hover:hover)]:hover:underline decoration-2 underline-offset-2 transition-all"
                   >
                     Edit
                   </NuxtLink>
@@ -172,7 +172,7 @@ const {
           <div
             v-for="facility in paginatedFacilities"
             :key="facility.id"
-            class="bg-white rounded-xl border border-gray-300 p-4 shadow-sm hover:shadow-md transition-all duration-200"
+            class="bg-white rounded-xl border border-gray-300 p-4 shadow-sm [@media(hover:hover)]:hover:shadow-md transition-all duration-200"
           >
             <div class="flex items-center gap-4">
               <div class="shrink-0 w-12 h-12 flex items-center justify-center rounded-xl bg-blue-50 border border-blue-100 text-blue-600">
@@ -192,7 +192,7 @@ const {
               <div class="shrink-0">
                 <NuxtLink
                   :to="`/admin/facilities/${facility.id}`"
-                  class="text-sm font-semibold text-blue-600 hover:text-blue-800 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors"
+                  class="text-sm font-semibold text-blue-600 [@media(hover:hover)]:hover:text-blue-800 [@media(hover:hover)]:hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors"
                 >
                   Edit
                 </NuxtLink>
@@ -214,7 +214,7 @@ const {
           <button
             @click="prevPage"
             :disabled="currentPage === 1"
-            class="p-2 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
+            class="p-2 rounded-lg border border-gray-300 bg-white text-gray-600 [@media(hover:hover)]:hover:bg-gray-50 [@media(hover:hover)]:hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
           </button>
@@ -226,7 +226,7 @@ const {
           <button
             @click="nextPage"
             :disabled="currentPage === totalPages"
-            class="p-2 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
+            class="p-2 rounded-lg border border-gray-300 bg-white text-gray-600 [@media(hover:hover)]:hover:bg-gray-50 [@media(hover:hover)]:hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
           </button>

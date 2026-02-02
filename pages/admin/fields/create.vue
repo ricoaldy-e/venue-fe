@@ -4,6 +4,8 @@ import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { parseBackendError } from '~/utils/errorParser'
 
+const { onFormEnter } = useFormNavigation()
+
 definePageMeta({
   middleware: 'auth-admin',
   layout: 'admin',
@@ -186,7 +188,7 @@ async function handleSubmit() {
       <div class="hidden sm:flex items-center gap-3">
         <NuxtLink
           to="/admin/fields"
-          class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 shadow-sm transition-all active:scale-95 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
+          class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 shadow-sm transition-all active:scale-95 [@media(hover:hover)]:hover:bg-blue-50 [@media(hover:hover)]:hover:text-blue-700 [@media(hover:hover)]:hover:border-blue-300"
         >
           Batal
         </NuxtLink>
@@ -195,7 +197,7 @@ async function handleSubmit() {
           type="submit"
           form="create-field-form"
           :disabled="loading"
-          class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-blue-700 hover:shadow-md transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+          class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-sm [@media(hover:hover)]:hover:bg-blue-700 [@media(hover:hover)]:hover:shadow-md transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
         >
           <svg v-if="loading" class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
           <span>{{ loading ? 'Menyimpan...' : 'Simpan Lapangan' }}</span>
@@ -203,7 +205,7 @@ async function handleSubmit() {
       </div>
     </header>
 
-    <form id="create-field-form" @submit.prevent="handleSubmit" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <form id="create-field-form" @submit.prevent="handleSubmit" @keydown.enter="onFormEnter" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       
       <div class="lg:col-span-2 space-y-8">
         
@@ -223,7 +225,7 @@ async function handleSubmit() {
                 <select 
                   v-model="form.stadionId" 
                   @change="onStadionChange" 
-                  class="block w-full rounded-xl border border-gray-300 pl-10 pr-10 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400 cursor-pointer appearance-none bg-white disabled:bg-gray-100" 
+                  class="block w-full rounded-xl border border-gray-300 pl-10 pr-10 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all [@media(hover:hover)]:hover:border-gray-400 cursor-pointer appearance-none bg-white disabled:bg-gray-100" 
                   :disabled="pendingStadions"
                   required
                 >
@@ -341,7 +343,7 @@ async function handleSubmit() {
                 <select 
                   v-model="form.status" 
                   :disabled="selectedStadion?.status === 'INACTIVE'" 
-                  class="block w-full rounded-xl border border-gray-300 pl-4 pr-10 py-3 text-sm font-medium focus:border-blue-500 focus:ring-blue-500 cursor-pointer shadow-sm transition-all hover:border-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed appearance-none bg-white"
+                  class="block w-full rounded-xl border border-gray-300 pl-4 pr-10 py-3 text-sm font-medium focus:border-blue-500 focus:ring-blue-500 cursor-pointer shadow-sm transition-all [@media(hover:hover)]:hover:border-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed appearance-none bg-white"
                 >
                   <option value="ACTIVE">Aktif</option>
                   <option value="INACTIVE">Non-Aktif</option>
@@ -371,7 +373,7 @@ async function handleSubmit() {
             <div 
               class="relative w-full rounded-xl transition-all duration-200 ease-in-out border-2 border-dashed overflow-hidden"
               :class="[
-                isDragging ? 'border-blue-500 bg-blue-50/50 ring-4 ring-blue-500/10' : 'border-gray-200 bg-gray-50 hover:border-blue-400 hover:bg-gray-100',
+                isDragging ? 'border-blue-500 bg-blue-50/50 ring-4 ring-blue-500/10' : 'border-gray-200 bg-gray-50 [@media(hover:hover)]:hover:border-blue-400 [@media(hover:hover)]:hover:bg-gray-100',
                 selectedImages.length === 0 ? 'h-40' : 'h-24 mb-4'
               ]"
               @dragover.prevent="onDragOver" 
@@ -408,7 +410,7 @@ async function handleSubmit() {
                 <button 
                   type="button" 
                   @click="removeImage(0)" 
-                  class="absolute top-2 right-2 p-1.5 bg-white/90 backdrop-blur-sm rounded-lg text-red-500 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-50 shadow-sm"
+                  class="absolute top-2 right-2 p-1.5 bg-white/90 backdrop-blur-sm rounded-lg text-red-500 opacity-0 [@media(hover:hover)]:group-hover:opacity-100 transition-all [@media(hover:hover)]:hover:bg-red-50 shadow-sm"
                   title="Hapus"
                 >
                   <Icon icon="solar:trash-bin-trash-bold" class="w-4 h-4" />
@@ -422,11 +424,11 @@ async function handleSubmit() {
                   class="relative aspect-square rounded-lg overflow-hidden border border-gray-200 group bg-gray-100"
                 >
                   <img :src="src" class="w-full h-full object-cover" />
-                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+                  <div class="absolute inset-0 bg-black/0 [@media(hover:hover)]:group-hover:bg-black/10 transition-colors"></div>
                   <button 
                     type="button" 
                     @click="removeImage(idx + 1)" 
-                    class="absolute top-1.5 right-1.5 p-1 bg-white/90 rounded-md text-red-500 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-50 shadow-sm"
+                    class="absolute top-1.5 right-1.5 p-1 bg-white/90 rounded-md text-red-500 opacity-0 [@media(hover:hover)]:group-hover:opacity-100 transition-all [@media(hover:hover)]:hover:bg-red-50 shadow-sm"
                   >
                     <Icon icon="solar:trash-bin-trash-bold" class="w-3.5 h-3.5" />
                   </button>

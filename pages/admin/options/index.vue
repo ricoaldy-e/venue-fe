@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { parseBackendError } from "~/utils/errorParser";
 
+const { onFormEnter } = useFormNavigation()
+
 defineOptions({ name: "AdminOptions" });
 definePageMeta({
   name: "admin-options",
@@ -270,7 +272,7 @@ const handleSubmit = async () => {
             Gagal memuat data: {{ error }}
           </p>
           <button
-            class="mt-2 text-sm font-bold underline hover:text-red-800"
+            class="mt-2 text-sm font-bold underline [@media(hover:hover)]:hover:text-red-800 active:text-red-800"
             @click="refresh()"
           >
             Coba lagi
@@ -685,6 +687,7 @@ const handleSubmit = async () => {
           <!-- FORM with PREMIUM DESIGN -->
           <form
             @submit.prevent="handleSubmit"
+            @keydown.enter="onFormEnter"
             class="space-y-8 bg-white p-8 rounded-2xl border-2 border-gray-200 shadow-xl"
           >
             <!-- Primary Fields Section -->
@@ -724,7 +727,7 @@ const handleSubmit = async () => {
                     v-model="formState.name"
                     type="text"
                     maxlength="30"
-                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400"
+                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all [@media(hover:hover)]:hover:border-gray-400"
                     placeholder="Contoh: VENUE UNDIP"
                     required
                     :disabled="submitting"
@@ -763,7 +766,7 @@ const handleSubmit = async () => {
                     v-model="formState.nameKet"
                     type="text"
                     maxlength="70"
-                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400"
+                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all [@media(hover:hover)]:hover:border-gray-400"
                     placeholder="Contoh: Booking Lapangan Olahraga Universitas Diponegoro"
                     required
                     :disabled="submitting"
@@ -802,7 +805,7 @@ const handleSubmit = async () => {
                     v-model="formState.description"
                     rows="3"
                     maxlength="300"
-                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400 resize-none"
+                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all [@media(hover:hover)]:hover:border-gray-400 resize-none"
                     placeholder="Platform booking lapangan olahraga..."
                     required
                     :disabled="submitting"
@@ -847,7 +850,7 @@ const handleSubmit = async () => {
                     v-model="formState.address"
                     rows="3"
                     maxlength="200"
-                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400 resize-none"
+                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all [@media(hover:hover)]:hover:border-gray-400 resize-none"
                     placeholder="Jl. Prof. Soedarto, Tembalang, Semarang..."
                     required
                     :disabled="submitting"
@@ -898,7 +901,7 @@ const handleSubmit = async () => {
                     v-model="formState.unitName"
                     type="text"
                     maxlength="70"
-                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400"
+                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all [@media(hover:hover)]:hover:border-gray-400"
                     placeholder="Contoh: UPT Layanan Seni, Budaya dan Olahraga"
                     required
                     :disabled="submitting"
@@ -936,7 +939,7 @@ const handleSubmit = async () => {
                     v-model="formState.unitDesc"
                     rows="3"
                     maxlength="300"
-                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400 resize-none"
+                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all [@media(hover:hover)]:hover:border-gray-400 resize-none"
                     placeholder="Deskripsi tentang unit pengelola..."
                     required
                     :disabled="submitting"
@@ -984,7 +987,7 @@ const handleSubmit = async () => {
                   <input
                     v-model="formState.email"
                     type="email"
-                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400"
+                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all [@media(hover:hover)]:hover:border-gray-400"
                     placeholder="helpdesk@undip.ac.id"
                     required
                     :disabled="submitting"
@@ -1017,7 +1020,7 @@ const handleSubmit = async () => {
                   <input
                     v-model="formState.nohp"
                     type="text"
-                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400"
+                    class="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all [@media(hover:hover)]:hover:border-gray-400"
                     placeholder="+62 851 6566 0339"
                     required
                     :disabled="submitting"

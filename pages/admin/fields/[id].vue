@@ -5,6 +5,8 @@ import { Icon } from '@iconify/vue'
 import { useConfirmation } from '~/composables/useConfirmation'
 import { parseBackendError } from '~/utils/errorParser'
 
+const { onFormEnter } = useFormNavigation()
+
 definePageMeta({
   middleware: 'auth-admin',
   layout: 'admin',
@@ -281,7 +283,7 @@ async function handleDelete() {
           type="button"
           @click="handleDelete"
           :disabled="loadingDelete || loading"
-          class="inline-flex items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-5 py-2.5 text-sm font-bold text-red-700 shadow-sm transition-all active:scale-95 hover:bg-red-100 hover:border-red-300 disabled:opacity-50"
+          class="inline-flex items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-5 py-2.5 text-sm font-bold text-red-700 shadow-sm transition-all active:scale-95 [@media(hover:hover)]:hover:bg-red-100 [@media(hover:hover)]:hover:border-red-300 disabled:opacity-50"
         >
           <svg v-if="loadingDelete" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
           <span>{{ loadingDelete ? 'Menghapus...' : 'Hapus' }}</span>
@@ -289,7 +291,7 @@ async function handleDelete() {
 
         <NuxtLink
           to="/admin/fields"
-          class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 shadow-sm transition-all active:scale-95 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
+          class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 shadow-sm transition-all active:scale-95 [@media(hover:hover)]:hover:bg-blue-50 [@media(hover:hover)]:hover:text-blue-700 [@media(hover:hover)]:hover:border-blue-300"
         >
           Batal
         </NuxtLink>
@@ -298,7 +300,7 @@ async function handleDelete() {
           type="submit"
           form="edit-field-form"
           :disabled="loading || loadingDelete"
-          class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-blue-700 hover:shadow-md transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+          class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-sm [@media(hover:hover)]:hover:bg-blue-700 [@media(hover:hover)]:hover:shadow-md transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
         >
           <svg v-if="loading" class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
           <span>{{ loading ? 'Menyimpan...' : 'Simpan Perubahan' }}</span>
@@ -314,10 +316,10 @@ async function handleDelete() {
     <div v-else-if="errorMsg && !field" class="p-8 text-center rounded-2xl border border-red-200 bg-red-50 text-red-700">
       <p class="font-bold mb-2">Terjadi Kesalahan</p>
       <p class="text-sm">{{ errorMsg }}</p>
-      <NuxtLink to="/admin/fields" class="mt-4 inline-block underline hover:no-underline">Kembali ke daftar</NuxtLink>
+      <NuxtLink to="/admin/fields" class="mt-4 inline-block underline [@media(hover:hover)]:hover:no-underline">Kembali ke daftar</NuxtLink>
     </div>
 
-    <form v-else id="edit-field-form" @submit.prevent="handleSubmit" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <form v-else id="edit-field-form" @submit.prevent="handleSubmit" @keydown.enter="onFormEnter" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       
       <div class="lg:col-span-2 space-y-8">
         
@@ -337,7 +339,7 @@ async function handleDelete() {
                 <select 
                   v-model="form.stadionId" 
                   @change="onStadionChange" 
-                  class="block w-full rounded-xl border border-gray-300 pl-10 pr-10 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all hover:border-gray-400 cursor-pointer appearance-none bg-white disabled:bg-gray-100" 
+                  class="block w-full rounded-xl border border-gray-300 pl-10 pr-10 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all [@media(hover:hover)]:hover:border-gray-400 cursor-pointer appearance-none bg-white disabled:bg-gray-100" 
                   :disabled="pendingStadions"
                   required
                 >
@@ -455,7 +457,7 @@ async function handleDelete() {
                 <select 
                   v-model="form.status" 
                   :disabled="selectedStadion?.status === 'INACTIVE'" 
-                  class="block w-full rounded-xl border border-gray-300 pl-4 pr-10 py-3 text-sm font-medium focus:border-blue-500 focus:ring-blue-500 cursor-pointer shadow-sm transition-all hover:border-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed appearance-none bg-white"
+                  class="block w-full rounded-xl border border-gray-300 pl-4 pr-10 py-3 text-sm font-medium focus:border-blue-500 focus:ring-blue-500 cursor-pointer shadow-sm transition-all [@media(hover:hover)]:hover:border-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed appearance-none bg-white"
                 >
                   <option value="ACTIVE">Aktif</option>
                   <option value="INACTIVE">Non-Aktif</option>
@@ -485,7 +487,7 @@ async function handleDelete() {
             <div 
               class="relative w-full rounded-xl transition-all duration-200 ease-in-out border-2 border-dashed overflow-hidden"
               :class="[
-                isDragging ? 'border-blue-500 bg-blue-50/50 ring-4 ring-blue-500/10' : 'border-gray-200 bg-gray-50 hover:border-blue-400 hover:bg-gray-100',
+                isDragging ? 'border-blue-500 bg-blue-50/50 ring-4 ring-blue-500/10' : 'border-gray-200 bg-gray-50 [@media(hover:hover)]:hover:border-blue-400 [@media(hover:hover)]:hover:bg-gray-100',
                 activeImageCount === 0 ? 'h-40' : 'h-24 mb-4'
               ]"
               @dragover.prevent="onDragOver" 
@@ -522,7 +524,7 @@ async function handleDelete() {
                   <button 
                     type="button" 
                     @click="activeExistingImages[0] && markRemoveExisting(activeExistingImages[0].id)" 
-                    class="absolute top-2 right-2 p-1.5 bg-white/90 backdrop-blur-sm rounded-lg text-red-500 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-50 shadow-sm"
+                    class="absolute top-2 right-2 p-1.5 bg-white/90 backdrop-blur-sm rounded-lg text-red-500 opacity-0 [@media(hover:hover)]:group-hover:opacity-100 transition-all [@media(hover:hover)]:hover:bg-red-50 shadow-sm"
                     title="Hapus"
                   >
                     <Icon icon="solar:trash-bin-trash-bold" class="w-4 h-4" />
@@ -539,7 +541,7 @@ async function handleDelete() {
                     <button 
                       type="button" 
                       @click="markRemoveExisting(img.id)" 
-                      class="absolute top-1.5 right-1.5 p-1 bg-white/90 rounded-md text-red-500 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-50 shadow-sm"
+                      class="absolute top-1.5 right-1.5 p-1 bg-white/90 rounded-md text-red-500 opacity-0 [@media(hover:hover)]:group-hover:opacity-100 transition-all [@media(hover:hover)]:hover:bg-red-50 shadow-sm"
                     >
                       <Icon icon="solar:trash-bin-trash-bold" class="w-3.5 h-3.5" />
                     </button>
@@ -560,7 +562,7 @@ async function handleDelete() {
                   <button 
                     type="button" 
                     @click="removeNewImage(idx)" 
-                    class="absolute top-1.5 right-1.5 p-1 bg-white/90 rounded-full text-red-500 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-50 shadow-sm"
+                    class="absolute top-1.5 right-1.5 p-1 bg-white/90 rounded-full text-red-500 opacity-0 [@media(hover:hover)]:group-hover:opacity-100 transition-all [@media(hover:hover)]:hover:bg-red-50 shadow-sm"
                     title="Hapus"
                   >
                     <Icon icon="solar:trash-bin-trash-bold" class="w-3.5 h-3.5" />
@@ -581,7 +583,7 @@ async function handleDelete() {
                   :key="id" 
                   @click="undoRemoveExisting(id)" 
                   type="button" 
-                  class="inline-flex items-center gap-1 text-[10px] font-semibold bg-white border border-red-200 text-red-600 px-2 py-1 rounded-md shadow-sm hover:bg-red-50 hover:border-red-300 transition-all"
+                  class="inline-flex items-center gap-1 text-[10px] font-semibold bg-white border border-red-200 text-red-600 px-2 py-1 rounded-md shadow-sm [@media(hover:hover)]:hover:bg-red-50 [@media(hover:hover)]:hover:border-red-300 transition-all"
                 >
                   <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
                   <span>Batal Hapus #{{ id }}</span>

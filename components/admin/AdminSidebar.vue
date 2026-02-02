@@ -123,7 +123,7 @@ const handleAction = async (item: NavItem) => {
             :class="[
               isActive(item)
                 ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-blue-200 hover:bg-ds-blue-800 hover:text-white'
+                : 'text-blue-200 [@media(hover:hover)]:hover:bg-ds-blue-800 [@media(hover:hover)]:hover:text-white'
             ]"
             :aria-current="isActive(item) ? 'page' : undefined"
           >
@@ -134,7 +134,7 @@ const handleAction = async (item: NavItem) => {
 
             <span
               class="w-5 h-5 flex-shrink-0 transition-transform duration-200"
-              :class="[isActive(item) ? 'text-white' : 'text-blue-300 group-hover:text-white']"
+              :class="[isActive(item) ? 'text-white' : 'text-blue-300 [@media(hover:hover)]:group-hover:text-white']"
             >
               <svg v-if="item.icon === 'dashboard'" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M5 11H11V5H5V11ZM5 19H11V13H5V19ZM13 19H19V13H13V19ZM13 5V11H19V5H13Z"/></svg>
 
@@ -158,7 +158,7 @@ const handleAction = async (item: NavItem) => {
             :class="[
               isMenuLainnyaActive
                 ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-blue-200 hover:bg-ds-blue-800 hover:text-white'
+                : 'text-blue-200 [@media(hover:hover)]:hover:bg-ds-blue-800 [@media(hover:hover)]:hover:text-white'
             ]"
           >
             <span
@@ -168,7 +168,7 @@ const handleAction = async (item: NavItem) => {
 
             <span
               class="w-5 h-5 flex-shrink-0 transition-transform duration-200"
-              :class="[isMenuLainnyaActive ? 'text-white' : 'text-blue-300 group-hover:text-white']"
+              :class="[isMenuLainnyaActive ? 'text-white' : 'text-blue-300 [@media(hover:hover)]:group-hover:text-white']"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
@@ -208,13 +208,13 @@ const handleAction = async (item: NavItem) => {
                   :class="[
                     isActive(item)
                       ? 'bg-blue-500 text-white shadow-sm'
-                      : 'text-blue-200 hover:bg-ds-blue-800 hover:text-white'
+                      : 'text-blue-200 [@media(hover:hover)]:hover:bg-ds-blue-800 [@media(hover:hover)]:hover:text-white'
                   ]"
                   :aria-current="isActive(item) ? 'page' : undefined"
                 >
                   <span
                     class="w-4 h-4 flex-shrink-0 transition-transform duration-200"
-                    :class="[isActive(item) ? 'text-white' : 'text-blue-300 group-hover:text-white']"
+                    :class="[isActive(item) ? 'text-white' : 'text-blue-300 [@media(hover:hover)]:group-hover:text-white']"
                   >
                     <svg v-if="item.icon === 'stadium'" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.48 3 2 5.24 2 8V12C2 14.76 6.48 17 12 17C17.52 17 22 14.76 22 12V8C22 5.24 17.52 3 12 3ZM4 8C4 6.34 7.58 5 12 5C16.42 5 20 6.34 20 8C20 9.66 16.42 11 12 11C7.58 11 4 9.66 4 8ZM20 12C20 12.24 19.94 12.48 19.8 12.71C18.92 14.15 15.78 15 12 15C8.22 15 5.08 14.15 4.2 12.71C4.06 12.48 4 12.24 4 12V10.74C5.77 11.64 8.64 12.25 12 12.25C15.36 12.25 18.23 11.64 20 10.74V12Z"/></svg>
 
@@ -249,11 +249,11 @@ const handleAction = async (item: NavItem) => {
             <button
               v-if="!item.to"
               type="button"
-              class="group w-full relative flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 text-red-300 hover:bg-red-500/10 hover:text-red-200 disabled:opacity-50 disabled:cursor-wait"
+              class="group w-full relative flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 text-red-300 [@media(hover:hover)]:hover:bg-red-500/10 [@media(hover:hover)]:hover:text-red-200 disabled:opacity-50 disabled:cursor-wait"
               :disabled="logoutLoading"
               @click="handleAction(item)"
             >
-              <span class="w-5 h-5 flex-shrink-0 transition-all duration-200 group-hover:scale-110 opacity-80 group-hover:opacity-100">
+              <span class="w-5 h-5 flex-shrink-0 transition-all duration-200 [@media(hover:hover)]:group-hover:scale-110 opacity-80 [@media(hover:hover)]:group-hover:opacity-100">
                 <svg v-if="!logoutLoading" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 13V11H8V8L3 12L8 16V13H16ZM20 3H12V5H20V19H12V21H20C21.1 21 22 20.1 22 19V5C22 3.9 21.1 3 20 3Z"/></svg>
                 <svg v-else class="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
               </span>

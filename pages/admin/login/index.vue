@@ -119,7 +119,7 @@ const onSubmit = async () => {
     </div>
 
     <div class="flex flex-col items-center mb-6 md:mb-3 relative z-10 animate-fade-in">
-      <div class="flex justify-center mb-3 md:mb-2 transform transition-transform duration-300 hover:scale-105">
+      <div class="flex justify-center mb-3 md:mb-2 transform transition-transform duration-300 [@media(hover:hover)]:hover:scale-105">
         <div class="relative">
           <img
             src="~/assets/images/VENUE-UNDIP-LOGO.png"
@@ -196,7 +196,7 @@ const onSubmit = async () => {
             />
             <button
               type="button"
-              class="flex items-center justify-center text-ds-muted hover:text-ds-blue-700 transition-colors duration-200 p-1 rounded-md hover:bg-ds-blue-50"
+              class="flex items-center justify-center text-ds-muted [@media(hover:hover)]:hover:text-ds-blue-700 transition-colors duration-200 p-1 rounded-md [@media(hover:hover)]:hover:bg-ds-blue-50"
               @click="togglePasswordVisibility"
               tabindex="-1"
             >
@@ -283,9 +283,9 @@ const onSubmit = async () => {
         <button
           type="submit"
           :disabled="loading"
-          class="relative flex h-10 md:h-9 w-full items-center justify-center rounded-lg bg-gradient-to-r from-ds-blue-700 to-ds-blue-800 text-white font-semibold text-sm shadow-lg hover:shadow-xl hover:from-ds-blue-800 hover:to-ds-blue-900 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] overflow-hidden group"
+          class="relative flex h-10 md:h-9 w-full items-center justify-center rounded-lg bg-gradient-to-r from-ds-blue-700 to-ds-blue-800 text-white font-semibold text-sm shadow-lg [@media(hover:hover)]:hover:shadow-xl [@media(hover:hover)]:hover:from-ds-blue-800 [@media(hover:hover)]:hover:to-ds-blue-900 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:shadow-lg transition-all duration-300 transform [@media(hover:hover)]:hover:scale-[1.02] active:scale-[0.98] overflow-hidden group"
         >
-          <span class="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+          <span class="absolute inset-0 bg-white/20 transform scale-x-0 [@media(hover:hover)]:group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
           <span class="relative flex items-center gap-2">
             <svg v-if="loading" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

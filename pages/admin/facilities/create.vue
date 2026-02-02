@@ -5,6 +5,8 @@ import { Icon } from '@iconify/vue'
 import { availableIconsWithId as availableIcons, VALID_FACILITY_ICONS } from '~/utils/validIconList'
 import { parseBackendError } from '~/utils/errorParser'
 
+const { onFormEnter } = useFormNavigation()
+
 definePageMeta({
   middleware: 'auth-admin',
   layout: 'admin',
@@ -111,7 +113,7 @@ async function handleSubmit() {
       <div class="hidden sm:flex items-center gap-3">
         <NuxtLink
           to="/admin/facilities"
-          class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 shadow-sm transition-all active:scale-95 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
+          class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 shadow-sm transition-all active:scale-95 [@media(hover:hover)]:hover:bg-blue-50 [@media(hover:hover)]:hover:text-blue-700 [@media(hover:hover)]:hover:border-blue-300"
         >
           Batal
         </NuxtLink>
@@ -120,7 +122,7 @@ async function handleSubmit() {
           type="submit"
           form="create-facility-form"
           :disabled="loading"
-          class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-blue-700 hover:shadow-md transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+          class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-sm [@media(hover:hover)]:hover:bg-blue-700 [@media(hover:hover)]:hover:shadow-md transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
         >
           <svg v-if="loading" class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
           <span>{{ loading ? 'Menyimpan...' : 'Simpan Fasilitas' }}</span>
@@ -128,7 +130,7 @@ async function handleSubmit() {
       </div>
     </header>
 
-    <form id="create-facility-form" @submit.prevent="handleSubmit" class="flex flex-col gap-8">
+    <form id="create-facility-form" @submit.prevent="handleSubmit" @keydown.enter="onFormEnter" class="flex flex-col gap-8">
       
       <!-- CARD 1: INFO DASAR -->
       <div class="w-full">
@@ -186,7 +188,7 @@ async function handleSubmit() {
                   v-if="searchQuery"
                   @click="searchQuery = ''"
                   type="button"
-                  class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 transition-colors"
+                  class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 [@media(hover:hover)]:hover:text-gray-600 transition-colors"
                 >
                   <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -211,7 +213,7 @@ async function handleSubmit() {
               <button
                 @click="searchQuery = ''"
                 type="button"
-                class="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                class="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 [@media(hover:hover)]:hover:text-blue-700 transition-colors"
               >
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -226,7 +228,7 @@ async function handleSubmit() {
                 v-for="icon in filteredIcons"
                 :key="icon.id"
                 class="group relative flex flex-col items-center justify-center p-3 rounded-xl border cursor-pointer transition-all duration-200"
-                :class="[form.icon === icon.value ? 'border-blue-500 bg-blue-50/50 shadow-md ring-1 ring-blue-500/20' : 'border-gray-200 bg-white hover:border-blue-400 hover:bg-blue-50/30 hover:shadow-sm']"
+                :class="[form.icon === icon.value ? 'border-blue-500 bg-blue-50/50 shadow-md ring-1 ring-blue-500/20' : 'border-gray-200 bg-white [@media(hover:hover)]:hover:border-blue-400 [@media(hover:hover)]:hover:bg-blue-50/30 [@media(hover:hover)]:hover:shadow-sm']"
               >
                 <input type="radio" v-model="form.icon" :value="icon.value" class="sr-only" />
                 

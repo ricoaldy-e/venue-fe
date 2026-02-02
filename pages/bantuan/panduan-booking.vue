@@ -105,7 +105,7 @@ const whatsAppLink = computed(() => {
       <!-- Steps -->
       <div class="space-y-6 mb-12">
         <!-- Step 1 -->
-        <div class="group relative rounded-2xl bg-white p-6 lg:p-8 shadow-lg shadow-gray-200/50 border border-gray-100/50 hover:shadow-xl hover:border-blue-200 transition-all duration-300">
+        <div class="group relative rounded-2xl bg-white p-6 lg:p-8 shadow-lg shadow-gray-200/50 border border-gray-100/50 [@media(hover:hover)]:hover:shadow-xl [@media(hover:hover)]:hover:border-blue-200 transition-all duration-300">
           <div class="flex items-start gap-4 lg:gap-6">
             <div class="flex-shrink-0">
               <div class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold text-xl shadow-lg shadow-blue-500/30">
@@ -145,7 +145,7 @@ const whatsAppLink = computed(() => {
         </div>
 
         <!-- Step 2 -->
-        <div class="group relative rounded-2xl bg-white p-6 lg:p-8 shadow-lg shadow-gray-200/50 border border-gray-100/50 hover:shadow-xl hover:border-emerald-200 transition-all duration-300">
+        <div class="group relative rounded-2xl bg-white p-6 lg:p-8 shadow-lg shadow-gray-200/50 border border-gray-100/50 [@media(hover:hover)]:hover:shadow-xl [@media(hover:hover)]:hover:border-emerald-200 transition-all duration-300">
           <div class="flex items-start gap-4 lg:gap-6">
             <div class="flex-shrink-0">
               <div class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 text-white font-bold text-xl shadow-lg shadow-emerald-500/30">
@@ -202,7 +202,7 @@ const whatsAppLink = computed(() => {
         </div>
 
         <!-- Step 3 -->
-        <div class="group relative rounded-2xl bg-white p-6 lg:p-8 shadow-lg shadow-gray-200/50 border border-gray-100/50 hover:shadow-xl hover:border-amber-200 transition-all duration-300">
+        <div class="group relative rounded-2xl bg-white p-6 lg:p-8 shadow-lg shadow-gray-200/50 border border-gray-100/50 [@media(hover:hover)]:hover:shadow-xl [@media(hover:hover)]:hover:border-amber-200 transition-all duration-300">
           <div class="flex items-start gap-4 lg:gap-6">
             <div class="flex-shrink-0">
               <div class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 text-white font-bold text-xl shadow-lg shadow-amber-500/30">
@@ -266,7 +266,7 @@ const whatsAppLink = computed(() => {
         </div>
 
         <!-- Step 4 -->
-        <div class="group relative rounded-2xl bg-white p-6 lg:p-8 shadow-lg shadow-gray-200/50 border border-gray-100/50 hover:shadow-xl hover:border-purple-200 transition-all duration-300">
+        <div class="group relative rounded-2xl bg-white p-6 lg:p-8 shadow-lg shadow-gray-200/50 border border-gray-100/50 [@media(hover:hover)]:hover:shadow-xl [@media(hover:hover)]:hover:border-purple-200 transition-all duration-300">
           <div class="flex items-start gap-4 lg:gap-6">
             <div class="flex-shrink-0">
               <div class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 text-white font-bold text-xl shadow-lg shadow-purple-500/30">
@@ -320,7 +320,7 @@ const whatsAppLink = computed(() => {
         </div>
 
         <!-- Step 5 -->
-        <div class="group relative rounded-2xl bg-white p-6 lg:p-8 shadow-lg shadow-gray-200/50 border border-gray-100/50 hover:shadow-xl hover:border-green-200 transition-all duration-300">
+        <div class="group relative rounded-2xl bg-white p-6 lg:p-8 shadow-lg shadow-gray-200/50 border border-gray-100/50 [@media(hover:hover)]:hover:shadow-xl [@media(hover:hover)]:hover:border-green-200 transition-all duration-300">
           <div class="flex items-start gap-4 lg:gap-6">
             <div class="flex-shrink-0">
               <div class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-gradient-to-br from-green-500 to-green-600 text-white font-bold text-xl shadow-lg shadow-green-500/30">
@@ -351,7 +351,7 @@ const whatsAppLink = computed(() => {
         </div>
 
         <!-- Step 6 -->
-        <div class="group relative rounded-2xl bg-white p-6 lg:p-8 shadow-lg shadow-gray-200/50 border border-gray-100/50 hover:shadow-xl hover:border-teal-200 transition-all duration-300">
+        <div class="group relative rounded-2xl bg-white p-6 lg:p-8 shadow-lg shadow-gray-200/50 border border-gray-100/50 [@media(hover:hover)]:hover:shadow-xl [@media(hover:hover)]:hover:border-teal-200 transition-all duration-300">
           <div class="flex items-start gap-4 lg:gap-6">
             <div class="flex-shrink-0">
               <div class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-gradient-to-br from-teal-500 to-teal-600 text-white font-bold text-xl shadow-lg shadow-teal-500/30">
@@ -404,7 +404,7 @@ const whatsAppLink = computed(() => {
         </h2>
         <div class="space-y-4">
           <details class="group">
-            <summary class="flex cursor-pointer items-center justify-between rounded-xl bg-gray-50 px-4 py-3 font-semibold text-gray-900 hover:bg-gray-100 transition-colors">
+            <summary class="flex cursor-pointer items-center justify-between rounded-xl bg-gray-50 px-4 py-3 font-semibold text-gray-900 [@media(hover:hover)]:hover:bg-gray-100 active:bg-gray-100 transition-colors">
               <span>Apakah saya bisa booking melalui platform ini?</span>
               <svg class="h-5 w-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
@@ -416,7 +416,7 @@ const whatsAppLink = computed(() => {
           </details>
 
           <details class="group">
-            <summary class="flex cursor-pointer items-center justify-between rounded-xl bg-gray-50 px-4 py-3 font-semibold text-gray-900 hover:bg-gray-100 transition-colors">
+            <summary class="flex cursor-pointer items-center justify-between rounded-xl bg-gray-50 px-4 py-3 font-semibold text-gray-900 [@media(hover:hover)]:hover:bg-gray-100 active:bg-gray-100 transition-colors">
               <span>Apa saja tipe booking yang tersedia?</span>
               <svg class="h-5 w-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
@@ -428,7 +428,7 @@ const whatsAppLink = computed(() => {
           </details>
 
           <details class="group">
-            <summary class="flex cursor-pointer items-center justify-between rounded-xl bg-gray-50 px-4 py-3 font-semibold text-gray-900 hover:bg-gray-100 transition-colors">
+            <summary class="flex cursor-pointer items-center justify-between rounded-xl bg-gray-50 px-4 py-3 font-semibold text-gray-900 [@media(hover:hover)]:hover:bg-gray-100 active:bg-gray-100 transition-colors">
               <span>Apa itu SPTJM dan apakah wajib?</span>
               <svg class="h-5 w-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
@@ -440,7 +440,7 @@ const whatsAppLink = computed(() => {
           </details>
 
           <details class="group">
-            <summary class="flex cursor-pointer items-center justify-between rounded-xl bg-gray-50 px-4 py-3 font-semibold text-gray-900 hover:bg-gray-100 transition-colors">
+            <summary class="flex cursor-pointer items-center justify-between rounded-xl bg-gray-50 px-4 py-3 font-semibold text-gray-900 [@media(hover:hover)]:hover:bg-gray-100 active:bg-gray-100 transition-colors">
               <span>Bagaimana cara pembayaran?</span>
               <svg class="h-5 w-5 text-gray-500 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
@@ -461,7 +461,7 @@ const whatsAppLink = computed(() => {
           <a
             :href="whatsAppLink"
             target="_blank"
-            class="inline-flex items-center gap-2 rounded-xl bg-green-500 px-8 py-4 text-base font-bold text-white shadow-lg shadow-green-500/30 transition-all duration-300 hover:bg-green-600 hover:shadow-xl hover:scale-105"
+            class="inline-flex items-center gap-2 rounded-xl bg-green-500 px-8 py-4 text-base font-bold text-white shadow-lg shadow-green-500/30 transition-all duration-300 [@media(hover:hover)]:hover:bg-green-600 [@media(hover:hover)]:hover:shadow-xl [@media(hover:hover)]:hover:scale-105 active:scale-[0.98]"
           >
             <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
@@ -471,7 +471,7 @@ const whatsAppLink = computed(() => {
           </a>
           <NuxtLink
             to="/"
-            class="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-4 text-base font-bold text-[#1f2a56] shadow-lg shadow-white/20 transition-all duration-300 hover:shadow-xl hover:scale-105"
+            class="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-4 text-base font-bold text-[#1f2a56] shadow-lg shadow-white/20 transition-all duration-300 [@media(hover:hover)]:hover:shadow-xl [@media(hover:hover)]:hover:scale-105 active:scale-[0.98]"
           >
             Lihat Ketersediaan
             <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">

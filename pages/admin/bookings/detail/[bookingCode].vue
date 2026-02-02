@@ -233,7 +233,7 @@ const groupedDetails = computed(() => {
       
       <NuxtLink 
         to="/admin/bookings/history"
-        class="inline-flex w-fit items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:text-[#1f2a56] hover:border-[#1f2a56] hover:shadow-md active:scale-95"
+        class="inline-flex w-fit items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all [@media(hover:hover)]:hover:bg-gray-50 [@media(hover:hover)]:hover:text-[#1f2a56] [@media(hover:hover)]:hover:border-[#1f2a56] [@media(hover:hover)]:hover:shadow-md active:scale-95"
       >
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -340,7 +340,7 @@ const groupedDetails = computed(() => {
                     <a 
                       :href="booking.sptjmUrl" 
                       target="_blank"
-                      class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 rounded-lg text-sm font-semibold transition-colors"
+                      class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 [@media(hover:hover)]:hover:bg-blue-100 border border-blue-200 text-blue-700 rounded-lg text-sm font-semibold transition-colors"
                     >
                       <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" />
@@ -356,7 +356,7 @@ const groupedDetails = computed(() => {
                       v-if="isPdf(booking.suratUrl)"
                       :href="booking.suratUrl" 
                       target="_blank"
-                      class="inline-flex items-center gap-2 px-4 py-2 bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 rounded-lg text-sm font-semibold transition-colors"
+                      class="inline-flex items-center gap-2 px-4 py-2 bg-red-50 [@media(hover:hover)]:hover:bg-red-100 border border-red-200 text-red-700 rounded-lg text-sm font-semibold transition-colors"
                     >
                       <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" />
@@ -367,7 +367,7 @@ const groupedDetails = computed(() => {
                       v-else
                       :href="booking.suratUrl" 
                       target="_blank"
-                      class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 rounded-lg text-sm font-semibold transition-colors"
+                      class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 [@media(hover:hover)]:hover:bg-blue-100 border border-blue-200 text-blue-700 rounded-lg text-sm font-semibold transition-colors"
                     >
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -491,7 +491,7 @@ const groupedDetails = computed(() => {
               v-if="booking.paymentStatus !== 'PAID'"
               @click="markAsPaid"
               :disabled="updating"
-              class="w-full px-4 py-2.5 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white text-sm font-semibold rounded-xl transition-all shadow-sm"
+              class="w-full px-4 py-2.5 bg-green-600 [@media(hover:hover)]:hover:bg-green-700 disabled:bg-gray-400 text-white text-sm font-semibold rounded-xl transition-all shadow-sm"
             >
               <span v-if="updating">Memproses...</span>
               <span v-else>Tandai Sudah Dibayar</span>
@@ -504,7 +504,7 @@ const groupedDetails = computed(() => {
               <button
                 @click="markAsUnpaid"
                 :disabled="updating"
-                class="w-full px-4 py-2.5 bg-white hover:bg-orange-50 border border-orange-300 disabled:bg-gray-100 text-orange-700 text-sm font-semibold rounded-xl transition-all shadow-sm"
+                class="w-full px-4 py-2.5 bg-white [@media(hover:hover)]:hover:bg-orange-50 border border-orange-300 disabled:bg-gray-100 text-orange-700 text-sm font-semibold rounded-xl transition-all shadow-sm"
               >
                 <span v-if="updating">Memproses...</span>
                 <span v-else>Tandai Belum Lunas</span>
@@ -523,7 +523,7 @@ const groupedDetails = computed(() => {
               v-if="booking.status === 'PENDING'"
               @click="handleStatusChange('APPROVED')"
               :disabled="updating"
-              class="w-full px-4 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white text-sm font-semibold rounded-xl transition-all shadow-sm flex items-center justify-center gap-2"
+              class="w-full px-4 py-2.5 bg-blue-600 [@media(hover:hover)]:hover:bg-blue-700 disabled:bg-gray-400 text-white text-sm font-semibold rounded-xl transition-all shadow-sm flex items-center justify-center gap-2"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -535,7 +535,7 @@ const groupedDetails = computed(() => {
             <button
               @click="handleStatusChange('CANCELLED')"
               :disabled="updating"
-              class="w-full px-4 py-2.5 bg-white hover:bg-red-50 border border-red-200 disabled:opacity-50 text-red-700 text-sm font-bold rounded-xl transition-all shadow-sm flex items-center justify-center gap-2"
+              class="w-full px-4 py-2.5 bg-white [@media(hover:hover)]:hover:bg-red-50 border border-red-200 disabled:opacity-50 text-red-700 text-sm font-bold rounded-xl transition-all shadow-sm flex items-center justify-center gap-2"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />

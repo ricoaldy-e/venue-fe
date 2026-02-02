@@ -79,7 +79,7 @@ const fallbackImage = 'https://images.unsplash.com/photo-1522778526097-ce0a22ceb
       
       <NuxtLink 
         to="/admin/bookings/history"
-        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 hover:shadow-md transition-all active:scale-95"
+        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm [@media(hover:hover)]:hover:bg-blue-700 [@media(hover:hover)]:hover:shadow-md transition-all active:scale-95"
       >
         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -110,7 +110,7 @@ const fallbackImage = 'https://images.unsplash.com/photo-1522778526097-ce0a22ceb
 
       <div v-if="error" class="rounded-xl border border-red-200 bg-red-50 p-6 text-center text-red-700">
         <p class="font-semibold text-sm">Gagal memuat data venue.</p>
-        <button @click="refresh()" class="mt-2 underline font-bold hover:text-red-800">Coba lagi</button>
+        <button @click="refresh()" class="mt-2 underline font-bold [@media(hover:hover)]:hover:text-red-800 active:text-red-800">Coba lagi</button>
       </div>
 
       <div v-else-if="pending" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
@@ -137,14 +137,14 @@ const fallbackImage = 'https://images.unsplash.com/photo-1522778526097-ce0a22ceb
         <article
           v-for="venue in paginatedStadions"
           :key="venue.id"
-          class="group relative flex flex-col overflow-hidden rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-lg hover:border-blue-300 transition-all duration-300 cursor-pointer h-full"
+          class="group relative flex flex-col overflow-hidden rounded-2xl bg-white border border-gray-200 shadow-sm [@media(hover:hover)]:hover:shadow-lg [@media(hover:hover)]:hover:border-blue-300 transition-all duration-300 cursor-pointer h-full"
           @click="navigateTo(`/admin/bookings/${venue.id}`)"
         >
           <div class="relative h-48 w-full overflow-hidden bg-gray-100">
             <img 
               :src="venue.images?.[0]?.imageUrl || fallbackImage" 
               :alt="venue.name" 
-              class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              class="h-full w-full object-cover transition-transform duration-500 [@media(hover:hover)]:group-hover:scale-105"
               onerror="this.src='https://images.unsplash.com/photo-1529900748604-07564a03e7a6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'"
             >
             <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-60"></div>
@@ -153,7 +153,7 @@ const fallbackImage = 'https://images.unsplash.com/photo-1522778526097-ce0a22ceb
           <div class="flex flex-col flex-1 p-5">
             <div class="flex-1">
               <p class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Venue</p>
-              <h3 class="text-lg font-bold text-gray-900 group-hover:text-blue-700 transition-colors line-clamp-2">
+              <h3 class="text-lg font-bold text-gray-900 [@media(hover:hover)]:group-hover:text-blue-700 transition-colors line-clamp-2">
                 {{ venue.name }}
               </h3>
             </div>
@@ -166,7 +166,7 @@ const fallbackImage = 'https://images.unsplash.com/photo-1522778526097-ce0a22ceb
                 <span class="font-semibold text-gray-700">{{ venue._count?.fields ?? venue.fields?.length ?? 0 }}</span>
                 <span>Lapangan</span>
               </div>
-              <div class="flex items-center gap-1 text-sm font-bold text-blue-600 group-hover:translate-x-1 transition-transform">
+              <div class="flex items-center gap-1 text-sm font-bold text-blue-600 [@media(hover:hover)]:group-hover:translate-x-1 transition-transform">
                 Lihat Jadwal
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -189,7 +189,7 @@ const fallbackImage = 'https://images.unsplash.com/photo-1522778526097-ce0a22ceb
           <button
             @click="prevPage"
             :disabled="currentPage === 1"
-            class="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
+            class="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 [@media(hover:hover)]:hover:bg-gray-50 [@media(hover:hover)]:hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
           </button>
@@ -201,7 +201,7 @@ const fallbackImage = 'https://images.unsplash.com/photo-1522778526097-ce0a22ceb
           <button
             @click="nextPage"
             :disabled="currentPage === totalPages"
-            class="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
+            class="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 [@media(hover:hover)]:hover:bg-gray-50 [@media(hover:hover)]:hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
           </button>

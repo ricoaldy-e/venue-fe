@@ -531,7 +531,7 @@ const printAllData = async () => {
             <button
               @click="handleManualRefresh"
               :disabled="isRefreshing"
-              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-all active:scale-95 disabled:opacity-50"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-200 rounded-lg [@media(hover:hover)]:hover:bg-blue-100 transition-all active:scale-95 disabled:opacity-50"
               title="Refresh data"
             >
               <svg 
@@ -555,7 +555,7 @@ const printAllData = async () => {
       <div class="flex items-center gap-2">
         <NuxtLink 
           to="/admin/bookings/history" 
-          class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:text-[#1f2a56] hover:border-[#1f2a56] hover:shadow-md active:scale-95"
+          class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all [@media(hover:hover)]:hover:bg-gray-50 [@media(hover:hover)]:hover:text-[#1f2a56] [@media(hover:hover)]:hover:border-[#1f2a56] [@media(hover:hover)]:hover:shadow-md active:scale-95"
         >
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -564,7 +564,7 @@ const printAllData = async () => {
         </NuxtLink>
         <button
           @click="printAllData"
-          class="inline-flex items-center gap-2 rounded-lg border border-gray-800 bg-gray-800 px-4 py-2 text-sm font-bold text-white shadow-sm transition-all hover:bg-gray-900 active:scale-95"
+          class="inline-flex items-center gap-2 rounded-lg border border-gray-800 bg-gray-800 px-4 py-2 text-sm font-bold text-white shadow-sm transition-all [@media(hover:hover)]:hover:bg-gray-900 active:scale-95"
         >
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
@@ -685,13 +685,13 @@ const printAllData = async () => {
             <div class="flex gap-2">
               <button
                 @click="filterMode = 'daily'"
-                :class="['flex-1 px-4 py-2.5 rounded-xl text-sm font-bold transition-all', filterMode === 'daily' ? 'bg-blue-600 text-white shadow-md' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50']"
+                :class="['flex-1 px-4 py-2.5 rounded-xl text-sm font-bold transition-all', filterMode === 'daily' ? 'bg-blue-600 text-white shadow-md' : 'bg-white border border-gray-300 text-gray-700 [@media(hover:hover)]:hover:bg-gray-50']"
               >
                 Harian
               </button>
               <button
                 @click="filterMode = 'range'"
-                :class="['flex-1 px-4 py-2.5 rounded-xl text-sm font-bold transition-all', filterMode === 'range' ? 'bg-blue-600 text-white shadow-md' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50']"
+                :class="['flex-1 px-4 py-2.5 rounded-xl text-sm font-bold transition-all', filterMode === 'range' ? 'bg-blue-600 text-white shadow-md' : 'bg-white border border-gray-300 text-gray-700 [@media(hover:hover)]:hover:bg-gray-50']"
               >
                 Rentang Tanggal
               </button>
@@ -740,19 +740,19 @@ const printAllData = async () => {
                 <div class="flex gap-2">
                   <button 
                     @click="setDateRange(7)"
-                    :class="['px-3 py-2 rounded-lg text-xs font-bold transition-all', isRangeActive(7) ? 'bg-blue-600 text-white shadow-md' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50']"
+                    :class="['px-3 py-2 rounded-lg text-xs font-bold transition-all', isRangeActive(7) ? 'bg-blue-600 text-white shadow-md' : 'bg-white border border-gray-300 text-gray-700 [@media(hover:hover)]:hover:bg-gray-50']"
                   >
                     7 Hari
                   </button>
                   <button 
                     @click="setDateRange(30)"
-                    :class="['px-3 py-2 rounded-lg text-xs font-bold transition-all', isRangeActive(30) ? 'bg-blue-600 text-white shadow-md' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50']"
+                    :class="['px-3 py-2 rounded-lg text-xs font-bold transition-all', isRangeActive(30) ? 'bg-blue-600 text-white shadow-md' : 'bg-white border border-gray-300 text-gray-700 [@media(hover:hover)]:hover:bg-gray-50']"
                   >
                     30 Hari
                   </button>
                   <button 
                     @click="setDateRange(0)"
-                    :class="['px-3 py-2 rounded-lg text-xs font-bold transition-all', isRangeActive(0) ? 'bg-blue-600 text-white shadow-md' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50']"
+                        :class="['px-3 py-2 rounded-lg text-xs font-bold transition-all', isRangeActive(0) ? 'bg-blue-600 text-white shadow-md' : 'bg-white border border-gray-300 text-gray-700 [@media(hover:hover)]:hover:bg-gray-50']"
                   >
                     Bulan Ini
                   </button>
@@ -768,7 +768,7 @@ const printAllData = async () => {
               <div class="relative">
                 <select 
                   v-model="selectedStadionId"
-                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
+                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors [@media(hover:hover)]:hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
                 >
                   <option value="">Semua Stadion</option>
                   <option v-for="stadion in stadions" :key="stadion.id" :value="stadion.id">
@@ -789,7 +789,7 @@ const printAllData = async () => {
               <div class="relative">
                 <select 
                   v-model="renterTypeFilter"
-                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
+                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors [@media(hover:hover)]:hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
                 >
                   <option value="">Semua Tipe</option>
                   <option value="UMUM">Umum</option>
@@ -810,7 +810,7 @@ const printAllData = async () => {
               <div class="relative">
                 <select 
                   v-model="bookingStatusFilter"
-                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
+                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors [@media(hover:hover)]:hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
                 >
                   <option value="">Semua Status</option>
                   <option value="APPROVED">Disetujui</option>
@@ -830,7 +830,7 @@ const printAllData = async () => {
               <div class="relative">
                 <select 
                   v-model="paymentStatusFilter"
-                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
+                  class="appearance-none w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 pr-10 transition-colors [@media(hover:hover)]:hover:bg-gray-100/50 cursor-pointer font-medium shadow-sm"
                 >
                   <option value="">Semua Status</option>
                   <option value="PAID">Lunas</option>
@@ -919,7 +919,7 @@ const printAllData = async () => {
           </svg>
         </div>
         <p class="text-sm font-semibold text-gray-900">Gagal memuat data</p>
-        <button class="mt-4 text-sm text-blue-600 hover:text-blue-700 font-semibold" @click="() => refresh()">
+        <button class="mt-4 text-sm text-blue-600 [@media(hover:hover)]:hover:text-blue-700 font-semibold" @click="() => refresh()">
           Coba Lagi
         </button>
       </div>
@@ -1074,7 +1074,7 @@ const printAllData = async () => {
           <button
             @click="prevPage"
             :disabled="!pagination.hasPrevPage"
-            class="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
+            class="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 [@media(hover:hover)]:hover:bg-gray-50 [@media(hover:hover)]:hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
           </button>
@@ -1086,7 +1086,7 @@ const printAllData = async () => {
           <button
             @click="nextPage"
             :disabled="!pagination.hasNextPage"
-            class="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
+            class="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 [@media(hover:hover)]:hover:bg-gray-50 [@media(hover:hover)]:hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
           >
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
           </button>
