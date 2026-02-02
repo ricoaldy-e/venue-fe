@@ -6,10 +6,20 @@ services:
     container_name: venue-fe
     ports:
       - "8000:3000"
-    environment: 
+    environment:
       - NUXT_HOST=${NUXT_HOST}
       - NUXT_PORT=${NUXT_PORT}
       - GQL_HTTP_ENDPOINT=${GQL_HTTP_ENDPOINT}
       - NODE_ENV=production
       - JWT_SECRET=${JWT_SECRET}
+
+      # MEMORY OPTIMIZATION
+      # Membatasi heap size Node.js untuk mencegah OOM (Out of Memory)
+      # Nilai 512MB cocok untuk server dengan RAM 2GB
+      # Jika server memiliki RAM lebih besar, bisa dinaikkan (mis. 768, 1024)
+      - NODE_OPTIONS=--max-old-space-size=512
+
+    # CONTAINER MEMORY LIMITS
+    mem_limit: 1g
+    mem_reservation: 512m
     restart: unless-stopped

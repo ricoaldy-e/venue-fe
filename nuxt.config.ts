@@ -76,6 +76,19 @@ export default defineNuxtConfig({
 
   ssr: true,
 
+  // HYBRID RENDERING CONFIGURATION
+  // Tujuan: Mengurangi beban memory server dengan mengoptimalkan rendering
+  // per-route berdasarkan kebutuhan masing-masing halaman.
+  // Dokumentasi: https://nuxt.com/docs/guide/concepts/rendering#hybrid-rendering
+  routeRules: {
+    
+    // ADMIN PAGES - Client-Side Rendering (CSR)
+    '/admin/**': { ssr: false },
+
+    // HALAMAN BANTUAN - Stale-While-Revalidate (SWR)
+    '/bantuan/**': { swr: 86400 },
+  },
+
   nitro: {
     routeRules: {
       '/**': {
