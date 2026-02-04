@@ -19,7 +19,7 @@ type StadiumCard = {
   name: string
   status?: string
   description?: string
-  bookingCount?: number // Sekarang dikirim langsung dari server
+  bookingCount?: number
   images?: Array<{ id: number; imageUrl: string | null }>
   fields?: Array<{
     id: number
@@ -31,9 +31,9 @@ const fallbackImage = 'https://images.unsplash.com/photo-1522778526097-ce0a22ceb
 
 const searchQuery = ref('')
 const debouncedSearchQuery = ref('')
-const sortBy = ref<'popularity' | 'fields'>('fields')
+const sortBy = ref<'popularity' | 'alphabetical'>('popularity')
 const currentPage = ref(1)
-const itemsPerPage = 6
+const itemsPerPage = 9
 
 const { data: stadionsData, pending, error, refresh } = await useAsyncData<StadiumCard[]>(
   'home-stadions',
@@ -52,8 +52,8 @@ const filteredStadions = computed(() => {
   }
   
   const sorted = [...list].sort((a, b) => {
-    if (sortBy.value === 'fields') {
-      return activeFieldCount(b) - activeFieldCount(a)
+    if (sortBy.value === 'alphabetical') {
+      return (a.name || '').localeCompare(b.name || '', 'id')
     } else {
       return (b.bookingCount ?? 0) - (a.bookingCount ?? 0)
     }
@@ -168,14 +168,14 @@ const goToDetail = (stadionId: number) => {
 
 <template>
   <div class="min-h-screen bg-gradient-to-br from-[#f5f7fb] via-[#f8fafc] to-[#f5f7fb]">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12 space-y-8 lg:space-y-12">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 lg:py-8 space-y-6 lg:space-y-8">
 
       <section class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0f1f4a] via-[#1a2d5a] to-[#0f1f4a] px-6 py-10 text-white shadow-2xl shadow-[#0f1f4a]/40 sm:px-10 lg:py-12">
         <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
         <div class="absolute bottom-0 left-0 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl"></div>
         
         <div class="relative z-10 flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
-          <div class="space-y-4 max-w-xl">
+          <div class="space-y-3 max-w-xl">
             <div class="inline-flex items-center gap-2 rounded-full bg-emerald-500/20 border border-emerald-400/30 px-4 py-1.5">
               <span class="relative flex h-2.5 w-2.5">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -184,7 +184,7 @@ const goToDetail = (stadionId: number) => {
               <span class="text-xs font-bold uppercase tracking-wider text-emerald-100">Statistik Terkini</span>
             </div>
             
-            <div class="space-y-2">
+            <div class="space-y-1.5">
               <p class="text-xs uppercase tracking-[0.2em] text-blue-200/70 font-semibold">Ringkasan Lapangan</p>
               <h2 class="uppercase text-3xl lg:text-4xl font-bold leading-[1.4] pb-1 bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
                 {{ unitName }}
@@ -304,6 +304,7 @@ const goToDetail = (stadionId: number) => {
       <section class="rounded-2xl bg-white p-6 shadow-lg shadow-gray-200/50 border border-gray-100/50">
         <div class="flex flex-col gap-3">
           <div class="flex flex-col sm:flex-row items-stretch gap-3">
+            <!-- Search Input -->
             <div class="flex flex-1 items-center gap-3 rounded-xl border-2 border-gray-200 px-4 py-3.5 text-sm transition-all duration-200 focus-within:border-[#1f2a56] focus-within:ring-4 focus-within:ring-[#1f2a56]/10">
               <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -325,15 +326,55 @@ const goToDetail = (stadionId: number) => {
                 </svg>
               </button>
             </div>
-            <button
-              @click="handleSearch"
-              class="group inline-flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#1f2a56] to-[#0f1a3c] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#1f2a56]/20 transition-all duration-300 [@media(hover:hover)]:hover:shadow-xl [@media(hover:hover)]:hover:shadow-[#1f2a56]/30 [@media(hover:hover)]:hover:-translate-y-0.5 active:scale-[0.98] sm:w-auto w-full"
-            >
-              <svg class="h-5 w-5 transition-transform [@media(hover:hover)]:group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-              </svg>
-              Cari Sekarang
-            </button>
+            
+            <!-- Sort Filter + Search Button Container (Mobile: Side by side, Desktop: Inline) -->
+            <div class="flex items-stretch gap-3 sm:flex-shrink-0">
+              <!-- Sort Filter -->
+              <div class="inline-flex rounded-xl border-2 border-gray-200 bg-gray-50 p-1 shadow-sm flex-shrink-0">
+                <button
+                  @click="sortBy = 'popularity'; currentPage = 1"
+                  :class="[
+                    'flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-2 text-xs font-bold rounded-lg transition-all duration-200 whitespace-nowrap',
+                    sortBy === 'popularity'
+                      ? 'bg-gradient-to-r from-[#1f2a56] to-[#0f1a3c] text-white shadow-md'
+                      : 'text-gray-600 [@media(hover:hover)]:hover:bg-white/50 active:bg-white/50'
+                  ]"
+                  title="Urutkan berdasarkan popularitas"
+                >
+                  <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                  </svg>
+                  <span class="hidden sm:inline">Popular</span>
+                </button>
+                <button
+                  @click="sortBy = 'alphabetical'; currentPage = 1"
+                  :class="[
+                    'flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-2 text-xs font-bold rounded-lg transition-all duration-200 whitespace-nowrap',
+                    sortBy === 'alphabetical'
+                      ? 'bg-gradient-to-r from-[#1f2a56] to-[#0f1a3c] text-white shadow-md'
+                      : 'text-gray-600 [@media(hover:hover)]:hover:bg-white/50 active:bg-white/50'
+                  ]"
+                  title="Urutkan A-Z"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 7h6m0 0V5m0 2v2m6-2h6M9 17h6m0 0v-2m0 2v2m-6-2H3"/>
+                  </svg>
+                  A-Z
+                </button>
+              </div>
+              
+              <!-- Search Button -->
+              <button
+                @click="handleSearch"
+                class="group inline-flex flex-1 sm:flex-initial items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#1f2a56] to-[#0f1a3c] px-5 sm:px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#1f2a56]/20 transition-all duration-300 [@media(hover:hover)]:hover:shadow-xl [@media(hover:hover)]:hover:shadow-[#1f2a56]/30 [@media(hover:hover)]:hover:-translate-y-0.5 active:scale-[0.98]"
+              >
+                <svg class="h-5 w-5 transition-transform [@media(hover:hover)]:group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <span class="hidden sm:inline">Cari Sekarang</span>
+                <span class="sm:hidden">Cari</span>
+              </button>
+            </div>
           </div>
         </div>
       </section>

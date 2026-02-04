@@ -449,7 +449,7 @@ const _routes = [
   {
     name: "index",
     path: "/",
-    component: () => import('./index-CnRPd4W0.mjs')
+    component: () => import('./index-T8ipJgA4.mjs')
   },
   {
     name: "admin",
@@ -461,7 +461,7 @@ const _routes = [
     name: "venues-id",
     path: "/venues/:id()",
     meta: __nuxt_page_meta$j || {},
-    component: () => import('./_id_-YlUT2ftc.mjs')
+    component: () => import('./_id_-C-VSn3Q5.mjs')
   },
   {
     name: "booking-order",
@@ -508,7 +508,7 @@ const _routes = [
     name: "admin-bookings",
     path: "/admin/bookings",
     meta: { ...__nuxt_page_meta$c || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./index-Bc0Tt4YI.mjs')
+    component: () => import('./index-ZFdEnMkZ.mjs')
   },
   {
     name: "admin-stadiums",
@@ -560,7 +560,7 @@ const _routes = [
     name: "admin-bookings-id",
     path: "/admin/bookings/:id()",
     meta: { ...__nuxt_page_meta$5 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./index-DXKw6mUW.mjs')
+    component: () => import('./index-7xxbKvCe.mjs')
   },
   {
     name: "bantuan-kebijakan-privasi",

@@ -1,1 +1,0 @@
-import{r as e}from"./Bat7iy4w.js";const r=e(null),i=()=>({registerModal:o=>{r.value=o},confirm:o=>r.value?r.value.open(o):(console.error('ConfirmationModal not registered. Make sure to add <ConfirmationModal ref="confirmModal" /> to your layout and register it.'),Promise.resolve(!1))});export{i as u};

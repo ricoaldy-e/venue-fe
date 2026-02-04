@@ -37,9 +37,7 @@ const { data: stadions, pending, error, refresh } = await useAsyncData(
 const stadionsRef = computed(() => {
   const list = stadions.value || []
   return [...list].sort((a, b) => {
-    const aCount = a._count?.fields ?? a.fields?.length ?? 0
-    const bCount = b._count?.fields ?? b.fields?.length ?? 0
-    return bCount - aCount
+    return (a.name || '').localeCompare(b.name || '', 'id')
   })
 })
 const { searchQuery, filteredItems: filteredStadions } = useSearch(
@@ -54,7 +52,7 @@ const {
   nextPage, 
   prevPage,
   totalPages
-} = usePagination(filteredStadions, { itemsPerPage: 6 })
+} = usePagination(filteredStadions, { itemsPerPage: 9 })
 
 const fallbackImage = 'https://images.unsplash.com/photo-1522778526097-ce0a22ceb253?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
 </script>

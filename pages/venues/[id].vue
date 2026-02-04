@@ -2,6 +2,7 @@
 import { computed, ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import { Icon } from '@iconify/vue'
 import { toDateKey, getNextNDays, toUtcMidnightIso } from '~/utils/dateHelpers'
+import { generateTimeSlots } from '~/utils/generateTimeSlots'
 import InfoModal from '~/components/InfoModal.vue'
 import { parseBackendError } from '~/utils/errorParser'
 import { UI } from '~/utils/constants'
@@ -143,45 +144,32 @@ const createFallbackVenue = (): VenueDetail => ({
   mapUrl: undefined,
 })
 
-const buildSlotsForField = (field: FieldData, hours: { open: number; close: number }, renterType: 'UMUM' | 'TENDIK' | 'AKADEMIK' = 'UMUM'): Slot[] => {
+const buildSlotsForField = (field: FieldData, hours: { open: number; close: number }): Slot[] => {
   const booked = new Set(
     (field?.bookingDetails ?? [])
       .map((detail) => Number(detail?.startHour))
       .filter((val: number) => Number.isFinite(val))
   )
 
-  const slots: Slot[] = []
   const openHour = Number.isFinite(hours.open) ? hours.open : fallbackOperatingHours.open
   const closeHour = Number.isFinite(hours.close) ? hours.close : fallbackOperatingHours.close
 
-  for (let hour = openHour; hour < closeHour; hour++) {
-    const next = hour + 1
-    const startTime = `${padHour(hour)}:00`
-    const range = `${startTime} - ${padHour(next)}:00`
-    const isBooked = booked.has(hour)
+  const baseSlots = generateTimeSlots(openHour, closeHour, Number(field?.pricePerHour || 0))
 
-    let price = 0
-    if (renterType === 'AKADEMIK') {
-      price = 0
-    } else if (renterType === 'TENDIK' && field?.priceTendik) {
-      price = field.priceTendik
-    } else {
-      price = Number(field?.pricePerHour || 0)
+  return baseSlots.map(slot => {
+    const hourNum = Number(slot.start.split(':')[0])
+    const isBooked = booked.has(hourNum)
+    return {
+      start: slot.start,
+      range: `${slot.start} - ${slot.end}`,
+      status: isBooked ? ('Booked' as const) : ('Available' as const),
+      price: isBooked ? undefined : slot.price,
+      highlight: !isBooked && hourNum === openHour,
     }
-
-    slots.push({
-      start: startTime,
-      range,
-      status: isBooked ? 'Booked' : 'Available',
-      price: !isBooked ? price : undefined,
-      highlight: !isBooked && hour === openHour,
-    })
-  }
-
-  return slots
+  })
 }
 
-const mapFieldToCourt = (field: FieldData, hours: { open: number; close: number }, renterType: 'UMUM' | 'TENDIK' | 'AKADEMIK'): Court => {
+const mapFieldToCourt = (field: FieldData, hours: { open: number; close: number }): Court => {
   const rawImages = field?.images?.map((img) => img?.imageUrl).filter((url): url is string => Boolean(url)) || []
 
   return {
@@ -192,11 +180,11 @@ const mapFieldToCourt = (field: FieldData, hours: { open: number; close: number 
     status: field?.status === 'ACTIVE' ? 'Ready' : 'Maintenance',
     image: rawImages[0] || '',
     gallery: rawImages,
-    slots: buildSlotsForField(field, hours, renterType),
+    slots: buildSlotsForField(field, hours),
   }
 }
 
-const buildVenueFromGraphQL = (stadion?: StadionData, renterType: 'UMUM' | 'TENDIK' | 'AKADEMIK' = 'UMUM'): VenueDetail => {
+const buildVenueFromGraphQL = (stadion?: StadionData): VenueDetail => {
   const fallback = createFallbackVenue()
   if (!stadion) return fallback
 
@@ -209,7 +197,7 @@ const buildVenueFromGraphQL = (stadion?: StadionData, renterType: 'UMUM' | 'TEND
       }))
       .filter((fac) => Boolean(fac.name)) ?? []
 
-  const fields = Array.isArray(stadion.fields) ? stadion.fields : []
+  const fields = Array.isArray(stadion.fields) ? stadion.fields.filter((f: any) => f?.status === 'ACTIVE') : []
     
   const prices = fields
     .map((field) => Number(field?.pricePerHour))
@@ -231,7 +219,7 @@ const buildVenueFromGraphQL = (stadion?: StadionData, renterType: 'UMUM' | 'TEND
     price: prices.length ? Math.min(...prices) : fallback.price,
     facilities: facilities.length ? facilities : fallback.facilities,
     scheduleDays: getNextNDays(null, 7, true),
-    courts: fields.length ? fields.map((field: any) => mapFieldToCourt(field, hours, renterType)) : fallback.courts,
+    courts: fields.length ? fields.map((field: any) => mapFieldToCourt(field, hours)) : fallback.courts,
     mapUrl: stadion.mapUrl ?? undefined,
   }
 }
@@ -252,8 +240,7 @@ if (stadionData.value?.status === 'INACTIVE') {
   })
 }
 
-const renterType = ref<'UMUM' | 'TENDIK' | 'AKADEMIK'>('UMUM')
-const venue = computed(() => buildVenueFromGraphQL(stadionData.value, renterType.value))
+const venue = computed(() => buildVenueFromGraphQL(stadionData.value))
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('id-ID', {
@@ -282,6 +269,12 @@ const activeGalleryIndex = ref(0)
 const galleryLength = computed(() => venue.value?.gallery?.length ?? 0)
 
 watch(venue, () => { activeGalleryIndex.value = 0 })
+
+const currentVenueGalleryImage = computed(() => {
+  const gallery = venue.value?.gallery
+  if (!gallery || !gallery.length) return '/placeholder-stadium.jpg'
+  return gallery[activeGalleryIndex.value] || '/placeholder-stadium.jpg'
+})
 
 const nextGallery = () => {
   const len = galleryLength.value
@@ -350,11 +343,12 @@ const isInfoModalOpen = ref(false)
 const router = useRouter()
 const selectionDisabled = true
 
-const bookingCart = useState('booking-cart', () => ({
-  stadionId: null as number | null,
-  stadionName: '',
-  slots: [] as SelectedSlot[],
-}))
+// TODO: Future feature - Booking cart untuk user checkout ketika booking fitur diaktifkan
+// const bookingCart = useState('booking-cart', () => ({
+//   stadionId: null as number | null,
+//   stadionName: '',
+//   slots: [] as SelectedSlot[],
+// }))
 
 const selectedDayIndex = computed(() => {
   const index = venue.value?.scheduleDays.findIndex(day => day.value === selectedDate.value) ?? -1
@@ -518,16 +512,17 @@ const closeDrawer = () => {
   isDrawerOpen.value = false
 }
 
-const proceedToOrder = () => {
-  if (!selectedSlots.value.length || !venue.value) return
-  bookingCart.value = {
-    stadionId: venue.value.id,
-    stadionName: venue.value.name,
-    slots: selectedSlots.value.map(slot => ({ ...slot })),
-  }
-  isDrawerOpen.value = false
-  router.push('/booking/order')
-}
+// TODO: Future feature - Proceed to order function untuk booking flow
+// const proceedToOrder = () => {
+//   if (!selectedSlots.value.length || !venue.value) return
+//   bookingCart.value = {
+//     stadionId: venue.value.id,
+//     stadionName: venue.value.name,
+//     slots: selectedSlots.value.map(slot => ({ ...slot })),
+//   }
+//   isDrawerOpen.value = false
+//   router.push('/booking/order')
+// }
 
 watch(selectedDate, () => {
   selectedSlots.value = []
@@ -557,16 +552,16 @@ watch(selectedDate, () => {
           @touchstart.passive="onGalleryTouchStart"
           @touchend="onGalleryTouchEnd"
         >
+          <div class="relative aspect-[16/9] w-full overflow-hidden bg-gray-200 p-[1px] leading-[0]">
           <img
             v-if="venue?.gallery && venue.gallery.length > 0"
-            :src="venue?.gallery[activeGalleryIndex]"
+            :src="currentVenueGalleryImage"
             :alt="venue?.name"
-            loading="lazy"
-            decoding="async"
-            class="aspect-[16/9] w-full object-cover"
+            class="absolute inset-[1px] h-[calc(100%-2px)] w-[calc(100%-2px)] object-cover block"
           >
-          <div v-else class="aspect-[16/9] w-full flex items-center justify-center bg-gray-100">
+           <div v-else class="absolute inset-[1px] flex items-center justify-center bg-gray-100">
             <PlaceholderImage text="Foto Stadion Belum Ditambahkan" />
+          </div>
           </div>
 
           <button
@@ -615,14 +610,12 @@ watch(selectedDate, () => {
             <div
               v-for="(img, idx) in venue?.gallery?.slice(1, 3)"
               :key="`thumb-${idx}`"
-              class="relative w-full h-full overflow-hidden rounded-[24px] shadow-sm cursor-pointer transition-all [@media(hover:hover)]:hover:opacity-80 [@media(hover:hover)]:hover:shadow-md [@media(hover:hover)]:hover:scale-[1.02]"
+              class="relative w-full h-full overflow-hidden rounded-[24px] shadow-sm cursor-pointer transition-all duration-200 [@media(hover:hover)]:hover:opacity-80 [@media(hover:hover)]:hover:shadow-md [@media(hover:hover)]:hover:scale-[1.02]"
               @click="activeGalleryIndex = idx + 1"
             >
               <img
                 :src="img"
                 :alt="`${venue?.name} preview ${idx + 1}`"
-                loading="lazy"
-                decoding="async"
                 class="absolute inset-0 h-full w-full object-cover"
               >
             </div>
@@ -833,7 +826,7 @@ watch(selectedDate, () => {
           <div class="p-4 sm:p-5">
             <div class="flex flex-col gap-5 rounded-3xl border border-gray-200 p-5 lg:flex-row">
               <div
-                class="relative w-full overflow-hidden rounded-[28px] border border-white shadow lg:w-[420px]"
+                class="relative w-full overflow-hidden rounded-[28px] border border-white shadow lg:w-[420px] h-56"
                 @touchstart.passive="onCourtTouchStart(court.id, court.gallery.length, $event)"
                 @touchend="onCourtTouchEnd(court.id, court.gallery.length, $event)"
               >
@@ -841,11 +834,9 @@ watch(selectedDate, () => {
                   v-if="getCourtImageUrl(court) && !getCourtImageUrl(court).includes('placeholder')"
                   :src="getCourtImageUrl(court)"
                   :alt="court.name"
-                  loading="lazy"
-                  decoding="async"
-                  class="h-56 w-full object-cover transition-transform duration-500"
+                  class="absolute inset-0 h-full w-full object-cover transition-transform duration-500"
                 >
-                <div v-else class="h-56 w-full flex items-center justify-center bg-gray-100">
+                <div v-else class="absolute inset-0 h-full w-full flex items-center justify-center bg-gray-100">
                   <PlaceholderImage text="Foto Lapangan Belum Ditambahkan" />
                 </div>
 
@@ -1032,7 +1023,7 @@ watch(selectedDate, () => {
                     >
                       Available
                     </p>
-                    <!-- Harga disembunyikan sesuai permintaan
+                    <!-- Harga disembunyikan
                     <p 
                       v-if="slot.status !== 'Booked' && court.status !== 'Maintenance' && !isSlotBookedFromServer(court.id, Number(slot.start.split(':')[0]))"
                       class="text-[10px] sm:text-xs font-bold ml-auto mr-1"
@@ -1113,14 +1104,15 @@ watch(selectedDate, () => {
           </section>
 
           <footer class="border-t border-gray-100 px-6 py-4">
-            <button
+            <!-- TODO: Future feature - Booking button -->
+            <!-- <button
               type="button"
               class="w-full rounded-xl bg-[#1f2a56] px-4 py-3 text-sm font-semibold text-white shadow [@media(hover:hover)]:hover:bg-[#162347] disabled:cursor-not-allowed disabled:bg-gray-300"
               :disabled="!selectedSlots.length"
               @click="proceedToOrder"
             >
               Selanjutnya
-            </button>
+            </button> -->
           </footer>
         </div>
       </div>
