@@ -577,8 +577,11 @@ watch(() => selectedSlots.value.length, (newLength) => {
                 </svg>
                 Deskripsi
               </h2>
-              <p class="text-xs sm:text-sm text-gray-600 whitespace-pre-line leading-relaxed">
-                {{ stadion?.description || 'Belum ada deskripsi.' }}
+              <p v-if="stadion?.description?.trim()" class="text-xs sm:text-sm text-gray-600 whitespace-pre-line leading-relaxed">
+                {{ stadion.description }}
+              </p>
+              <p v-else class="text-xs sm:text-sm text-gray-500 italic">
+                Deskripsi belum tersedia.
               </p>
             </div>
 
@@ -662,7 +665,7 @@ watch(() => selectedSlots.value.length, (newLength) => {
               </svg>
               Fasilitas
             </h2>
-            <ul class="grid gap-2 text-gray-700 sm:grid-cols-2">
+            <ul v-if="stadion?.facilities && stadion.facilities.length > 0" class="grid gap-2 text-gray-700 sm:grid-cols-2">
               <li 
                 v-for="facility in stadion?.facilities" 
                 :key="facility.Facility.id" 
@@ -679,6 +682,9 @@ watch(() => selectedSlots.value.length, (newLength) => {
                 <span class="font-medium">{{ facility.Facility.name }}</span>
               </li>
             </ul>
+            <p v-else class="text-xs sm:text-sm text-gray-500 italic">
+              Belum ada fasilitas tersedia.
+            </p>
           </div>
         </div>
 
@@ -882,21 +888,16 @@ watch(() => selectedSlots.value.length, (newLength) => {
                         </span>
                       </template>
                     </div>
-                    <p class="hidden sm:block text-sm text-gray-600 leading-relaxed">
-                      {{ field.description || 'Tidak ada deskripsi tersedia.' }}
+                    <p v-if="field.description" class="hidden sm:block text-sm text-gray-600 leading-relaxed">
+                      {{ field.description }}
                     </p>
                     
-                    <div class="block sm:hidden">
+                    <div v-if="field.description" class="block sm:hidden">
                       <p class="text-xs text-gray-600 leading-relaxed">
-                        <template v-if="field.description">
-                          {{ truncatedFieldDescription(field.description, Number(field.id)) }}<span v-if="!isFieldDescriptionExpanded(Number(field.id)) && needsFieldDescriptionTruncation(field.description)">...</span>
-                        </template>
-                        <template v-else>
-                          Tidak ada deskripsi tersedia.
-                        </template>
+                        {{ truncatedFieldDescription(field.description, Number(field.id)) }}<span v-if="!isFieldDescriptionExpanded(Number(field.id)) && needsFieldDescriptionTruncation(field.description)">...</span>
                       </p>
                       <button 
-                        v-if="needsFieldDescriptionTruncation(field.description || '')"
+                        v-if="needsFieldDescriptionTruncation(field.description)"
                         @click="toggleFieldDescription(Number(field.id))"
                         class="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-[#3b82f6] [@media(hover:hover)]:hover:text-[#2563eb] transition-colors active:text-[#2563eb]"
                       >

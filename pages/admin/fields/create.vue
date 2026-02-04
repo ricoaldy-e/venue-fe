@@ -125,12 +125,6 @@ async function handleSubmit() {
     nextTick(() => errorRef.value?.scrollIntoView({ behavior: 'smooth', block: 'center' }))
     return
   }
-  if (!form.value.pricePerHour) { 
-    errorMsg.value = 'Harga per jam wajib diisi.'
-    loading.value = false
-    nextTick(() => errorRef.value?.scrollIntoView({ behavior: 'smooth', block: 'center' }))
-    return
-  }
 
   try {
     const created: any = await $fetch('/api/fields/create', {
@@ -141,7 +135,7 @@ async function handleSubmit() {
 
         pricePerHour: Number(form.value.pricePerHour || 0),
         priceTendik: Number(form.value.priceTendik || 0),
-        description: form.value.description || undefined,
+        description: form.value.description.trim(),
       },
     } as any) as any
 
@@ -325,7 +319,7 @@ async function handleSubmit() {
                   v-model.number="form.pricePerHour" 
                   type="number" 
                   min="0"
-                  step="1000"
+                  step="500"
                   required 
                   placeholder="0" 
                   class="block w-full rounded-xl border border-gray-300 pl-10 pr-16 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all" 
@@ -351,7 +345,7 @@ async function handleSubmit() {
                   v-model.number="form.priceTendik" 
                   type="number" 
                   min="0"
-                  step="1000"
+                  step="500"
                   required 
                   placeholder="0" 
                   class="block w-full rounded-xl border border-gray-300 pl-10 pr-16 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all" 
@@ -375,7 +369,7 @@ async function handleSubmit() {
           </div>
           <div class="p-6 space-y-4">
             <div class="space-y-1.5">
-              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Status</label>
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Status <span class="text-red-500">*</span></label>
               <div class="relative">
                 <select 
                   v-model="form.status" 

@@ -461,7 +461,7 @@ const _routes = [
     name: "venues-id",
     path: "/venues/:id()",
     meta: __nuxt_page_meta$j || {},
-    component: () => import('./_id_-DhbM8nTz.mjs')
+    component: () => import('./_id_-B2cKF1Eb.mjs')
   },
   {
     name: "booking-order",
@@ -472,7 +472,7 @@ const _routes = [
     name: "admin-fields-id",
     path: "/admin/fields/:id()",
     meta: { ...__nuxt_page_meta$i || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./_id_-Doq_hKKF.mjs')
+    component: () => import('./_id_-DkkdeeZw.mjs')
   },
   {
     name: "admin-login",
@@ -490,7 +490,7 @@ const _routes = [
     name: "admin-fields-create",
     path: "/admin/fields/create",
     meta: { ...__nuxt_page_meta$f || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./create-x53M7Vdy.mjs')
+    component: () => import('./create-C9_Ugso9.mjs')
   },
   {
     name: "admin-options",
@@ -502,7 +502,7 @@ const _routes = [
     name: "admin-stadiums-id",
     path: "/admin/stadiums/:id()",
     meta: { ...__nuxt_page_meta$d || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./_id_-CsjAifSz.mjs')
+    component: () => import('./_id_-BA3lr0i4.mjs')
   },
   {
     name: "admin-bookings",
@@ -532,7 +532,7 @@ const _routes = [
     name: "admin-stadiums-create",
     path: "/admin/stadiums/create",
     meta: { ...__nuxt_page_meta$8 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./create-Cyv6AMpi.mjs')
+    component: () => import('./create-c3EUpCY3.mjs')
   },
   {
     name: "admin-facilities",
@@ -560,7 +560,7 @@ const _routes = [
     name: "admin-bookings-id",
     path: "/admin/bookings/:id()",
     meta: { ...__nuxt_page_meta$5 || {}, ...{ "middleware": "auth-admin" } },
-    component: () => import('./index-CEEGvHf0.mjs')
+    component: () => import('./index-DYXggeHQ.mjs')
   },
   {
     name: "bantuan-kebijakan-privasi",

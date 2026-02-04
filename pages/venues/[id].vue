@@ -135,7 +135,7 @@ const createFallbackVenue = (): VenueDetail => ({
   city: 'Lokasi belum tersedia',
   sport: 'Multi Sport',
   gallery: [],
-  description: 'Deskripsi belum tersedia.',
+  description: '',
   location: 'Lokasi belum tersedia',
   price: 0,
   facilities: [],
@@ -175,7 +175,7 @@ const mapFieldToCourt = (field: FieldData, hours: { open: number; close: number 
   return {
     id: Number(field?.id) || 0,
     name: field?.name ?? 'Lapangan',
-    surface: field?.description || 'Permukaan belum tersedia',
+    surface: field?.description || '',
     type: field?.type,
     status: field?.status === 'ACTIVE' ? 'Ready' : 'Maintenance',
     image: rawImages[0] || '',
@@ -656,8 +656,11 @@ watch(selectedDate, () => {
               </svg>
               Deskripsi
             </h2>
-            <p class="text-xs sm:text-sm text-gray-600 whitespace-pre-line leading-relaxed">
-              {{ venue.description || 'Belum ada deskripsi.' }}
+            <p v-if="venue.description?.trim()" class="text-xs sm:text-sm text-gray-600 whitespace-pre-line leading-relaxed">
+              {{ venue.description }}
+            </p>
+            <p v-else class="text-xs sm:text-sm text-gray-500 italic">
+              Deskripsi belum tersedia.
             </p>
           </div>
 
@@ -736,7 +739,7 @@ watch(selectedDate, () => {
             </svg>
             Fasilitas
           </h2>
-          <ul class="grid gap-2 text-gray-700 sm:grid-cols-2">
+          <ul v-if="venue.facilities && venue.facilities.length > 0" class="grid gap-2 text-gray-700 sm:grid-cols-2">
             <li 
               v-for="(facility, index) in venue.facilities" 
               :key="index" 
@@ -753,6 +756,9 @@ watch(selectedDate, () => {
               <span class="font-medium">{{ facility.name || facility }}</span>
             </li>
           </ul>
+          <p v-else class="text-xs sm:text-sm text-gray-500 italic">
+            Belum ada fasilitas tersedia.
+          </p>
         </div>
       </div>
 
@@ -930,18 +936,13 @@ watch(selectedDate, () => {
                       </span>
                     </template>
                   </div>
-                  <p class="hidden sm:block text-sm text-gray-600 leading-relaxed">
-                    {{ court.surface || 'Tidak ada deskripsi tersedia.' }}
+                  <p v-if="court.surface" class="hidden sm:block text-sm text-gray-600 leading-relaxed">
+                    {{ court.surface }}
                   </p>
                   
-                  <div class="block sm:hidden">
+                  <div v-if="court.surface" class="block sm:hidden">
                     <p class="text-xs text-gray-600 leading-relaxed">
-                      <template v-if="court.surface">
-                        {{ truncatedFieldDescription(court.surface, court.id) }}<span v-if="!isFieldDescriptionExpanded(court.id) && needsFieldDescriptionTruncation(court.surface)">...</span>
-                      </template>
-                      <template v-else>
-                        Tidak ada deskripsi tersedia.
-                      </template>
+                      {{ truncatedFieldDescription(court.surface, court.id) }}<span v-if="!isFieldDescriptionExpanded(court.id) && needsFieldDescriptionTruncation(court.surface)">...</span>
                     </p>
                     <button 
                       v-if="needsFieldDescriptionTruncation(court.surface)"

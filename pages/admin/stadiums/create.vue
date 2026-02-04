@@ -129,7 +129,7 @@ async function handleSubmit() {
       method: 'POST',
       body: {
         ...form.value,
-        description: form.value.description || undefined,
+        description: form.value.description.trim(),
         facilityIds: form.value.facilityIds.length > 0 ? form.value.facilityIds : null,
       },
     })
@@ -314,7 +314,7 @@ async function handleSubmit() {
           <div class="p-5 border-b border-gray-200 bg-gray-50/50"><h3 class="text-base font-bold text-gray-900">Status Operasional</h3></div>
           <div class="p-6 space-y-4">
             <div class="space-y-1.5">
-              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Status</label>
+              <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Status <span class="text-red-500">*</span></label>
               <div class="relative">
                 <select v-model="form.status" class="block w-full rounded-xl border border-gray-300 pl-4 pr-10 py-3 text-sm font-medium focus:border-blue-500 focus:ring-blue-500 cursor-pointer shadow-sm transition-all [@media(hover:hover)]:hover:border-gray-400 appearance-none bg-white">
                   <option value="ACTIVE">Aktif</option>
