@@ -276,6 +276,26 @@ onMounted(() => {
 })
 
 const expandedFields = ref<Record<number, boolean>>({})
+const expandedFieldDescriptions = ref<Record<number, boolean>>({})
+
+const MOBILE_FIELD_DESC_LIMIT = 150
+
+const toggleFieldDescription = (fieldId: number) => {
+  expandedFieldDescriptions.value[fieldId] = !expandedFieldDescriptions.value[fieldId]
+}
+
+const isFieldDescriptionExpanded = (fieldId: number) => {
+  return expandedFieldDescriptions.value[fieldId] ?? false
+}
+
+const truncatedFieldDescription = (description: string, fieldId: number) => {
+  if (!description || description.length <= MOBILE_FIELD_DESC_LIMIT) return description
+  return isFieldDescriptionExpanded(fieldId) ? description : description.slice(0, MOBILE_FIELD_DESC_LIMIT)
+}
+
+const needsFieldDescriptionTruncation = (description: string) => {
+  return (description?.length || 0) > MOBILE_FIELD_DESC_LIMIT
+}
 
 function toggleField(id: number) {
   expandedFields.value = {
@@ -862,9 +882,36 @@ watch(() => selectedSlots.value.length, (newLength) => {
                         </span>
                       </template>
                     </div>
-                    <p class="text-xs sm:text-sm text-gray-600 leading-relaxed line-clamp-2 sm:line-clamp-none">
+                    <p class="hidden sm:block text-sm text-gray-600 leading-relaxed">
                       {{ field.description || 'Tidak ada deskripsi tersedia.' }}
                     </p>
+                    
+                    <div class="block sm:hidden">
+                      <p class="text-xs text-gray-600 leading-relaxed">
+                        <template v-if="field.description">
+                          {{ truncatedFieldDescription(field.description, Number(field.id)) }}<span v-if="!isFieldDescriptionExpanded(Number(field.id)) && needsFieldDescriptionTruncation(field.description)">...</span>
+                        </template>
+                        <template v-else>
+                          Tidak ada deskripsi tersedia.
+                        </template>
+                      </p>
+                      <button 
+                        v-if="needsFieldDescriptionTruncation(field.description || '')"
+                        @click="toggleFieldDescription(Number(field.id))"
+                        class="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-[#3b82f6] [@media(hover:hover)]:hover:text-[#2563eb] transition-colors active:text-[#2563eb]"
+                      >
+                        <span>{{ isFieldDescriptionExpanded(Number(field.id)) ? 'Lebih Sedikit' : 'Selengkapnya' }}</span>
+                        <svg 
+                          class="w-3 h-3 transition-transform duration-200" 
+                          :class="isFieldDescriptionExpanded(Number(field.id)) ? 'rotate-180' : ''"
+                          fill="none" 
+                          stroke="currentColor" 
+                          viewBox="0 0 24 24"
+                        >
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                      </button>
+                    </div>
                   </div>
 
                   <button

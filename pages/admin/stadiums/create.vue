@@ -39,6 +39,7 @@ const form = ref({
 
 const loading = ref(false)
 const errorMsg = ref<string | null>(null)
+const errorRef = ref<HTMLElement | null>(null)
 const selectedImages = ref<File[]>([])
 const imagePreviews = ref<string[]>([])
 const isDragging = ref(false)
@@ -50,8 +51,9 @@ function handleFileProcess(files: File[]) {
 
   if (selectedImages.value.length + incomingFiles.length > 5) {
     errorMsg.value = 'Maksimal hanya diperbolehkan 5 foto untuk stadion.'
-    const errorEl = document.getElementById('error-alert')
-    if (errorEl) errorEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    nextTick(() => {
+      errorRef.value?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    })
     return
   }
 
@@ -105,9 +107,21 @@ const isValidUrl = (url: string): boolean => /^https?:\/\//.test(url)
 async function handleSubmit() {
   errorMsg.value = null
 
-  if (!form.value.name.trim()) { errorMsg.value = 'Nama stadion wajib diisi.'; window.scrollTo({ top: 0, behavior: 'smooth' }); return }
-  if (form.value.mapUrl && !isValidUrl(form.value.mapUrl)) { errorMsg.value = 'URL Peta harus diawali dengan http:// atau https://'; window.scrollTo({ top: 0, behavior: 'smooth' }); return }
-  if (form.value.facilityIds.length > 10) { errorMsg.value = 'Anda hanya dapat memilih maksimal 10 fasilitas.'; window.scrollTo({ top: 0, behavior: 'smooth' }); return }
+  if (!form.value.name.trim()) { 
+    errorMsg.value = 'Nama stadion wajib diisi.'
+    nextTick(() => errorRef.value?.scrollIntoView({ behavior: 'smooth', block: 'center' }))
+    return 
+  }
+  if (form.value.mapUrl && !isValidUrl(form.value.mapUrl)) { 
+    errorMsg.value = 'URL Peta harus diawali dengan http:// atau https://'
+    nextTick(() => errorRef.value?.scrollIntoView({ behavior: 'smooth', block: 'center' }))
+    return 
+  }
+  if (form.value.facilityIds.length > 10) { 
+    errorMsg.value = 'Anda hanya dapat memilih maksimal 10 fasilitas.'
+    nextTick(() => errorRef.value?.scrollIntoView({ behavior: 'smooth', block: 'center' }))
+    return 
+  }
 
   loading.value = true
   try {
@@ -149,7 +163,9 @@ async function handleSubmit() {
   } catch (err: any) {
     const parsed = parseBackendError(err)
     errorMsg.value = parsed.message
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    nextTick(() => {
+      errorRef.value?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    })
   } finally {
     loading.value = false
   }
@@ -194,6 +210,25 @@ async function handleSubmit() {
       </div>
     </header>
 
+    <!-- Global Error Alert -->
+    <div v-if="errorMsg" ref="errorRef" id="error-alert" class="p-4 rounded-xl border border-red-200 bg-red-50 text-red-700 flex items-start gap-3 shadow-sm animate-shake">
+      <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+      <div class="flex-1">
+        <p class="font-bold text-sm">Terjadi Kesalahan</p>
+        <p class="text-sm">{{ errorMsg }}</p>
+      </div>
+      <button 
+        type="button" 
+        @click="errorMsg = null" 
+        class="text-red-700 [@media(hover:hover)]:hover:text-red-900 transition-colors"
+        aria-label="Tutup pesan error"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
     <form id="create-stadium-form" @submit.prevent="handleSubmit" @keydown.enter="onFormEnter" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       
       <div class="lg:col-span-2 space-y-8">
@@ -206,7 +241,7 @@ async function handleSubmit() {
             <div class="space-y-1.5">
               <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Nama Stadion <span class="text-red-500">*</span></label>
               <input v-model="form.name" type="text" required placeholder="Contoh: Stadion Futsal" class="block w-full rounded-xl border border-gray-300 pl-4 pr-4 py-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all" />
-              <p v-if="errorMsg && errorMsg.includes('Nama stadion')" class="mt-2 text-xs text-red-600 font-medium flex items-start gap-1.5">
+              <p v-if="errorMsg && (errorMsg.includes('Nama stadion') || (errorMsg.toLowerCase().includes('nama') && (errorMsg.toLowerCase().includes('minimal') || errorMsg.toLowerCase().includes('karakter') || errorMsg.toLowerCase().includes('wajib'))))" class="mt-2 text-xs text-red-600 font-medium flex items-start gap-1.5">
                 <svg class="w-3.5 h-3.5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 <span>{{ errorMsg }}</span>
               </p>

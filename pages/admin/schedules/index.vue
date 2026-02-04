@@ -35,6 +35,7 @@ const { data: operatingHours, pending, error, refresh } = await useAsyncData<Ope
 const editing = ref(false)
 const submitting = ref(false)
 const submitError = ref<string | null>(null)
+const errorRef = ref<HTMLElement | null>(null)
 const formState = reactive({
   open: '',
   close: '',
@@ -102,6 +103,9 @@ const cancelEditing = () => {
 const handleSubmit = async () => {
   if (!formState.open || !formState.close) {
     submitError.value = 'Jam buka dan jam tutup wajib diisi.'
+    nextTick(() => {
+      errorRef.value?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    })
     return
   }
 
@@ -110,21 +114,33 @@ const handleSubmit = async () => {
 
   if (openHour === null || closeHour === null) {
     submitError.value = 'Format jam tidak valid.'
+    nextTick(() => {
+      errorRef.value?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    })
     return
   }
 
   if (openHour < 0 || openHour > 23) {
     submitError.value = 'Jam buka harus antara 0 dan 23.'
+    nextTick(() => {
+      errorRef.value?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    })
     return
   }
 
   if (closeHour < 1 || closeHour > 24) {
     submitError.value = 'Jam tutup harus antara 1 dan 24.'
+    nextTick(() => {
+      errorRef.value?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    })
     return
   }
 
   if (closeHour <= openHour) {
     submitError.value = 'Jam tutup harus lebih besar daripada jam buka.'
+    nextTick(() => {
+      errorRef.value?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    })
     return
   }
 
@@ -144,6 +160,9 @@ const handleSubmit = async () => {
   } catch (err: any) {
     const parsed = parseBackendError(err)
     submitError.value = parsed.message
+    nextTick(() => {
+      errorRef.value?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    })
   } finally {
     submitting.value = false
   }
@@ -357,6 +376,7 @@ const handleSubmit = async () => {
             <!-- Error Message -->
             <div
               v-if="submitError"
+              ref="errorRef"
               class="p-4 rounded-xl bg-red-50 border-2 border-red-200 text-red-700 text-sm font-semibold flex items-center gap-3"
             >
               <svg

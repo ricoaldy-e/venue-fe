@@ -49,6 +49,7 @@ const error = computed(() => appOptions.value.error);
 const editing = ref(false);
 const submitting = ref(false);
 const submitError = ref<string | null>(null);
+const errorRef = ref<HTMLElement | null>(null);
 const formState = reactive({
   name: "",
   nameKet: "",
@@ -157,6 +158,9 @@ const handleSubmit = async () => {
     !formState.address
   ) {
     submitError.value = "Semua field wajib diisi.";
+    nextTick(() => {
+      errorRef.value?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    })
     return;
   }
   const nohp = formState.nohp;
@@ -166,6 +170,9 @@ const handleSubmit = async () => {
   
   if (!phoneRegex.test(cleanForValidation)) {
     submitError.value = "Nomor WhatsApp harus diawali dengan 62 atau +62.";
+    nextTick(() => {
+      errorRef.value?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    })
     return;
   }
 
@@ -191,6 +198,9 @@ const handleSubmit = async () => {
   } catch (err) {
     const parsed = parseBackendError(err);
     submitError.value = parsed.message;
+    nextTick(() => {
+      errorRef.value?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    })
   } finally {
     submitting.value = false;
   }
@@ -1033,6 +1043,7 @@ const handleSubmit = async () => {
             <!-- Error Message -->
             <div
               v-if="submitError"
+              ref="errorRef"
               class="p-4 rounded-xl bg-red-50 border-2 border-red-200 text-red-700 text-sm font-semibold flex items-center gap-3"
             >
               <svg

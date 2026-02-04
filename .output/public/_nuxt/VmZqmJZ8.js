@@ -1,1 +1,0 @@
-import{_ as o,b as s,o as r,ai as n}from"./DMLpKh8s.js";const t={};function a(e,c){return r(),s("code",null,[n(e.$slots,"default")])}const l=Object.assign(o(t,[["render",a]]),{__name:"ProseCode"});export{l as default};
