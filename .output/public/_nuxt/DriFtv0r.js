@@ -1,0 +1,1 @@
+import{_ as a,b as s,o,ai as r}from"./DDB4pMf4.js";const t={};function n(e,c){return o(),s("thead",null,[r(e.$slots,"default")])}const l=Object.assign(a(t,[["render",n]]),{__name:"ProseThead"});export{l as default};

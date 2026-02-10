@@ -1083,7 +1083,7 @@ const __nuxt_component_0$1 = /* @__PURE__ */ Object.assign(_export_sfc(_sfc_main
 const layouts = {
   admin: defineAsyncComponent(() => import('./admin-kOjSwZ83.mjs').then((m) => m.default || m)),
   auth: defineAsyncComponent(() => import('./auth-5gVP7TYT.mjs').then((m) => m.default || m)),
-  default: defineAsyncComponent(() => import('./default-eimwTuYW.mjs').then((m) => m.default || m))
+  default: defineAsyncComponent(() => import('./default-wBtIWwYU.mjs').then((m) => m.default || m))
 };
 const LayoutLoader = defineComponent({
   name: "LayoutLoader",

@@ -15,7 +15,7 @@
           />
           <div class="min-w-0">
             <div class="text-lg sm:text-2xl font-bold tracking-tight text-[#1f2a56] truncate [@media(hover:hover)]:group-hover:text-[#0f1a3c] [@media(hover:hover)]:group-hover:scale-105 transition-all duration-300 origin-left">{{ name }}</div>
-            <div class="block sm:hidden text-xs text-gray-500 font-medium truncate [@media(hover:hover)]:group-hover:text-gray-700 [@media(hover:hover)]:group-hover:scale-105 transition-all duration-300 origin-left">Booking Lapangan UNDIP</div>
+            <div class="block sm:hidden text-xs text-gray-500 font-medium truncate [@media(hover:hover)]:group-hover:text-gray-700 [@media(hover:hover)]:group-hover:scale-105 transition-all duration-300 origin-left">Reservasi Lapangan UNDIP</div>
             <div class="hidden sm:block text-xs text-gray-500 font-medium truncate [@media(hover:hover)]:group-hover:text-gray-700 [@media(hover:hover)]:group-hover:scale-105 transition-all duration-300 origin-left">{{ nameKet }}</div>
           </div>
         </button>

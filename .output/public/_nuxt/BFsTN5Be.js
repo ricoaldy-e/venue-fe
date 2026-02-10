@@ -1,0 +1,1 @@
+import{_ as s,b as o,o as r,ai as t}from"./DDB4pMf4.js";const n={};function a(e,c){return r(),o("th",null,[t(e.$slots,"default")])}const l=Object.assign(s(n,[["render",a]]),{__name:"ProseTh"});export{l as default};
