@@ -784,7 +784,7 @@ Make sure to set all required environment variables in your hosting platform:
 ### Institution
 
 **Program Magang DSTI - Universitas Diponegoro**  
-*Periode: September - Desember 2025*
+*Periode: September 2025 - Desember 2025*
 
 ---
 
