@@ -740,7 +740,7 @@ Make sure to set all required environment variables in your hosting platform:
 ### Public Interface
 
 *Homepage with venue listings*
-- Clean, modern design
+- Clean and modern design
 - Responsive grid layout
 - Search and filter options
 
