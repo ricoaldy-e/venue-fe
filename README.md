@@ -139,7 +139,6 @@
 - **🔍 Smart Search**
   - Search functionality across venues
   - Filter by sports type
-  - Sort by price and availability
 
 - **📸 Image Galleries**
   - Multiple images per venue/field
