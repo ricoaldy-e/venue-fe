@@ -2,7 +2,7 @@ import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   css: [
     '@/assets/css/tailwind.css'
   ],
@@ -81,7 +81,7 @@ export default defineNuxtConfig({
   // per-route berdasarkan kebutuhan masing-masing halaman.
   // Dokumentasi: https://nuxt.com/docs/guide/concepts/rendering#hybrid-rendering
   routeRules: {
-    
+
     // ADMIN PAGES - Client-Side Rendering (CSR)
     '/admin/**': { ssr: false },
 
@@ -103,8 +103,8 @@ export default defineNuxtConfig({
   },
 
   turnstile: {
-    siteKey: '0x4AAAAAACMZd-IE1Ec6SjaL',
-    // siteKey: '1x00000000000000000000AA',
+    // siteKey: '0x4AAAAAACMZd-IE1Ec6SjaL',
+    siteKey: '1x00000000000000000000AA',
   },
 
   runtimeConfig: {
