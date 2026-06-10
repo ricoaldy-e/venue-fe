@@ -1,4 +1,0 @@
-const index_vue_vue_type_style_index_0_scoped_c4e7a8ca_lang = '@media print{.logo-print-color[data-v-c4e7a8ca],img[alt*="VENUE UNDIP Logo"][data-v-c4e7a8ca],img[alt*="VENUE UNDIP"][data-v-c4e7a8ca]{filter:none!important;-webkit-filter:none!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}table[data-v-c4e7a8ca]{border-collapse:collapse;width:100%;page-break-inside:auto;font-size:9px}thead[data-v-c4e7a8ca]{display:table-header-group}tfoot[data-v-c4e7a8ca],thead[data-v-c4e7a8ca]{page-break-inside:avoid}tfoot[data-v-c4e7a8ca]{display:table-footer-group}tbody tr[data-v-c4e7a8ca]{page-break-inside:avoid;page-break-after:auto}td[data-v-c4e7a8ca],th[data-v-c4e7a8ca]{word-wrap:break-word;max-width:100%;overflow-wrap:break-word}}';
-
-export { index_vue_vue_type_style_index_0_scoped_c4e7a8ca_lang as i };
-//# sourceMappingURL=index-styles-1.mjs-D6tvpCKr.mjs.map
