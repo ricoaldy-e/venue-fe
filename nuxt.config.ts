@@ -103,8 +103,8 @@ export default defineNuxtConfig({
   },
 
   turnstile: {
-    // siteKey: '0x4AAAAAACMZd-IE1Ec6SjaL',
-    siteKey: '1x00000000000000000000AA',
+    siteKey: '0x4AAAAAACMZd-IE1Ec6SjaL',
+    // siteKey: '1x00000000000000000000AA',
   },
 
   runtimeConfig: {
