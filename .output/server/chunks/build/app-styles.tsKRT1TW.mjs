@@ -1,8 +1,0 @@
-const app_vue_vue_type_style_index_0_lang = "#__nuxt{min-height:100vh}.loading-screen{align-items:center;background:linear-gradient(135deg,#f8fafc,#fff 50%,#f1f5f9);display:flex;inset:0;justify-content:center;position:fixed;transition:opacity .4s ease-out;z-index:9999}.loading-content{animation:fadeIn .5s ease-out;text-align:center}.spinner-wrapper{height:80px;margin:0 auto 24px;position:relative;width:80px}.spinner{height:100%;position:relative;width:100%}.spinner-ring{border:3px solid transparent;border-radius:50%;inset:0;position:absolute}.spinner-ring:first-child{border-top-color:#1f2a56}.spinner-ring:first-child,.spinner-ring:nth-child(2){animation:spin 1.5s cubic-bezier(.68,-.55,.27,1.55) infinite}.spinner-ring:nth-child(2){animation-delay:.15s;border-right-color:#3b82f6;opacity:.8}.spinner-ring:nth-child(3){animation:spin 1.5s cubic-bezier(.68,-.55,.27,1.55) infinite;animation-delay:.3s;border-bottom-color:#60a5fa;opacity:.6}.loading-text{animation:pulse 2s ease-in-out infinite;color:#64748b;font-size:15px;font-weight:500;letter-spacing:.5px;margin:0}@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(1turn)}}@keyframes fadeIn{0%{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}@keyframes pulse{0%,to{opacity:1}50%{opacity:.6}}@media(prefers-reduced-motion:reduce){.loading-screen *,.loading-screen :after,.loading-screen :before{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}@media(max-width:640px){.spinner-wrapper{height:64px;width:64px}.loading-text{font-size:14px}}";
-
-const appStyles_tsKRT1TW = [
-  app_vue_vue_type_style_index_0_lang
-];
-
-export { appStyles_tsKRT1TW as default };
-//# sourceMappingURL=app-styles.tsKRT1TW.mjs.map
